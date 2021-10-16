@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="95638676a9cc4db8b6b62b3521a65a83" Name="Diagram1">
+        <EntityTypeShape EntityType="ServerDBModel.Admin" Width="1.5" PointX="12.75" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ServerDBModel.Chat" Width="1.5" PointX="10.5" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ServerDBModel.ChatConnection" Width="1.5" PointX="10.5" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ServerDBModel.Document" Width="1.5" PointX="7.125" PointY="12.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ServerDBModel.Provider" Width="1.5" PointX="7.125" PointY="6.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ServerDBModel.Rating" Width="1.5" PointX="4.375" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ServerDBModel.Request" Width="1.5" PointX="7.125" PointY="0.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ServerDBModel.Seeker" Width="1.5" PointX="10.5" PointY="1.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ServerDBModel.Service_Category" Width="1.5" PointX="1" PointY="8.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ServerDBModel.Service_Type" Width="1.5" PointX="1.875" PointY="5.5" IsExpanded="true" />
+        <AssociationConnector Association="ServerDBModel.FK_Connection_Chat" ManuallyRouted="false" />
+        <AssociationConnector Association="ServerDBModel.FK_Provider_Connection" ManuallyRouted="false" />
+        <AssociationConnector Association="ServerDBModel.FK_Seeker_Connection" ManuallyRouted="false" />
+        <AssociationConnector Association="ServerDBModel.FK_Document_Provider" ManuallyRouted="false" />
+        <AssociationConnector Association="ServerDBModel.FK_Provider_Rating" ManuallyRouted="false" />
+        <AssociationConnector Association="ServerDBModel.FK_Provider_ServiceType" ManuallyRouted="false" />
+        <AssociationConnector Association="ServerDBModel.FK_Request_Provider" ManuallyRouted="false" />
+        <AssociationConnector Association="ServerDBModel.FK_Request_Rating" ManuallyRouted="false" />
+        <AssociationConnector Association="ServerDBModel.FK_Request_ServiceCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="ServerDBModel.FK_Request_ServiceType" ManuallyRouted="false" />
+        <AssociationConnector Association="ServerDBModel.FK_Request_User" ManuallyRouted="false" />
+        <AssociationConnector Association="ServerDBModel.FK_ServiceCategory_ServiceType" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

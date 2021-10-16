@@ -1,0 +1,22 @@
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<div id="app">
+  <h3>@ViewBag.Message</h3>
+  {{ vueMessage }}
+  <br/>
+  {{ secMessage }}
+  <app v-bind:time="new Date()"></app>
+</div>
+<div>
+  <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+</div>
+
+@section foot {
+  <script src="~/Scripts/bundle/home.js"></script>
+}
