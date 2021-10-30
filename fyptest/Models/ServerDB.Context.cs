@@ -26,6 +26,8 @@ namespace fyptest.Models
         }
     
         public virtual DbSet<Admin> Admins { get; set; }
+        public virtual DbSet<Bank> Banks { get; set; }
+        public virtual DbSet<Card> Cards { get; set; }
         public virtual DbSet<Chat> Chats { get; set; }
         public virtual DbSet<ChatConnection> ChatConnections { get; set; }
         public virtual DbSet<Document> Documents { get; set; }

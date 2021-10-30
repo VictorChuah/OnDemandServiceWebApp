@@ -14,7 +14,7 @@ namespace fyptest.Models
     
     public partial class Document
     {
-        public string DocId { get; set; }
+        public int DocId { get; set; }
         public string file { get; set; }
         public string holder { get; set; }
     

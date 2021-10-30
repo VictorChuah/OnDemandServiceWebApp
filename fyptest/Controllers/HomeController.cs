@@ -11,8 +11,11 @@ namespace fyptest.Controllers
     // GET: Home
     public ActionResult Index()
     {
-      ViewBag.Message = "controller";      
+      System.Diagnostics.Debug.WriteLine("home");
+      ViewBag.Message = "controller";
+      TempData["Info"] = "test";
       return View();
     }
+
   }
 }

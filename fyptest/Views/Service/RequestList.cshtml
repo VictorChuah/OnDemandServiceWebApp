@@ -1,0 +1,136 @@
+@using System.Web.Mvc.Ajax
+@using fyptest.Models
+@model RequestDetail
+
+@{ ViewBag.Title = "RequestList";
+  Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+@*data for list*@
+@{ var ao = new AjaxOptions
+  {
+    HttpMethod = "get",
+    UpdateTargetId = "ajaxList"
+  }; }
+
+<div style="height: 113px;"></div>
+
+<div class="unit-5 overlay" style="background-image: url('../../Image/Background/hero_2.jpg');">
+  <div class="container text-center">
+    @*if is provider or seeker or selecting request*@
+    <h2 class="mb-0">@ViewBag.page</h2>
+    <p class="mb-0 unit-6">
+      <a href="index.html">Home</a> <span class="sep">></span>
+      <a href="/JobProvider/ProviderProfile">Profile</a> <span class="sep"> > </span>
+      <span>@ViewBag.page</span>
+    </p>
+  </div>
+</div>
+
+<div class="site-section bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-7 mb-5 mb-md-0">
+        <h2 class="mb-5 h3">@ViewBag.page</h2>
+        <label class="font-weight-bold" for="fullname">Search</label>
+        @using (Ajax.BeginForm(ao))
+        {
+          <input type="number" min="1" step="1" id="status" value=@ViewBag.status hidden />
+          @Html.TextBox("query", null, new { autofocus = "", type = "search", autocomplete = "off", placeholder = "eg. Full Stack Frontend", @class = "form-control" })}
+        <br />
+        <div id="ajaxList">
+          @Html.Partial("_List", Model.request)
+        </div>
+      </div>
+
+      <div class="col-md-5 block-16" data-aos="fade-up" data-aos-delay="200">
+        <div id="ajaxDetail">
+          @Html.Partial("_Detail")
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+@section foot {
+
+  <script>
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const prefill = urlParams.get('selected')
+
+    $(document).ready(() => {
+      $('#ajaxDetail').hide();
+
+      $('#query').val(prefill).trigger('input');
+
+    });
+
+    //ajax search
+    let timer = null;
+    $('#query').on('input', e => {
+      clearTimeout(timer);
+      timer = setTimeout(() => $(e.target.form).submit(), 500);
+      console.log("input");
+    });
+
+    //post ajax data for detail
+    function detail(id) {
+      $('#ajaxDetail').show(500);
+
+      $.ajax({
+        type: 'POST',
+        url: "/Service/RequestDetail",
+        data: {
+          id: id
+        },
+        success: function (result) {
+          if (result != null) {
+            $("#ajaxDetail").html(result);
+          } else {
+            alert('Error getting data.');
+          }
+        },
+        error: function () {
+          alert('Error getting data.');
+        }
+      });
+    }
+
+    //download file
+    function download(file) {
+      $.ajax({
+        type: 'POST',
+        url: "/Service/DownloadFile",
+        data: {
+          file: file
+        },
+        error: function () {
+          alert('Error getting data.');
+        }
+      });
+    }
+
+    //follow as scroll
+    (function ($) {
+      var element = $('#ajaxDetail'),
+        originalY = element.offset().top;
+
+      // Space between element and top of screen (when scrolling)
+      var topMargin = 200;
+
+      // Should probably be set in CSS; but here just for emphasis
+      element.css('position', 'relative');
+
+      $(window).on('scroll', function (event) {
+        var scrollTop = $(window).scrollTop();
+
+        element.stop(false, false).animate({
+          top: scrollTop < originalY ?
+            0 : scrollTop - originalY + topMargin
+        }, 200);
+      });
+    })(jQuery);
+
+  </script>
+}

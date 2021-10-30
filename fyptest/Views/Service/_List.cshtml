@@ -1,0 +1,55 @@
+@using fyptest.Models
+@model IEnumerable<Request>
+
+
+
+@foreach (var r in Model)
+{
+  <div class="rounded border jobs-wrap" style="cursor: pointer;" onclick="detail('@r.SId')">
+    <div class="job-item d-block d-md-flex align-items-center  border-bottom fulltime">
+      <div class="company-logo blank-logo text-center text-md-left pl-3">
+        <img src="~/Content/main/images/company_logo_blank.png" alt="Image" class="img-fluid mx-auto">
+      </div>
+      <div class="job-details h-100">
+        <div class="p-3 align-self-center">
+          <h3>@r.title</h3>
+          <div class="d-block d-lg-flex">
+            <div class="mr-3">
+              <span class="icon-suitcase mr-1"></span>
+              @(r.Service_Category.SCId == r.Category? r.Service_Category.name: "-" )
+            </div>
+            <div class="mr-3"><span class="icon-room mr-1"></span>@(r.address==null? "-" : r.address)</div>
+            <div><span class="icon-money mr-1"></span>  RM @r.price </div>
+          </div>
+        </div>
+      </div>
+      <div class="job-category align-self-center">
+        <div class="p-3">
+          @switch (ViewBag.status)
+          {
+            case 0:<span class="text-primary p-2 rounded border border-secondary">Request</span>; break;
+            case 1:
+              if (r.seekerComplete == false && r.providerComplete == true)
+              {<span class="text-info p-2 rounded border border-info">Pending</span> ; break;
+              }
+              else
+              {<span class="text-warning p-2 rounded border border-warning">Ongoing</span> ; break;
+              }
+            case 2: <span class="text-success p-2 rounded border border-success">Complete</span> ; break;
+            case 3: <span class="text-danger p-2 rounded border border-danger">Request Received</span>; break;
+            default: <span class="text-danger p-2 rounded border border-danger">error</span>; break;
+          }
+
+
+
+          @*<span class=@(ViewBag.status == 1? "text-warning p-2 rounded border border-warning" : ViewBag.status == 2 ?
+            "text-info p-2 rounded border border-info" : "text-danger p-2 rounded border border-danger")>
+                  @(ViewBag.status == 1? "Ongoing" : ViewBag.status == 2 ? "Complete" : "Request Received" )
+                </span>*@
+        </div>
+      </div>
+    </div>
+  </div>}
+
+
+@*pending for money*@

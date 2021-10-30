@@ -23,19 +23,21 @@ namespace fyptest.Models
         }
     
         public string email { get; set; }
-        public string name { get; set; }
         public string password { get; set; }
         public string phone { get; set; }
         public string profileImage { get; set; }
         public int status { get; set; }
-        public bool formaility { get; set; }
+        public Nullable<bool> formality { get; set; }
+        public bool companyIndividual { get; set; }
         public string namecard { get; set; }
+        public string name { get; set; }
         public string companyName { get; set; }
         public string address { get; set; }
         public Nullable<int> loginCount { get; set; }
         public string token { get; set; }
         public Nullable<System.DateTime> tokenExpire { get; set; }
         public string connectionGroup { get; set; }
+        public double walletAmount { get; set; }
         public string STId { get; set; }
         public string RId { get; set; }
     

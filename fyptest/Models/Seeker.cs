@@ -31,6 +31,7 @@ namespace fyptest.Models
         public string token { get; set; }
         public Nullable<System.DateTime> tokenExpire { get; set; }
         public string connectionGroup { get; set; }
+        public double walletAmount { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ChatConnection> ChatConnections { get; set; }

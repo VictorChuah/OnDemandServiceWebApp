@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>@ViewBag.Title - My ASP.NET Application</title>
   @*@using System.Web.Optimization
-  @Styles.Render("~/Content/css")
-  @Scripts.Render("~/bundles/modernizr")*@
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")*@
 
 
   <meta charset="utf-8">
@@ -15,23 +15,14 @@
   <meta name="author" content="">
 
   <link rel="icon" type="image/png" href="@Url.Content("~/Content/login/")images/icons/favicon.ico" />
-  <!--===============================================================================================-->
   <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/login/")vendor/bootstrap/css/bootstrap.min.css">
-  <!--===============================================================================================-->
   <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/login/")fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-  <!--===============================================================================================-->
   <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/login/")fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
-  <!--===============================================================================================-->
   <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/login/")vendor/animate/animate.css">
-  <!--===============================================================================================-->
   <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/login/")vendor/css-hamburgers/hamburgers.min.css">
-  <!--===============================================================================================-->
   <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/login/")vendor/animsition/css/animsition.min.css">
-  <!--===============================================================================================-->
   <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/login/")vendor/select2/select2.min.css">
-  <!--===============================================================================================-->
   <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/login/")vendor/daterangepicker/daterangepicker.css">
-  <!--===============================================================================================-->
   <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/login/")css/util.css">
   <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/login/")css/main.css">
 
@@ -52,7 +43,11 @@
 
   <link rel="stylesheet" href="@Url.Content("~/Content/main/")css/aos.css">
   <link rel="stylesheet" href="@Url.Content("~/Content/main/")css/style.css">
-
+  <link rel="stylesheet" href="~/Content/app.css">
+  @RenderSection("head", false)
+  
+</head>
+<body>
   <!-- Navigation -->
   <div class="site-wrap">
     <div class="site-mobile-menu">
@@ -110,8 +105,8 @@
       </div>
     </div>
   </div>
-</head>
-<body>
+
+  <div class="info">@TempData["Info"]</div>
 
   @RenderBody()
   <hr />
@@ -177,7 +172,9 @@
   </footer>
 
   @Scripts.Render("~/bundles/jquery")
+  @Scripts.Render("~/bundles/jqueryval")
   @Scripts.Render("~/bundles/bootstrap")
+
   <!--in-->
   <script src="~/Content/vendor2/jquery/jquery.min.js"></script>
   <script src="~/Content/vendor2/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -196,6 +193,9 @@
   <script src="@Url.Content("~/Content/main/")js/jquery.magnific-popup.min.js"></script>
   <script src="@Url.Content("~/Content/main/")js/bootstrap-datepicker.min.js"></script>
   <script src="@Url.Content("~/Content/main/")js/aos.js"></script>
+  <script src="~/Scripts/jquery.maskedinput.js"></script>
+  <script src="~/Scripts/jquery.validate.js"></script>
+  <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
 
   <script src="@Url.Content("~/Content/main/")js/mediaelement-and-player.min.js"></script>
   <script src="@Url.Content("~/Content/main/")js/main.js"></script>

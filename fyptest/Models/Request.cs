@@ -23,8 +23,11 @@ namespace fyptest.Models
         public int status { get; set; }
         public bool immediate { get; set; }
         public System.DateTime dateCreated { get; set; }
-        public System.DateTime dateCompleted { get; set; }
+        public Nullable<bool> seekerComplete { get; set; }
+        public Nullable<bool> providerComplete { get; set; }
+        public Nullable<System.DateTime> dateCompleted { get; set; }
         public bool repeat { get; set; }
+        public double price { get; set; }
         public string Category { get; set; }
         public string Type { get; set; }
         public string Seeker { get; set; }

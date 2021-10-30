@@ -1,0 +1,139 @@
+
+@{
+  ViewBag.Title = "Topup";
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using fyptest.Models
+@model TopupModel
+
+
+<div style="height: 113px;"></div>
+
+<div class="limiter">
+  <div class="container-login100">
+    <div class="wrap-login100">
+      <div class="login100-form-title" style="background-image: url(@Url.Content("~/Content/login/")images/image4.jpg);">
+        <span class="login100-form-title-1">
+          Topup
+        </span>
+        <p class="mb-0 unit-6">
+          <a href="index.html">Home</a> <span class="sep">></span>
+          <a href="/JobProvider/ProviderProfile">Profile</a> <span class="sep"> > </span>
+          <span>Topup</span>
+        </p>
+      </div>
+
+      @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+      @using (Html.BeginForm("Topup", "JobProvider", FormMethod.Post, new { enctype = "multipart/form-data" }))
+      {
+        @Html.AntiForgeryToken()
+
+        <h2>Card</h2>
+        <div class="form-horizontal">
+          <h4 style="text-align: center; font-weight: bold;"></h4>
+          <hr />
+
+
+          <div class="form-group">
+            @Html.LabelFor(model => Model.CardNumber, "", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+              @Html.EditorFor(model => model.CardNumber, new { htmlAttributes = new { @class = "form-control input100", placeholder = "Card Number", @id = "cardNo" } })
+              @Html.ValidationMessageFor(model => model.CardNumber, "", new { @class = "text-danger" })
+            </div>
+          </div>
+
+          <div class="form-group">
+            @Html.LabelFor(model => model.CCV, "", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+              @Html.EditorFor(model => model.CCV, new { htmlAttributes = new { @class = "form-control input100", placeholder = "CCV", @id = "ccv", @maxlength = "3" } })
+              @Html.ValidationMessageFor(model => model.CCV, "", new { @class = "text-danger" })
+            </div>
+          </div>
+
+          <div class="form-group">
+            @Html.LabelFor(model => model.ExpireDate, "", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+              @Html.EditorFor(model => model.ExpireDate, new { htmlAttributes = new { @class = "form-control input100", placeholder = "Expiry Date", @id = "expire" } })
+              @Html.ValidationMessageFor(model => model.ExpireDate, "", new { @class = "text-danger" })
+            </div>
+          </div>
+
+          <div class="form-group">
+            @Html.LabelFor(model => model.Amount, "", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+              @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control input100", placeholder = "Amount" } })
+              @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+            </div>
+          </div>
+
+          <div class="container-login100-form-btn" style="padding-left: 1em; padding-bottom: 1em">
+            <a href="~/JobProvider/TopupPaypal" class="login100-form-btn">
+              Top up
+            </a>
+          </div>
+        </div>}
+
+
+      <div class="form-group">
+        <div class="col-md-10">
+          <input id="paypal" type="number" class="form-control input100" placeholder="50.00" />
+        </div>
+      </div>
+      <div class="container-login100-form-btn" style="padding-left: 1em; padding-bottom: 1em">
+        <button class="login100-form-btn">
+          Top up
+        </button>
+      </div>
+    </div>}
+
+  </div>
+</div>
+</div>
+
+@section foot {
+  @Scripts.Render("~/bundles/jqueryval")
+
+
+  <script>
+    $(document).ready(() => {
+      //$("#ccv").mask("999");
+
+      $("#cardNo").mask("9999-9999-9999-9999");
+
+      $("#expire").mask("99/99");
+
+      $('#emsg').hide();
+
+    });
+
+    var $pattern = /[0-9]+(\.[0-9]{2})?/;
+    $('#ppAmount').on('keypress keydown keyup', function () {
+      if (!$(this).val().match($pattern)) {
+        // there is a mismatch, hence show the error message
+        $('#emsg').show(500);
+      }
+      else {
+        // else, do not display message
+        $('#emsg').hide(500);
+      }
+    });
+
+    $('#paypal').on('keyup', function () {
+      console.log($('#paypal').val())
+      $.ajax({
+        url: '/JobProvider/PaypalAmount',
+        type: 'POST',
+        data: { amount : $('#paypal').val() },
+        contentType: 'application/json; charset=utf-8',
+      });
+    });
+
+
+
+  </script>
+}
+
+
+

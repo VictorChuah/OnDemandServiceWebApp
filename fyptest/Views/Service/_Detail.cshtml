@@ -1,0 +1,51 @@
+@using fyptest.Models
+@model RequestDetail
+
+
+<div class="d-flex mb-0">
+  <h2 class="mb-5 h3 mb-0">Detail</h2>
+</div>
+<div class="border rounded p-4 bg-white">
+  <h2 class="h5"> @Model.Title</h2>
+  <p> </p>
+  <p>
+    <span class="d-block"><span class="icon-suitcase"></span>@Model.Category</span>
+    <span class="d-block"><span class="icon-room"></span> @Model.Address</span>
+    <span class="d-block"><span class="icon-date_range"></span> @Model.DateCreated</span>
+    <span class="d-block"><span class="icon-money mr-1"></span> RM @Model.Price </span>
+  </p>
+  <p class="mb-0">@Model.Description</p>
+  <br />
+  @if (Model.Image != null)
+  {
+    <label class="text-info p-2 rounded border border-info">
+      <img src="~/Request/@Model.Image" style="width: 200px; height: 200px;" />
+    </label>
+    <br />
+  }
+
+  @if (Model.File != null)
+  {
+    @*<span id="file" onclick="download('@Model.File')" style="cursor:pointer" class="d-block" ><b>Document,click to download</b></span>*@
+    @Html.ActionLink("Document", "DownloadFile", new { filename = Model.File })
+    <br />
+  }
+
+  @if (Model.Status == 1 && Model.SeekerComplete == false && Model.ProviderComplete == false)
+  {
+    <a href="#"><span class="text-warning p-2 rounded border border-warning" style="cursor:pointer">Enable Tracking</span></a> @*map module*@
+    @Html.ActionLink("Complete", "HandleRequest", "Service", new { id = @Model.Id, rAction = "complete" }, htmlAttributes: new { @class = "text-info p-2 rounded border border-info", style = "cursor:pointer" })
+    <br />
+  }
+  else if (Model.Status == 0 || Model.Status == 3)
+  {
+    <br />
+    <span>@Html.ActionLink("Accept", "HandleRequest", "Service", new { id = @Model.Id, rAction = "accept" }, htmlAttributes: new { @class = "text-info p-2 rounded border border-info", style = "cursor:pointer" })</span>
+  }
+  else if (Model.Status == 3)
+  {
+    <br />
+    <span>@Html.ActionLink("Accept", "HandleRequest", "Service", new { id = @Model.Id, rAction = "accept" }, htmlAttributes: new { @class = "text-info p-2 rounded border border-info", style = "cursor:pointer" })</span>
+    <span>@Html.ActionLink("Decline", "HandleRequest", "Service", new { id = @Model.Id, rAction = "decline" }, htmlAttributes: new { @class = "text-danger p-2 rounded border border-danger", style = "cursor:pointer" })</span>
+  }
+</div>

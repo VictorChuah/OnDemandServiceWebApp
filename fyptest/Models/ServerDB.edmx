@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ServerDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ServerDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Admin">
           <Key>
             <PropertyRef Name="Id" />
@@ -13,6 +13,21 @@
           <Property Name="name" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="password" Type="varchar(max)" Nullable="false" />
           <Property Name="email" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Bank">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Card">
+          <Key>
+            <PropertyRef Name="cardNo" />
+          </Key>
+          <Property Name="cardNo" Type="varchar" MaxLength="16" Nullable="false" />
+          <Property Name="ccv" Type="int" Nullable="false" />
+          <Property Name="expireDate" Type="varchar" MaxLength="10" Nullable="false" />
         </EntityType>
         <EntityType Name="Chat">
           <Key>
@@ -42,8 +57,8 @@
           <Key>
             <PropertyRef Name="DocId" />
           </Key>
-          <Property Name="DocId" Type="varchar" MaxLength="10" Nullable="false" />
-          <Property Name="file" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="DocId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="file" Type="varchar(max)" Nullable="false" />
           <Property Name="holder" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Provider">
@@ -51,27 +66,29 @@
             <PropertyRef Name="email" />
           </Key>
           <Property Name="email" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="name" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="password" Type="varchar(max)" Nullable="false" />
           <Property Name="phone" Type="varchar" MaxLength="15" Nullable="false" />
-          <Property Name="profileImage" Type="varchar" MaxLength="50" />
+          <Property Name="profileImage" Type="varchar(max)" Nullable="false" />
           <Property Name="status" Type="int" Nullable="false" />
-          <Property Name="formaility" Type="bit" Nullable="false" />
-          <Property Name="namecard" Type="varchar" MaxLength="50" />
+          <Property Name="formality" Type="bit" />
+          <Property Name="companyIndividual" Type="bit" Nullable="false" />
+          <Property Name="namecard" Type="varchar(max)" />
+          <Property Name="name" Type="varchar" MaxLength="50" />
           <Property Name="companyName" Type="varchar" MaxLength="50" />
           <Property Name="address" Type="varchar" MaxLength="100" />
           <Property Name="loginCount" Type="int" />
           <Property Name="token" Type="varchar(max)" />
           <Property Name="tokenExpire" Type="datetime" />
           <Property Name="connectionGroup" Type="varchar" MaxLength="50" />
+          <Property Name="walletAmount" Type="float" Nullable="false" />
           <Property Name="STId" Type="varchar" MaxLength="10" Nullable="false" />
-          <Property Name="RId" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="RId" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Rating">
           <Key>
             <PropertyRef Name="RId" />
           </Key>
-          <Property Name="RId" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="RId" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="attitude" Type="int" Nullable="false" />
           <Property Name="quality" Type="int" Nullable="false" />
           <Property Name="efficiency" Type="int" Nullable="false" />
@@ -83,20 +100,23 @@
           </Key>
           <Property Name="SId" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="title" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="address" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="address" Type="varchar" MaxLength="100" />
           <Property Name="description" Type="varchar(max)" Nullable="false" />
           <Property Name="image" Type="varchar" MaxLength="50" />
           <Property Name="file" Type="varchar" MaxLength="50" />
           <Property Name="status" Type="int" Nullable="false" />
           <Property Name="immediate" Type="bit" Nullable="false" />
           <Property Name="dateCreated" Type="datetime" Nullable="false" />
-          <Property Name="dateCompleted" Type="datetime" Nullable="false" />
+          <Property Name="seekerComplete" Type="bit" />
+          <Property Name="providerComplete" Type="bit" />
+          <Property Name="dateCompleted" Type="datetime" />
           <Property Name="repeat" Type="bit" Nullable="false" />
+          <Property Name="price" Type="float" Nullable="false" />
           <Property Name="Category" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="Type" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="Seeker" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Provider" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Rating" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Provider" Type="nvarchar" MaxLength="50" />
+          <Property Name="Rating" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Seeker">
           <Key>
@@ -112,6 +132,7 @@
           <Property Name="token" Type="varchar(max)" />
           <Property Name="tokenExpire" Type="datetime" />
           <Property Name="connectionGroup" Type="varchar" MaxLength="50" />
+          <Property Name="walletAmount" Type="float" Nullable="false" />
         </EntityType>
         <EntityType Name="Service Category">
           <Key>
@@ -192,7 +213,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Request_Provider">
-          <End Role="Provider" Type="Self.Provider" Multiplicity="1" />
+          <End Role="Provider" Type="Self.Provider" Multiplicity="0..1" />
           <End Role="Request" Type="Self.Request" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Provider">
@@ -277,6 +298,8 @@
         </Association>
         <EntityContainer Name="ServerDBModelStoreContainer">
           <EntitySet Name="Admin" EntityType="Self.Admin" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Bank" EntityType="Self.Bank" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Card" EntityType="Self.Card" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Chat" EntityType="Self.Chat" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ChatConnection" EntityType="Self.ChatConnection" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Document" EntityType="Self.Document" Schema="dbo" store:Type="Tables" />
@@ -335,19 +358,95 @@
             <End Role="Service Category" EntitySet="Service Category" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ServerDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="ServerDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Admins" EntityType="ServerDBModel.Admin" />
+          <EntitySet Name="Banks" EntityType="ServerDBModel.Bank" />
+          <EntitySet Name="Cards" EntityType="ServerDBModel.Card" />
+          <EntitySet Name="Chats" EntityType="ServerDBModel.Chat" />
+          <EntitySet Name="ChatConnections" EntityType="ServerDBModel.ChatConnection" />
+          <EntitySet Name="Documents" EntityType="ServerDBModel.Document" />
+          <EntitySet Name="Providers" EntityType="ServerDBModel.Provider" />
+          <EntitySet Name="Ratings" EntityType="ServerDBModel.Rating" />
+          <EntitySet Name="Requests" EntityType="ServerDBModel.Request" />
+          <EntitySet Name="Seekers" EntityType="ServerDBModel.Seeker" />
+          <EntitySet Name="Service_Categories" EntityType="ServerDBModel.Service_Category" />
+          <EntitySet Name="Service_Types" EntityType="ServerDBModel.Service_Type" />
+          <AssociationSet Name="FK_Connection_Chat" Association="ServerDBModel.FK_Connection_Chat">
+            <End Role="ChatConnection" EntitySet="ChatConnections" />
+            <End Role="Chat" EntitySet="Chats" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Provider_Connection" Association="ServerDBModel.FK_Provider_Connection">
+            <End Role="Provider" EntitySet="Providers" />
+            <End Role="ChatConnection" EntitySet="ChatConnections" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Seeker_Connection" Association="ServerDBModel.FK_Seeker_Connection">
+            <End Role="Seeker" EntitySet="Seekers" />
+            <End Role="ChatConnection" EntitySet="ChatConnections" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_Provider" Association="ServerDBModel.FK_Document_Provider">
+            <End Role="Provider" EntitySet="Providers" />
+            <End Role="Document" EntitySet="Documents" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Provider_Rating" Association="ServerDBModel.FK_Provider_Rating">
+            <End Role="Rating" EntitySet="Ratings" />
+            <End Role="Provider" EntitySet="Providers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Provider_ServiceType" Association="ServerDBModel.FK_Provider_ServiceType">
+            <End Role="Service_Type" EntitySet="Service_Types" />
+            <End Role="Provider" EntitySet="Providers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Request_Provider" Association="ServerDBModel.FK_Request_Provider">
+            <End Role="Provider" EntitySet="Providers" />
+            <End Role="Request" EntitySet="Requests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Request_Rating" Association="ServerDBModel.FK_Request_Rating">
+            <End Role="Rating" EntitySet="Ratings" />
+            <End Role="Request" EntitySet="Requests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Request_ServiceCategory" Association="ServerDBModel.FK_Request_ServiceCategory">
+            <End Role="Service_Category" EntitySet="Service_Categories" />
+            <End Role="Request" EntitySet="Requests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Request_ServiceType" Association="ServerDBModel.FK_Request_ServiceType">
+            <End Role="Service_Type" EntitySet="Service_Types" />
+            <End Role="Request" EntitySet="Requests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Request_User" Association="ServerDBModel.FK_Request_User">
+            <End Role="Seeker" EntitySet="Seekers" />
+            <End Role="Request" EntitySet="Requests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ServiceCategory_ServiceType" Association="ServerDBModel.FK_ServiceCategory_ServiceType">
+            <End Role="Service_Type" EntitySet="Service_Types" />
+            <End Role="Service_Category" EntitySet="Service_Categories" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="Admin">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="password" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="password" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Bank">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Card">
+          <Key>
+            <PropertyRef Name="cardNo" />
+          </Key>
+          <Property Name="cardNo" Type="String" Nullable="false" MaxLength="16" FixedLength="false" Unicode="false" />
+          <Property Name="ccv" Type="Int32" Nullable="false" />
+          <Property Name="expireDate" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Chat">
           <Key>
@@ -359,140 +458,146 @@
           <Property Name="message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="message_status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="created_at" Type="DateTime" Precision="3" />
-          <Property Name="group_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="group_name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="is_media" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="ChatConnection" Relationship="Self.FK_Connection_Chat" FromRole="Chat" ToRole="ChatConnection" />
+          <NavigationProperty Name="ChatConnection" Relationship="ServerDBModel.FK_Connection_Chat" FromRole="Chat" ToRole="ChatConnection" />
         </EntityType>
         <EntityType Name="ChatConnection">
           <Key>
             <PropertyRef Name="group_name" />
           </Key>
-          <Property Name="group_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="group_name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="connection_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="seeker_email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="provider_email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="first_chat_datetime" Type="DateTime" Precision="3" />
           <Property Name="last_chat_datetime" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Chats" Relationship="Self.FK_Connection_Chat" FromRole="ChatConnection" ToRole="Chat" />
-          <NavigationProperty Name="Provider" Relationship="Self.FK_Provider_Connection" FromRole="ChatConnection" ToRole="Provider" />
-          <NavigationProperty Name="Seeker" Relationship="Self.FK_Seeker_Connection" FromRole="ChatConnection" ToRole="Seeker" />
+          <NavigationProperty Name="Chats" Relationship="ServerDBModel.FK_Connection_Chat" FromRole="ChatConnection" ToRole="Chat" />
+          <NavigationProperty Name="Provider" Relationship="ServerDBModel.FK_Provider_Connection" FromRole="ChatConnection" ToRole="Provider" />
+          <NavigationProperty Name="Seeker" Relationship="ServerDBModel.FK_Seeker_Connection" FromRole="ChatConnection" ToRole="Seeker" />
         </EntityType>
         <EntityType Name="Document">
           <Key>
             <PropertyRef Name="DocId" />
           </Key>
-          <Property Name="DocId" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="file" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="holder" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Provider" Relationship="Self.FK_Document_Provider" FromRole="Document" ToRole="Provider" />
+          <Property Name="DocId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="file" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="holder" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Provider" Relationship="ServerDBModel.FK_Document_Provider" FromRole="Document" ToRole="Provider" />
         </EntityType>
         <EntityType Name="Provider">
           <Key>
             <PropertyRef Name="email" />
           </Key>
-          <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="password" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="phone" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="profileImage" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="password" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="phone" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="profileImage" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="status" Type="Int32" Nullable="false" />
-          <Property Name="formaility" Type="Boolean" Nullable="false" />
-          <Property Name="namecard" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="formality" Type="Boolean" />
+          <Property Name="companyIndividual" Type="Boolean" Nullable="false" />
+          <Property Name="namecard" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="companyName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="address" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="loginCount" Type="Int32" />
           <Property Name="token" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="tokenExpire" Type="DateTime" Precision="3" />
           <Property Name="connectionGroup" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="STId" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="RId" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="ChatConnections" Relationship="Self.FK_Provider_Connection" FromRole="Provider" ToRole="ChatConnection" />
-          <NavigationProperty Name="Documents" Relationship="Self.FK_Document_Provider" FromRole="Provider" ToRole="Document" />
-          <NavigationProperty Name="Rating" Relationship="Self.FK_Provider_Rating" FromRole="Provider" ToRole="Rating" />
-          <NavigationProperty Name="Service_Type" Relationship="Self.FK_Provider_ServiceType" FromRole="Provider" ToRole="Service_Type" />
-          <NavigationProperty Name="Requests" Relationship="Self.FK_Request_Provider" FromRole="Provider" ToRole="Request" />
+          <Property Name="walletAmount" Type="Double" Nullable="false" />
+          <Property Name="STId" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="RId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ChatConnections" Relationship="ServerDBModel.FK_Provider_Connection" FromRole="Provider" ToRole="ChatConnection" />
+          <NavigationProperty Name="Documents" Relationship="ServerDBModel.FK_Document_Provider" FromRole="Provider" ToRole="Document" />
+          <NavigationProperty Name="Rating" Relationship="ServerDBModel.FK_Provider_Rating" FromRole="Provider" ToRole="Rating" />
+          <NavigationProperty Name="Service_Type" Relationship="ServerDBModel.FK_Provider_ServiceType" FromRole="Provider" ToRole="Service_Type" />
+          <NavigationProperty Name="Requests" Relationship="ServerDBModel.FK_Request_Provider" FromRole="Provider" ToRole="Request" />
         </EntityType>
         <EntityType Name="Rating">
           <Key>
             <PropertyRef Name="RId" />
           </Key>
-          <Property Name="RId" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="RId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="attitude" Type="Int32" Nullable="false" />
           <Property Name="quality" Type="Int32" Nullable="false" />
           <Property Name="efficiency" Type="Int32" Nullable="false" />
           <Property Name="professionalism" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Providers" Relationship="Self.FK_Provider_Rating" FromRole="Rating" ToRole="Provider" />
-          <NavigationProperty Name="Requests" Relationship="Self.FK_Request_Rating" FromRole="Rating" ToRole="Request" />
+          <NavigationProperty Name="Providers" Relationship="ServerDBModel.FK_Provider_Rating" FromRole="Rating" ToRole="Provider" />
+          <NavigationProperty Name="Requests" Relationship="ServerDBModel.FK_Request_Rating" FromRole="Rating" ToRole="Request" />
         </EntityType>
         <EntityType Name="Request">
           <Key>
             <PropertyRef Name="SId" />
           </Key>
-          <Property Name="SId" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="title" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="address" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="SId" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="title" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="address" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="image" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="file" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="status" Type="Int32" Nullable="false" />
           <Property Name="immediate" Type="Boolean" Nullable="false" />
           <Property Name="dateCreated" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="dateCompleted" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="seekerComplete" Type="Boolean" />
+          <Property Name="providerComplete" Type="Boolean" />
+          <Property Name="dateCompleted" Type="DateTime" Precision="3" />
           <Property Name="repeat" Type="Boolean" Nullable="false" />
-          <Property Name="Category" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Type" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Seeker" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Provider" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Rating" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="Provider1" Relationship="Self.FK_Request_Provider" FromRole="Request" ToRole="Provider" />
-          <NavigationProperty Name="Rating1" Relationship="Self.FK_Request_Rating" FromRole="Request" ToRole="Rating" />
-          <NavigationProperty Name="Service_Category" Relationship="Self.FK_Request_ServiceCategory" FromRole="Request" ToRole="Service_Category" />
-          <NavigationProperty Name="Service_Type" Relationship="Self.FK_Request_ServiceType" FromRole="Request" ToRole="Service_Type" />
-          <NavigationProperty Name="Seeker1" Relationship="Self.FK_Request_User" FromRole="Request" ToRole="Seeker" />
+          <Property Name="price" Type="Double" Nullable="false" />
+          <Property Name="Category" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Seeker" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Provider" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Rating" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Provider1" Relationship="ServerDBModel.FK_Request_Provider" FromRole="Request" ToRole="Provider" />
+          <NavigationProperty Name="Rating1" Relationship="ServerDBModel.FK_Request_Rating" FromRole="Request" ToRole="Rating" />
+          <NavigationProperty Name="Service_Category" Relationship="ServerDBModel.FK_Request_ServiceCategory" FromRole="Request" ToRole="Service_Category" />
+          <NavigationProperty Name="Service_Type" Relationship="ServerDBModel.FK_Request_ServiceType" FromRole="Request" ToRole="Service_Type" />
+          <NavigationProperty Name="Seeker1" Relationship="ServerDBModel.FK_Request_User" FromRole="Request" ToRole="Seeker" />
         </EntityType>
         <EntityType Name="Seeker">
           <Key>
             <PropertyRef Name="email" />
           </Key>
-          <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="password" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="phone" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="password" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="phone" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="profileImage" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="status" Type="Int32" Nullable="false" />
           <Property Name="loginCount" Type="Int32" />
           <Property Name="token" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="tokenExpire" Type="DateTime" Precision="3" />
           <Property Name="connectionGroup" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="ChatConnections" Relationship="Self.FK_Seeker_Connection" FromRole="Seeker" ToRole="ChatConnection" />
-          <NavigationProperty Name="Requests" Relationship="Self.FK_Request_User" FromRole="Seeker" ToRole="Request" />
+          <Property Name="walletAmount" Type="Double" Nullable="false" />
+          <NavigationProperty Name="ChatConnections" Relationship="ServerDBModel.FK_Seeker_Connection" FromRole="Seeker" ToRole="ChatConnection" />
+          <NavigationProperty Name="Requests" Relationship="ServerDBModel.FK_Request_User" FromRole="Seeker" ToRole="Request" />
         </EntityType>
         <EntityType Name="Service_Category">
           <Key>
             <PropertyRef Name="SCId" />
           </Key>
-          <Property Name="SCId" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="SCId" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="averagePrice" Type="Double" Nullable="false" />
-          <Property Name="STId" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="Requests" Relationship="Self.FK_Request_ServiceCategory" FromRole="Service_Category" ToRole="Request" />
-          <NavigationProperty Name="Service_Type" Relationship="Self.FK_ServiceCategory_ServiceType" FromRole="Service_Category" ToRole="Service_Type" />
+          <Property Name="STId" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Requests" Relationship="ServerDBModel.FK_Request_ServiceCategory" FromRole="Service_Category" ToRole="Request" />
+          <NavigationProperty Name="Service_Type" Relationship="ServerDBModel.FK_ServiceCategory_ServiceType" FromRole="Service_Category" ToRole="Service_Type" />
         </EntityType>
         <EntityType Name="Service_Type">
           <Key>
             <PropertyRef Name="STId" />
           </Key>
-          <Property Name="STId" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="Providers" Relationship="Self.FK_Provider_ServiceType" FromRole="Service_Type" ToRole="Provider" />
-          <NavigationProperty Name="Requests" Relationship="Self.FK_Request_ServiceType" FromRole="Service_Type" ToRole="Request" />
-          <NavigationProperty Name="Service_Category" Relationship="Self.FK_ServiceCategory_ServiceType" FromRole="Service_Type" ToRole="Service_Category" />
+          <Property Name="STId" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Providers" Relationship="ServerDBModel.FK_Provider_ServiceType" FromRole="Service_Type" ToRole="Provider" />
+          <NavigationProperty Name="Requests" Relationship="ServerDBModel.FK_Request_ServiceType" FromRole="Service_Type" ToRole="Request" />
+          <NavigationProperty Name="Service_Category" Relationship="ServerDBModel.FK_ServiceCategory_ServiceType" FromRole="Service_Type" ToRole="Service_Category" />
         </EntityType>
         <Association Name="FK_Connection_Chat">
-          <End Role="ChatConnection" Type="Self.ChatConnection" Multiplicity="1" />
-          <End Role="Chat" Type="Self.Chat" Multiplicity="*" />
+          <End Type="ServerDBModel.ChatConnection" Role="ChatConnection" Multiplicity="1" />
+          <End Type="ServerDBModel.Chat" Role="Chat" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ChatConnection">
               <PropertyRef Name="group_name" />
@@ -503,8 +608,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Provider_Connection">
-          <End Role="Provider" Type="Self.Provider" Multiplicity="0..1" />
-          <End Role="ChatConnection" Type="Self.ChatConnection" Multiplicity="*" />
+          <End Type="ServerDBModel.Provider" Role="Provider" Multiplicity="0..1" />
+          <End Type="ServerDBModel.ChatConnection" Role="ChatConnection" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Provider">
               <PropertyRef Name="email" />
@@ -515,8 +620,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Seeker_Connection">
-          <End Role="Seeker" Type="Self.Seeker" Multiplicity="0..1" />
-          <End Role="ChatConnection" Type="Self.ChatConnection" Multiplicity="*" />
+          <End Type="ServerDBModel.Seeker" Role="Seeker" Multiplicity="0..1" />
+          <End Type="ServerDBModel.ChatConnection" Role="ChatConnection" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Seeker">
               <PropertyRef Name="email" />
@@ -527,8 +632,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Document_Provider">
-          <End Role="Provider" Type="Self.Provider" Multiplicity="1" />
-          <End Role="Document" Type="Self.Document" Multiplicity="*" />
+          <End Type="ServerDBModel.Provider" Role="Provider" Multiplicity="1" />
+          <End Type="ServerDBModel.Document" Role="Document" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Provider">
               <PropertyRef Name="email" />
@@ -539,8 +644,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Provider_Rating">
-          <End Role="Rating" Type="Self.Rating" Multiplicity="1" />
-          <End Role="Provider" Type="Self.Provider" Multiplicity="*" />
+          <End Type="ServerDBModel.Rating" Role="Rating" Multiplicity="1" />
+          <End Type="ServerDBModel.Provider" Role="Provider" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Rating">
               <PropertyRef Name="RId" />
@@ -551,8 +656,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Provider_ServiceType">
-          <End Role="Service_Type" Type="Self.Service_Type" Multiplicity="1" />
-          <End Role="Provider" Type="Self.Provider" Multiplicity="*" />
+          <End Type="ServerDBModel.Service_Type" Role="Service_Type" Multiplicity="1" />
+          <End Type="ServerDBModel.Provider" Role="Provider" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Service_Type">
               <PropertyRef Name="STId" />
@@ -563,8 +668,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Request_Provider">
-          <End Role="Provider" Type="Self.Provider" Multiplicity="1" />
-          <End Role="Request" Type="Self.Request" Multiplicity="*" />
+          <End Type="ServerDBModel.Provider" Role="Provider" Multiplicity="0..1" />
+          <End Type="ServerDBModel.Request" Role="Request" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Provider">
               <PropertyRef Name="email" />
@@ -575,8 +680,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Request_Rating">
-          <End Role="Rating" Type="Self.Rating" Multiplicity="1" />
-          <End Role="Request" Type="Self.Request" Multiplicity="*" />
+          <End Type="ServerDBModel.Rating" Role="Rating" Multiplicity="1" />
+          <End Type="ServerDBModel.Request" Role="Request" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Rating">
               <PropertyRef Name="RId" />
@@ -587,8 +692,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Request_ServiceCategory">
-          <End Role="Service_Category" Type="Self.Service_Category" Multiplicity="1" />
-          <End Role="Request" Type="Self.Request" Multiplicity="*" />
+          <End Type="ServerDBModel.Service_Category" Role="Service_Category" Multiplicity="1" />
+          <End Type="ServerDBModel.Request" Role="Request" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Service_Category">
               <PropertyRef Name="SCId" />
@@ -599,8 +704,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Request_ServiceType">
-          <End Role="Service_Type" Type="Self.Service_Type" Multiplicity="1" />
-          <End Role="Request" Type="Self.Request" Multiplicity="*" />
+          <End Type="ServerDBModel.Service_Type" Role="Service_Type" Multiplicity="1" />
+          <End Type="ServerDBModel.Request" Role="Request" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Service_Type">
               <PropertyRef Name="STId" />
@@ -611,8 +716,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Request_User">
-          <End Role="Seeker" Type="Self.Seeker" Multiplicity="1" />
-          <End Role="Request" Type="Self.Request" Multiplicity="*" />
+          <End Type="ServerDBModel.Seeker" Role="Seeker" Multiplicity="1" />
+          <End Type="ServerDBModel.Request" Role="Request" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Seeker">
               <PropertyRef Name="email" />
@@ -623,8 +728,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ServiceCategory_ServiceType">
-          <End Role="Service_Type" Type="Self.Service_Type" Multiplicity="1" />
-          <End Role="Service_Category" Type="Self.Service_Category" Multiplicity="*" />
+          <End Type="ServerDBModel.Service_Type" Role="Service_Type" Multiplicity="1" />
+          <End Type="ServerDBModel.Service_Category" Role="Service_Category" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Service_Type">
               <PropertyRef Name="STId" />
@@ -634,67 +739,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="ServerDBEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Admins" EntityType="Self.Admin" />
-          <EntitySet Name="Chats" EntityType="Self.Chat" />
-          <EntitySet Name="ChatConnections" EntityType="Self.ChatConnection" />
-          <EntitySet Name="Documents" EntityType="Self.Document" />
-          <EntitySet Name="Providers" EntityType="Self.Provider" />
-          <EntitySet Name="Ratings" EntityType="Self.Rating" />
-          <EntitySet Name="Requests" EntityType="Self.Request" />
-          <EntitySet Name="Seekers" EntityType="Self.Seeker" />
-          <EntitySet Name="Service_Categories" EntityType="Self.Service_Category" />
-          <EntitySet Name="Service_Types" EntityType="Self.Service_Type" />
-          <AssociationSet Name="FK_Connection_Chat" Association="Self.FK_Connection_Chat">
-            <End Role="ChatConnection" EntitySet="ChatConnections" />
-            <End Role="Chat" EntitySet="Chats" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Provider_Connection" Association="Self.FK_Provider_Connection">
-            <End Role="Provider" EntitySet="Providers" />
-            <End Role="ChatConnection" EntitySet="ChatConnections" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Seeker_Connection" Association="Self.FK_Seeker_Connection">
-            <End Role="Seeker" EntitySet="Seekers" />
-            <End Role="ChatConnection" EntitySet="ChatConnections" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Document_Provider" Association="Self.FK_Document_Provider">
-            <End Role="Provider" EntitySet="Providers" />
-            <End Role="Document" EntitySet="Documents" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Provider_Rating" Association="Self.FK_Provider_Rating">
-            <End Role="Rating" EntitySet="Ratings" />
-            <End Role="Provider" EntitySet="Providers" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Provider_ServiceType" Association="Self.FK_Provider_ServiceType">
-            <End Role="Service_Type" EntitySet="Service_Types" />
-            <End Role="Provider" EntitySet="Providers" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Request_Provider" Association="Self.FK_Request_Provider">
-            <End Role="Provider" EntitySet="Providers" />
-            <End Role="Request" EntitySet="Requests" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Request_Rating" Association="Self.FK_Request_Rating">
-            <End Role="Rating" EntitySet="Ratings" />
-            <End Role="Request" EntitySet="Requests" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Request_ServiceCategory" Association="Self.FK_Request_ServiceCategory">
-            <End Role="Service_Category" EntitySet="Service_Categories" />
-            <End Role="Request" EntitySet="Requests" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Request_ServiceType" Association="Self.FK_Request_ServiceType">
-            <End Role="Service_Type" EntitySet="Service_Types" />
-            <End Role="Request" EntitySet="Requests" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Request_User" Association="Self.FK_Request_User">
-            <End Role="Seeker" EntitySet="Seekers" />
-            <End Role="Request" EntitySet="Requests" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ServiceCategory_ServiceType" Association="Self.FK_ServiceCategory_ServiceType">
-            <End Role="Service_Type" EntitySet="Service_Types" />
-            <End Role="Service_Category" EntitySet="Service_Categories" />
-          </AssociationSet>
-        </EntityContainer>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -703,136 +748,159 @@
           <EntitySetMapping Name="Admins">
             <EntityTypeMapping TypeName="ServerDBModel.Admin">
               <MappingFragment StoreEntitySet="Admin">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="password" ColumnName="password" />
                 <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Banks">
+            <EntityTypeMapping TypeName="ServerDBModel.Bank">
+              <MappingFragment StoreEntitySet="Bank">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Cards">
+            <EntityTypeMapping TypeName="ServerDBModel.Card">
+              <MappingFragment StoreEntitySet="Card">
+                <ScalarProperty Name="expireDate" ColumnName="expireDate" />
+                <ScalarProperty Name="ccv" ColumnName="ccv" />
+                <ScalarProperty Name="cardNo" ColumnName="cardNo" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Chats">
             <EntityTypeMapping TypeName="ServerDBModel.Chat">
               <MappingFragment StoreEntitySet="Chat">
-                <ScalarProperty Name="conversation_id" ColumnName="conversation_id" />
-                <ScalarProperty Name="sender_id" ColumnName="sender_id" />
-                <ScalarProperty Name="receiver_id" ColumnName="receiver_id" />
-                <ScalarProperty Name="message" ColumnName="message" />
-                <ScalarProperty Name="message_status" ColumnName="message_status" />
-                <ScalarProperty Name="created_at" ColumnName="created_at" />
-                <ScalarProperty Name="group_name" ColumnName="group_name" />
                 <ScalarProperty Name="is_media" ColumnName="is_media" />
+                <ScalarProperty Name="group_name" ColumnName="group_name" />
+                <ScalarProperty Name="created_at" ColumnName="created_at" />
+                <ScalarProperty Name="message_status" ColumnName="message_status" />
+                <ScalarProperty Name="message" ColumnName="message" />
+                <ScalarProperty Name="receiver_id" ColumnName="receiver_id" />
+                <ScalarProperty Name="sender_id" ColumnName="sender_id" />
+                <ScalarProperty Name="conversation_id" ColumnName="conversation_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ChatConnections">
             <EntityTypeMapping TypeName="ServerDBModel.ChatConnection">
               <MappingFragment StoreEntitySet="ChatConnection">
-                <ScalarProperty Name="group_name" ColumnName="group_name" />
-                <ScalarProperty Name="connection_id" ColumnName="connection_id" />
-                <ScalarProperty Name="seeker_email" ColumnName="seeker_email" />
-                <ScalarProperty Name="provider_email" ColumnName="provider_email" />
-                <ScalarProperty Name="first_chat_datetime" ColumnName="first_chat_datetime" />
                 <ScalarProperty Name="last_chat_datetime" ColumnName="last_chat_datetime" />
+                <ScalarProperty Name="first_chat_datetime" ColumnName="first_chat_datetime" />
+                <ScalarProperty Name="provider_email" ColumnName="provider_email" />
+                <ScalarProperty Name="seeker_email" ColumnName="seeker_email" />
+                <ScalarProperty Name="connection_id" ColumnName="connection_id" />
+                <ScalarProperty Name="group_name" ColumnName="group_name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Documents">
             <EntityTypeMapping TypeName="ServerDBModel.Document">
               <MappingFragment StoreEntitySet="Document">
-                <ScalarProperty Name="DocId" ColumnName="DocId" />
-                <ScalarProperty Name="file" ColumnName="file" />
                 <ScalarProperty Name="holder" ColumnName="holder" />
+                <ScalarProperty Name="file" ColumnName="file" />
+                <ScalarProperty Name="DocId" ColumnName="DocId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Providers">
             <EntityTypeMapping TypeName="ServerDBModel.Provider">
               <MappingFragment StoreEntitySet="Provider">
-                <ScalarProperty Name="email" ColumnName="email" />
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="password" ColumnName="password" />
-                <ScalarProperty Name="phone" ColumnName="phone" />
-                <ScalarProperty Name="profileImage" ColumnName="profileImage" />
-                <ScalarProperty Name="status" ColumnName="status" />
-                <ScalarProperty Name="formaility" ColumnName="formaility" />
-                <ScalarProperty Name="namecard" ColumnName="namecard" />
-                <ScalarProperty Name="companyName" ColumnName="companyName" />
-                <ScalarProperty Name="address" ColumnName="address" />
-                <ScalarProperty Name="loginCount" ColumnName="loginCount" />
-                <ScalarProperty Name="token" ColumnName="token" />
-                <ScalarProperty Name="tokenExpire" ColumnName="tokenExpire" />
-                <ScalarProperty Name="connectionGroup" ColumnName="connectionGroup" />
-                <ScalarProperty Name="STId" ColumnName="STId" />
                 <ScalarProperty Name="RId" ColumnName="RId" />
+                <ScalarProperty Name="STId" ColumnName="STId" />
+                <ScalarProperty Name="walletAmount" ColumnName="walletAmount" />
+                <ScalarProperty Name="connectionGroup" ColumnName="connectionGroup" />
+                <ScalarProperty Name="tokenExpire" ColumnName="tokenExpire" />
+                <ScalarProperty Name="token" ColumnName="token" />
+                <ScalarProperty Name="loginCount" ColumnName="loginCount" />
+                <ScalarProperty Name="address" ColumnName="address" />
+                <ScalarProperty Name="companyName" ColumnName="companyName" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="namecard" ColumnName="namecard" />
+                <ScalarProperty Name="companyIndividual" ColumnName="companyIndividual" />
+                <ScalarProperty Name="formality" ColumnName="formality" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="profileImage" ColumnName="profileImage" />
+                <ScalarProperty Name="phone" ColumnName="phone" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="email" ColumnName="email" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Ratings">
             <EntityTypeMapping TypeName="ServerDBModel.Rating">
               <MappingFragment StoreEntitySet="Rating">
-                <ScalarProperty Name="RId" ColumnName="RId" />
-                <ScalarProperty Name="attitude" ColumnName="attitude" />
-                <ScalarProperty Name="quality" ColumnName="quality" />
-                <ScalarProperty Name="efficiency" ColumnName="efficiency" />
                 <ScalarProperty Name="professionalism" ColumnName="professionalism" />
+                <ScalarProperty Name="efficiency" ColumnName="efficiency" />
+                <ScalarProperty Name="quality" ColumnName="quality" />
+                <ScalarProperty Name="attitude" ColumnName="attitude" />
+                <ScalarProperty Name="RId" ColumnName="RId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Requests">
             <EntityTypeMapping TypeName="ServerDBModel.Request">
               <MappingFragment StoreEntitySet="Request">
-                <ScalarProperty Name="SId" ColumnName="SId" />
-                <ScalarProperty Name="title" ColumnName="title" />
-                <ScalarProperty Name="address" ColumnName="address" />
-                <ScalarProperty Name="description" ColumnName="description" />
-                <ScalarProperty Name="image" ColumnName="image" />
-                <ScalarProperty Name="file" ColumnName="file" />
-                <ScalarProperty Name="status" ColumnName="status" />
-                <ScalarProperty Name="immediate" ColumnName="immediate" />
-                <ScalarProperty Name="dateCreated" ColumnName="dateCreated" />
-                <ScalarProperty Name="dateCompleted" ColumnName="dateCompleted" />
-                <ScalarProperty Name="repeat" ColumnName="repeat" />
-                <ScalarProperty Name="Category" ColumnName="Category" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="Seeker" ColumnName="Seeker" />
-                <ScalarProperty Name="Provider" ColumnName="Provider" />
                 <ScalarProperty Name="Rating" ColumnName="Rating" />
+                <ScalarProperty Name="Provider" ColumnName="Provider" />
+                <ScalarProperty Name="Seeker" ColumnName="Seeker" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="price" ColumnName="price" />
+                <ScalarProperty Name="repeat" ColumnName="repeat" />
+                <ScalarProperty Name="dateCompleted" ColumnName="dateCompleted" />
+                <ScalarProperty Name="providerComplete" ColumnName="providerComplete" />
+                <ScalarProperty Name="seekerComplete" ColumnName="seekerComplete" />
+                <ScalarProperty Name="dateCreated" ColumnName="dateCreated" />
+                <ScalarProperty Name="immediate" ColumnName="immediate" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="file" ColumnName="file" />
+                <ScalarProperty Name="image" ColumnName="image" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="address" ColumnName="address" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="SId" ColumnName="SId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Seekers">
             <EntityTypeMapping TypeName="ServerDBModel.Seeker">
               <MappingFragment StoreEntitySet="Seeker">
-                <ScalarProperty Name="email" ColumnName="email" />
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="password" ColumnName="password" />
-                <ScalarProperty Name="phone" ColumnName="phone" />
-                <ScalarProperty Name="profileImage" ColumnName="profileImage" />
-                <ScalarProperty Name="status" ColumnName="status" />
-                <ScalarProperty Name="loginCount" ColumnName="loginCount" />
-                <ScalarProperty Name="token" ColumnName="token" />
-                <ScalarProperty Name="tokenExpire" ColumnName="tokenExpire" />
+                <ScalarProperty Name="walletAmount" ColumnName="walletAmount" />
                 <ScalarProperty Name="connectionGroup" ColumnName="connectionGroup" />
+                <ScalarProperty Name="tokenExpire" ColumnName="tokenExpire" />
+                <ScalarProperty Name="token" ColumnName="token" />
+                <ScalarProperty Name="loginCount" ColumnName="loginCount" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="profileImage" ColumnName="profileImage" />
+                <ScalarProperty Name="phone" ColumnName="phone" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="email" ColumnName="email" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Service_Categories">
             <EntityTypeMapping TypeName="ServerDBModel.Service_Category">
               <MappingFragment StoreEntitySet="Service Category">
-                <ScalarProperty Name="SCId" ColumnName="SCId" />
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="description" ColumnName="description" />
-                <ScalarProperty Name="averagePrice" ColumnName="averagePrice" />
                 <ScalarProperty Name="STId" ColumnName="STId" />
+                <ScalarProperty Name="averagePrice" ColumnName="averagePrice" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="SCId" ColumnName="SCId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Service_Types">
             <EntityTypeMapping TypeName="ServerDBModel.Service_Type">
               <MappingFragment StoreEntitySet="Service Type">
-                <ScalarProperty Name="STId" ColumnName="STId" />
-                <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="STId" ColumnName="STId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
