@@ -1,6 +1,7 @@
 using fyptest.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -129,6 +130,184 @@ namespace fyptest.Controllers
       byte[] bytes = System.IO.File.ReadAllBytes(path);
 
       return File(bytes, "application/octet-stream", file);
+    }
+
+    public List<SelectListItem> GetCategory()
+    {
+      var list = db.Service_Categories.OrderBy(m => m.name).ToList();
+      List<SelectListItem> categoryList = new List<SelectListItem>();
+      foreach (var item in list)
+      {
+        categoryList.Add(new SelectListItem { Text = item.name, Value = item.SCId });
+      }
+      return categoryList;
+    }
+
+    public Dictionary<string, string> GetJobType()
+    {
+      Dictionary<string, string> jobType = new Dictionary<string, string>();
+      var list = db.Service_Types.OrderBy(m => m.name).ToList();
+      foreach (var item in list)
+      {
+        jobType.Add(item.name, item.STId);
+      }
+      return jobType;
+    }
+    public ActionResult PostJobView()
+    {
+      List<SelectListItem> categoryList = new List<SelectListItem>();
+      categoryList = GetCategory();
+      Dictionary<string, string> typeList = new Dictionary<string, string>();
+      typeList = GetJobType();
+      var user = Session["Email"];
+      if (user != null)
+      {
+        var seeker = db.Seekers.Where(m => m.email == user.ToString()).FirstOrDefault();
+        JobCreateModel model = new JobCreateModel();
+        model.Seeker = seeker.email;
+        model.Contact = seeker.phone;
+        model.CategoryList = categoryList;
+        model.Type = typeList;
+        return View(model);
+      }
+      else
+      {
+        JobCreateModel model = new JobCreateModel();
+        model.Seeker = "Please login";
+        model.Contact = "Please login";
+        model.CategoryList = categoryList;
+        model.Type = typeList;
+        return View(model);
+      }
+
+    }
+
+
+    [HttpPost]
+    public ActionResult PostJobView(JobCreateModel model)
+    {
+      var seeker = Session["Email"].ToString();
+      var SId = GenerateSId();
+      if (ModelState.IsValid && model != null)
+      {
+        Request job = new Request();
+        job.SId = SId;
+        job.title = model.Title;
+        job.Category = model.Category;
+        job.description = model.Description;
+        job.address = model.Location;
+        job.price = model.Price;
+        job.Seeker = seeker;
+        job.Type = model.SelectedType;
+        if (model.SelectedType == "Immediate")
+          job.immediate = true;
+        else
+          job.immediate = false;
+        job.dateCompleted = null;
+        job.dateCreated = DateTime.Now;
+        job.status = 0;
+        job.providerComplete = false;
+        job.seekerComplete = false;
+        job.repeat = false;
+        job.Rating = "1";
+        model.SuccessMessage = "Register successfully.";
+        db.Requests.Add(job);
+        try
+        {
+          db.SaveChanges();
+          var path = "/UploadedDocument/" + seeker;
+          var directory = path;
+          var filename = "Job" + SId;
+          if (model.ImageFile != null)
+          {
+            var extension = Path.GetExtension(model.ImageFile.FileName).ToLower();
+            if (!Directory.Exists(Server.MapPath(path + "/Job" + SId)))
+            {
+              Directory.CreateDirectory(Server.MapPath(path + "/Job" + SId));
+            }
+            if (extension == ".jpg" || extension == ".png" || extension == ".jpeg")
+            {
+              model.Image = path + "/Job" + SId + "/" + model.ImageFile.FileName;
+              path = Path.Combine(Server.MapPath(path + "/Job" + SId), model.ImageFile.FileName);
+              model.ImageFile.SaveAs(path);
+              job.image = model.Image;
+              var docs = "";
+              foreach (var item in model.Document)
+              {
+                if (item != null)
+                {
+                  if (item.ContentLength > 0)
+                  {
+                    var fileExtension = Path.GetExtension(item.FileName).ToLower();
+                    if (fileExtension == ".jpg" || fileExtension == ".png" || fileExtension == ".pdf" || fileExtension == ".docx" || fileExtension == ".docx")
+                    {
+                      path = Path.Combine(Server.MapPath(directory + "/Job" + SId), item.FileName);
+                      item.SaveAs(path);
+                      docs += item.FileName + "#";
+                      ViewBag.UploadSuccess = true;
+                    }
+                  }
+                }
+              }
+              model.DocumentPath = docs;
+              job.file = model.DocumentPath;
+              db.SaveChanges();
+              ViewBag.UploadMessage = true;
+            }
+          }
+          return RedirectToAction("Index", "Home");
+        }
+        catch (DbEntityValidationException e)
+        {
+          foreach (var eve in e.EntityValidationErrors)
+          {
+            model.SuccessMessage = "Entity of type " + eve.Entry.Entity.GetType().Name + " in state " + eve.Entry.State + " has the following validation errors:";
+            foreach (var ve in eve.ValidationErrors)
+            {
+              model.SuccessMessage = "- Property: " + ve.PropertyName + ", Error: " + ve.ErrorMessage;
+            }
+          }
+          throw;
+        }
+      }
+      else
+      {
+        ModelState.AddModelError("Error", "Failed to create job.");
+      }
+      List<SelectListItem> categoryList = new List<SelectListItem>();
+      categoryList = GetCategory();
+      Dictionary<string, string> typeList = new Dictionary<string, string>();
+      typeList = GetJobType();
+      model.CategoryList = categoryList;
+      model.Type = typeList;
+      return View(model);
+    }
+
+    public string GenerateSId()
+    {
+      var sid = db.Requests.OrderByDescending(m => m.SId).FirstOrDefault();
+      var newSId = Convert.ToInt32(sid.SId.Replace("s", "")) + 1;
+      return "s" + newSId;
+    }
+
+    public ActionResult JobView(string id)
+    {
+      var user = Session["Email"];
+      JobViewModel model = new JobViewModel();
+      var job = db.Requests.Where(m => m.SId == id).FirstOrDefault();
+      model.JobID = job.SId;
+      model.Title = job.title;
+      model.Category = job.Category;
+      model.Description = job.description;
+      model.Price = (double)job.price;
+      model.Image = job.image;
+      model.Seeker = job.Seeker;
+      if (model.Image == null)
+        model.Image = "/Service/noimage.jpg";
+      //model.Contact = job.Contact;
+      model.SelectedType = job.Type;
+
+      return View(model);
     }
   }
 
