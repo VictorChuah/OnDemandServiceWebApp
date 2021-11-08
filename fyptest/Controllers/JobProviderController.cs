@@ -11,6 +11,10 @@ using fyptest.Infrastructure.Attributes;
 using System.IO;
 using System.Net.Mail;
 using PayPal.Api;
+using System.Web.Security;
+using Microsoft.AspNet.SignalR;
+using fyptest.SignalR.Hubs;
+using System.Net;
 
 namespace fyptest.Controllers
 {
@@ -61,12 +65,16 @@ namespace fyptest.Controllers
 
       //check email duplicate
       if (ModelState.IsValidField("Email") && (db.Providers.Find(m.Email) != null) || (db.Seekers.Find(m.Email) != null))
+      {
         ModelState.AddModelError("Email", "Duplicated Email.");
-
+      }
       //check companyname duplicate
-      if (ModelState.IsValidField("CompanyName") && m.CompanyName != null)
+      else if (ModelState.IsValidField("CompanyName") && m.CompanyName != null)
+      {
         if (db.Providers.Any(a => a.companyName == m.CompanyName))
           ModelState.AddModelError("CompanyName", "Duplicated Company Name.");
+      }
+
 
 
       //check image
@@ -129,7 +137,7 @@ namespace fyptest.Controllers
         var dbProvider = new Provider
         {
           email = m.Email,
-          password = HashPassword(m.Password),
+          password = Crypto.Hash(m.Password),
           phone = m.Phone,
           profileImage = image,
           status = 0,
@@ -157,8 +165,6 @@ namespace fyptest.Controllers
           professionalism = 0
         };
 
-
-
         db.Providers.Add(dbProvider);
         db.Ratings.Add(dbRate);
         db.SaveChanges();
@@ -166,7 +172,7 @@ namespace fyptest.Controllers
         SendEmail(m.Email, generate);
 
         TempData["Info"] = "Account registered. Please go to email to active account.";
-
+        return RedirectToAction("Index", "Home");
       }
 
       //db.Customers.Add(m);
@@ -176,8 +182,13 @@ namespace fyptest.Controllers
 
       //TempData["Info"] = "Account registered. Please go to email to active account.";
       //return RedirectToAction("CustLogin", "Account");
+      var type = new SelectList(db.Service_Types.ToList(), "STId", "Name");
+      ViewData["type"] = type;
 
-      return RedirectToAction("Index", "Home");
+      var bank = new SelectList(db.Banks.ToList(), "Id", "name");
+      ViewData["Bank"] = bank;
+      return View(m);
+      //return RedirectToAction("Index", "Home");
     }
 
     public ActionResult ActivateAccount(string token, string email)
@@ -203,7 +214,7 @@ namespace fyptest.Controllers
 
     public ActionResult ProviderProfile()
     {
-      string user = "victorritdemo+p1@gmail.com"; //User.Identity.Name
+      string user = Session["Email"].ToString();//"victorritdemo+p1@gmail.com"; //User.Identity.Name
       var data = db.Providers.Find(user);
       var type = db.Service_Types.Find(data.STId);
       var rating = db.Ratings.Find(user);
@@ -268,7 +279,7 @@ namespace fyptest.Controllers
     [HttpPost]
     public JsonResult EditProfilePic(HttpPostedFileBase file)
     {
-      var p = db.Providers.Find("victorritdemo+p1@gmail.com");//User.Identity.Name
+      var p = db.Providers.Find(Session["Email"].ToString());//User.Identity.Name
 
       if (file == null)
         return Json(String.Format("'Error' : '{0}'", "Failed"));
@@ -296,7 +307,7 @@ namespace fyptest.Controllers
 
       if (ModelState.IsValid)
       {
-        var p = db.Providers.Find("victorritdemo+p1@gmail.com");//User.Identity.Name
+        var p = db.Providers.Find(Session["Email"].ToString());//User.Identity.Name
         p.walletAmount -= m.Amount;
 
         TempData["Info"] = "Money Withdrawn";
@@ -324,7 +335,7 @@ namespace fyptest.Controllers
 
         if (card.ccv == m.CCV && card.expireDate == m.ExpireDate)
         {
-          var p = db.Providers.Find("victorritdemo+p1@gmail.com");//User.Identity.Name
+          var p = db.Providers.Find(Session["Email"].ToString());//User.Identity.Name
           p.walletAmount += m.Amount;
 
           //send sms?
@@ -343,10 +354,10 @@ namespace fyptest.Controllers
     }
 
     [HttpPost]
-    public JsonResult PaypalAmount (double amount)
+    public JsonResult PaypalAmount(double amount)
     {
       paypalTopup = amount;
-      
+
       return Json(String.Format("'Success':'true'"));
     }
 
@@ -499,7 +510,7 @@ namespace fyptest.Controllers
 
     public ActionResult CheckAmount(double amount)
     {
-      string user = "victorritdemo+p1@gmail.com"; //User.Identity.Name
+      string user = Session["Email"].ToString(); //User.Identity.Name
 
       bool isValid = (db.Providers.Find(user).walletAmount > amount);
       return Json(isValid, JsonRequestBehavior.AllowGet);
@@ -601,7 +612,196 @@ namespace fyptest.Controllers
       new SmtpClient().Send(m);
     }
 
+    [AllowAnonymous]
+    public ActionResult ProviderLogin(string returnUrl)
+    {
+      return View();
+    }
 
+    //
+    // POST: /Account/Login
+    [HttpPost]
+    [AllowAnonymous]
+    [ValidateAntiForgeryToken]
+    public ActionResult ProviderLogin(ProviderLoginModel model, string returnUrl)
+    {
+      //var user = _userManager.FindByNameAsync(model.Email);
+      //var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+      if (ModelState.IsValid)
+      {
+        var hashedPwd = Crypto.Hash(model.Password);
+        //find Provider table
+        var provider = db.Providers.Where(m => m.email == model.Email && m.password == hashedPwd).ToList();
+        var providerAcc = db.Providers.Where(m => m.email == model.Email).ToList();
+
+        if (provider.Count() <= 0)
+        {
+          ModelState.AddModelError("Error", "Invalid email or password");
+          return View();
+        }
+
+        else if (provider.Count() > 0 && provider != null)
+        {
+
+          var logindetails = provider.First();
+          // Login In.    
+          //SignInUser(logindetails.email, "Provider", false);
+          // setting.    
+          Session["Role"] = "Provider";
+          Session["Email"] = logindetails.email;
+          Session["user"] = logindetails;
+
+          //create the authentication ticket
+          var authTicket = new FormsAuthenticationTicket(
+              1,
+              model.Email,  //user id
+              DateTime.Now,
+              DateTime.Now.AddMinutes(525600),  // expiry
+              model.RememberMe,  //true to remember
+              "", //roles 
+              "/"
+          );
+          HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(authTicket));
+          Response.Cookies.Add(cookie);
+          var group = "";
+          var notificationHub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+          notificationHub.Clients.All.connect(Session["Email"].ToString(), Session["Role"].ToString());
+          //encrypt the ticket and add it to a cookie
+          return RedirectToLocal(returnUrl);
+        }
+        else if (providerAcc.Count() != 0)
+        {
+          ModelState.AddModelError(string.Empty, "No account found! Please register.");
+        }
+
+      }
+      return View(model);
+    }
+
+    private ActionResult RedirectToLocal(string returnUrl)
+    {
+      if (Url.IsLocalUrl(returnUrl))
+      {
+        return Redirect(returnUrl);
+      }
+      return RedirectToAction("Index", "Home");
+    }
+
+    [NonAction]
+    public void SendVerificationLinkEmail(string email, string activationCode)
+    {
+      var verifyUrl = "/JobProvider/ProviderResetPassword/" + activationCode;
+      var link = Request.Url.AbsoluteUri.Replace(Request.Url.PathAndQuery, verifyUrl);
+      var fromEmail = new MailAddress("OnDemand.Service.2021@gmail.com", "Service On-Demand");
+      var toEmail = new MailAddress(email);
+      var fromEmailPassword = "Abc123!@#";//real password
+      string subject = "Reset Password";
+      var body = "Hi, <br><br> We got request for reset your account password. Please click on the below link to reset your password" +
+      "<br><br><a href=" + link + ">Reset Password Link</a>";
+
+      var smtp = new SmtpClient
+      {
+        Host = "smtp.gmail.com",
+        Port = 587,
+        EnableSsl = true,
+        DeliveryMethod = SmtpDeliveryMethod.Network,
+        UseDefaultCredentials = false,
+        Credentials = new NetworkCredential(fromEmail.Address, fromEmailPassword)
+      };
+
+      using (var message = new MailMessage(fromEmail, toEmail)
+      {
+        Subject = subject,
+        Body = body,
+        IsBodyHtml = true
+      })
+        smtp.Send(message);
+    }
+
+    [AllowAnonymous]
+    public ActionResult ProviderResetPassword(string id)
+    {
+      using (ServerDBEntities db = new ServerDBEntities())
+      {
+        var seeker = db.Providers.Where(s => s.reset_pwd == id).FirstOrDefault();
+        if (seeker != null)
+        {
+          ResetPasswordModel model = new ResetPasswordModel();
+          model.ResetCode = id;
+          return View(model);
+        }
+        else
+        {
+          return HttpNotFound();
+        }
+      }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [AllowAnonymous]
+    public ActionResult ProviderResetPassword(ResetPasswordModel model)
+    {
+      var message = "";
+      if (ModelState.IsValid)
+      {
+        using (ServerDBEntities db = new ServerDBEntities())
+        {
+          var seeker = db.Seekers.Where(a => a.reset_pwd == model.ResetCode).FirstOrDefault();
+          if (seeker != null)
+          {
+            seeker.password = Crypto.Hash(model.NewPassword);
+            seeker.reset_pwd = "";
+            db.Configuration.ValidateOnSaveEnabled = false;
+            db.SaveChanges();
+            message = "New password updated successfully";
+          }
+        }
+      }
+      else
+      {
+        message = "Something invalid";
+      }
+      ViewBag.Message = message;
+      return View(model);
+    }
+
+    [AllowAnonymous]
+    public ActionResult ProviderForgetPasword()
+    {
+      return View();
+    }
+
+    [HttpPost]
+    [AllowAnonymous]
+    public ActionResult ProviderForgetPasword(string Email)
+    {
+
+      string message = "";
+
+      using (ServerDBEntities db = new ServerDBEntities())
+      {
+        var seeker = db.Seekers.Where(s => s.email == Email).FirstOrDefault();
+        var provider = db.Providers.Where(s => s.email == Email).FirstOrDefault();
+        message = "Reset password link has sent to your email";
+        if (seeker != null)
+        {
+          var resetCode = Guid.NewGuid().ToString();
+          SendVerificationLinkEmail(seeker.email, resetCode);
+          seeker.reset_pwd = resetCode;
+          db.Configuration.ValidateOnSaveEnabled = false;
+          db.SaveChanges();
+          message = "Reset password link has sent to your email";
+        }
+        else
+        {
+          message = "Account not found";
+        }
+
+      }
+      ViewBag.Message = message;
+      return View();
+    }
   }
 
 
