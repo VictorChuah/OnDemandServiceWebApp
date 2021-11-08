@@ -45,7 +45,7 @@
   <link rel="stylesheet" href="@Url.Content("~/Content/main/")css/style.css">
   <link rel="stylesheet" href="~/Content/app.css">
   @RenderSection("head", false)
-  
+
 </head>
 <body>
   <!-- Navigation -->
@@ -76,20 +76,27 @@
                     <ul class="site-menu js-clone-nav d-none d-lg-block">
                       <li><a href="/Home/Index">Home</a></li>
                       <li class="has-children">
-                        <a href="#">For Candidates</a>
+                        <a href="#">For Seekers</a>
                         <ul class="dropdown arrow-top">
-                          <li><a href="/JobSeekers/SeekerLogin">Sign In</a></li>
-                          <li><a href="/JobSeekers/Registration">Sign Up</a></li>
+                          <li><a href="/Seeker/SeekerLogin">Sign In</a></li>
+                          <li><a href="/Seeker/SeekerRegister">Sign Up</a></li>
 
                         </ul>
                       </li>
 
                       <li class="has-children">
-                        <a href="#">For Employees</a>
+                        <a href="#">For Providers</a>
                         <ul class="dropdown arrow-top">
-                          <li><a href="/Employers/EmployerLogin">Sign In</a></li>
-                          <li><a href="/Employers/Registration">Sign Up</a></li>
+                          <li><a href="/JobProvider/ProviderLogin">Sign In</a></li>
+                          <li><a href="/JobProvider/RegisterProvider">Sign Up</a></li>
 
+                        </ul>
+                      </li>
+                      <li class="has-children">
+                        <a href="#">For Admin</a>
+                        <ul class="dropdown arrow-top">
+                          <li><a href="/Admin/AdminLogin">Sign In</a></li>
+                          <li><a href="#">Sign Up</a></li>
                         </ul>
                       </li>
                       <li><a href="/Home/Contact/">Contact</a></li>
