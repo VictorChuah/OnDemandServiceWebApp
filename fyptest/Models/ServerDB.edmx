@@ -83,6 +83,7 @@
           <Property Name="walletAmount" Type="float" Nullable="false" />
           <Property Name="STId" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="RId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="reset_pwd" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Rating">
           <Key>
@@ -102,8 +103,8 @@
           <Property Name="title" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="address" Type="varchar" MaxLength="100" />
           <Property Name="description" Type="varchar(max)" Nullable="false" />
-          <Property Name="image" Type="varchar" MaxLength="50" />
-          <Property Name="file" Type="varchar" MaxLength="50" />
+          <Property Name="image" Type="varchar(max)" />
+          <Property Name="file" Type="varchar(max)" />
           <Property Name="status" Type="int" Nullable="false" />
           <Property Name="immediate" Type="bit" Nullable="false" />
           <Property Name="dateCreated" Type="datetime" Nullable="false" />
@@ -126,13 +127,14 @@
           <Property Name="name" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="password" Type="varchar(max)" Nullable="false" />
           <Property Name="phone" Type="varchar" MaxLength="15" Nullable="false" />
-          <Property Name="profileImage" Type="varchar" MaxLength="50" />
+          <Property Name="profileImage" Type="varchar(max)" />
           <Property Name="status" Type="int" Nullable="false" />
           <Property Name="loginCount" Type="int" />
           <Property Name="token" Type="varchar(max)" />
           <Property Name="tokenExpire" Type="datetime" />
           <Property Name="connectionGroup" Type="varchar" MaxLength="50" />
           <Property Name="walletAmount" Type="float" Nullable="false" />
+          <Property Name="reset_pwd" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="Service Category">
           <Key>
@@ -512,6 +514,7 @@
           <NavigationProperty Name="Rating" Relationship="ServerDBModel.FK_Provider_Rating" FromRole="Provider" ToRole="Rating" />
           <NavigationProperty Name="Service_Type" Relationship="ServerDBModel.FK_Provider_ServiceType" FromRole="Provider" ToRole="Service_Type" />
           <NavigationProperty Name="Requests" Relationship="ServerDBModel.FK_Request_Provider" FromRole="Provider" ToRole="Request" />
+          <Property Name="reset_pwd" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Rating">
           <Key>
@@ -533,8 +536,8 @@
           <Property Name="title" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="address" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="image" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="file" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="image" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="file" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="status" Type="Int32" Nullable="false" />
           <Property Name="immediate" Type="Boolean" Nullable="false" />
           <Property Name="dateCreated" Type="DateTime" Nullable="false" Precision="3" />
@@ -562,7 +565,7 @@
           <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="password" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="phone" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="profileImage" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="profileImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="status" Type="Int32" Nullable="false" />
           <Property Name="loginCount" Type="Int32" />
           <Property Name="token" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
@@ -571,6 +574,7 @@
           <Property Name="walletAmount" Type="Double" Nullable="false" />
           <NavigationProperty Name="ChatConnections" Relationship="ServerDBModel.FK_Seeker_Connection" FromRole="Seeker" ToRole="ChatConnection" />
           <NavigationProperty Name="Requests" Relationship="ServerDBModel.FK_Request_User" FromRole="Seeker" ToRole="Request" />
+          <Property Name="reset_pwd" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Service_Category">
           <Key>
@@ -810,6 +814,7 @@
           <EntitySetMapping Name="Providers">
             <EntityTypeMapping TypeName="ServerDBModel.Provider">
               <MappingFragment StoreEntitySet="Provider">
+                <ScalarProperty Name="reset_pwd" ColumnName="reset_pwd" />
                 <ScalarProperty Name="RId" ColumnName="RId" />
                 <ScalarProperty Name="STId" ColumnName="STId" />
                 <ScalarProperty Name="walletAmount" ColumnName="walletAmount" />
@@ -870,6 +875,7 @@
           <EntitySetMapping Name="Seekers">
             <EntityTypeMapping TypeName="ServerDBModel.Seeker">
               <MappingFragment StoreEntitySet="Seeker">
+                <ScalarProperty Name="reset_pwd" ColumnName="reset_pwd" />
                 <ScalarProperty Name="walletAmount" ColumnName="walletAmount" />
                 <ScalarProperty Name="connectionGroup" ColumnName="connectionGroup" />
                 <ScalarProperty Name="tokenExpire" ColumnName="tokenExpire" />
