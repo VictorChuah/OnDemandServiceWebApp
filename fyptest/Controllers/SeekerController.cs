@@ -330,7 +330,7 @@ namespace fyptest.Controllers
     public JsonResult EditProfile(EditProfileModel model)
     {
       //System.Diagnostics.Debug.WriteLine(editProfileModel.Address +" "+ editProfileModel.Phone + " " + editProfileModel.ProfileImage);
-      var p = db.Providers.Find(model.Email);
+      var p = db.Seekers.Find(model.Email);
 
       if (p == null)
         return Json(String.Format("'Error' : '{0}'", "Failed"));
@@ -339,7 +339,7 @@ namespace fyptest.Controllers
       if (ModelState.IsValid)
       {
         p.phone = model.Phone;
-        p.address = model.Address;
+        //p.address = model.Address;
         //if (model.ImageFile != null)
         //  p.profileImage = SavePhoto(model.ImageFile);
 
@@ -348,6 +348,60 @@ namespace fyptest.Controllers
       }
 
       return Json(String.Format("'Error' : '{0}'", "Failed"));
+    }
+
+    [HttpPost]
+    public JsonResult EditProfilePic(HttpPostedFileBase file)
+    {
+      var p = db.Seekers.Find(Session["Email"].ToString());//User.Identity.Name
+
+      if (file == null)
+        return Json(String.Format("'Error' : '{0}'", "Failed"));
+
+      DeletePhoto(p.profileImage);
+
+      p.profileImage = SavePhoto(file);
+      db.SaveChanges();
+
+      return Json(String.Format("'Success':'true'"));
+    }
+
+    private void DeletePhoto(string name)
+    {
+      //name = System.IO.Path.GetFileName(name);
+      string path = Server.MapPath(name);
+      System.IO.File.Delete(path);
+    }
+
+    private string SavePhoto(HttpPostedFileBase f)
+    {
+      //string name = Guid.NewGuid().ToString("n") + ".jpg";
+      var pathStr = "~/UploadedDocument/" + Session["Email"].ToString();
+      var extension = Path.GetExtension(f.FileName).ToLower();
+      pathStr = pathStr + "/profile_picture" + extension;
+      //path = Path.Combine(Server.MapPath(path), "profile_picture" + extension);
+      var path = Server.MapPath(pathStr);
+
+      Stream doc = f.InputStream;
+
+      var img = new WebImage(doc);
+
+      if (img.Width > img.Height)
+      {
+        int px = (img.Width - img.Height) / 2;
+        img.Crop(0, px, 0, px);
+      }
+      else
+      {
+        int px = (img.Height - img.Width) / 2;
+        img.Crop(px, 0, px, 0);
+      }
+
+      img.Resize(201, 201)
+         .Crop(1, 1)
+         .Save(path);
+
+      return pathStr;
     }
   }
 
