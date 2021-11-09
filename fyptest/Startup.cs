@@ -13,6 +13,7 @@ namespace fyptest
   {
     public void Configuration(IAppBuilder app)
     {
+      app.MapSignalR();
       //app.Use(async (context, next) =>
       //{
       //  await next();

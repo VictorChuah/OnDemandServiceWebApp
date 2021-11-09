@@ -9,10 +9,6 @@ namespace fyptest.SignalR.Hubs
 {
   public class ChatHub : Hub
   {
-    public void Hello()
-    {
-      Clients.All.hello();
-    }
 
     static List<ChatConnectionModel> UsersList = new List<ChatConnectionModel>();
     static List<MessageInfo> MessageList = new List<MessageInfo>();
@@ -47,7 +43,6 @@ namespace fyptest.SignalR.Hubs
         Clients.Caller.onConnected(id, userName, email, groupName);
       }
     }
-
     public void SendMessageToGroup(string groupName, string userName, string message)
     {
       var connection = new ChatConnection();
@@ -134,7 +129,9 @@ namespace fyptest.SignalR.Hubs
       Clients.Group(groupName).getMessages(userName, message, link, groupName.Replace('#', '_'));
     }
 
+    public void PushChatNoti(string groupName, string userName, string message)
+    {
 
+    }
   }
-
 }
