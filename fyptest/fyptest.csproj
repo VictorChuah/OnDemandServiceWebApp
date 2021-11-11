@@ -753,6 +753,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ChatController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\JobProviderController.cs" />
@@ -850,6 +851,7 @@
     <Content Include="Views\Service\JobView.cshtml" />
     <Content Include="Views\Chat\Contact.cshtml" />
     <Content Include="Views\Seeker\SeekerProfile.cshtml" />
+    <Content Include="Views\Admin\AdminLogin.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
