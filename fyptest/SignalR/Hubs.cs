@@ -43,7 +43,7 @@ namespace fyptest.SignalR.Hubs
         Clients.Caller.onConnected(id, userName, email, groupName);
       }
     }
-    public void SendMessageToGroup(string groupName, string userName, string message)
+    public void SendMessageToGroup(string groupName, string userName, string message, string jobId)
     {
       var connection = new ChatConnection();
       using (ServerDBEntities db = new ServerDBEntities())
@@ -77,12 +77,12 @@ namespace fyptest.SignalR.Hubs
         db.SaveChanges();
       }
 
-      var jobId = "";
-      using (ServerDBEntities db = new ServerDBEntities())
-      {
-        var job = db.Requests.Where(m => m.Seeker == seeker && m.Provider == provider).FirstOrDefault();
-        jobId = job.SId;
-      }
+      //var jobId = "";
+      //using (ServerDBEntities db = new ServerDBEntities())
+      //{
+      //  var job = db.Requests.Where(m => m.Seeker == seeker && m.Provider == provider).FirstOrDefault();
+      //  jobId = job.SId;
+      //}
       var link = "<li><a href='/Chat/Contact/" + jobId + "'>You have a new message from " + userName.Split('@')[0] + "</a></li>";
       Clients.Group(groupName).getMessages(userName, message, link, groupName.Replace('#', '_'));
     }
