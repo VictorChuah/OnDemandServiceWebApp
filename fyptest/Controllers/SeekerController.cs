@@ -1,5 +1,6 @@
 using fyptest.Models;
 using fyptest.SignalR.Hubs;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.SignalR;
 using System;
 using System.Collections.Generic;
@@ -402,6 +403,25 @@ namespace fyptest.Controllers
          .Save(path);
 
       return pathStr;
+    }
+
+    [HttpPost]
+
+    public ActionResult Logout()
+    {
+      var ctx = Request.GetOwinContext();
+      var authenticationManager = ctx.Authentication;
+
+      //AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+      //Sign out
+      authenticationManager.SignOut();
+      Session.Clear();
+      Session.Abandon();
+      if (!string.IsNullOrEmpty(Convert.ToString(Session["Email"])))
+      {
+        return RedirectToAction("Index", "Home");
+      }
+      return RedirectToAction("Index", "Home");
     }
   }
 

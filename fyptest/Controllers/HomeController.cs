@@ -41,7 +41,10 @@ namespace fyptest.Controllers
           model.Image = "/UploadedDocument/noimage.jpg";
         else
           model.Image = j.image;
-        model.Description = j.description;
+        if (j.description.Length > 100)
+          model.Description = j.description.Substring(0, 100);
+        else
+          model.Description = j.description;
         model.Date = (DateTime)j.dateCreated;
         if (j.dateCompleted != null)
           model.CompleteDate = (DateTime)j.dateCompleted;

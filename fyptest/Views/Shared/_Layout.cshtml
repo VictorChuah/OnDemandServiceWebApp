@@ -170,18 +170,64 @@
                       <li class="has-children">
                         <a href="#">For Seekers</a>
                         <ul class="dropdown arrow-top">
-                          <li><a href="/Seeker/SeekerLogin">Sign In</a></li>
-                          <li><a href="/Seeker/SeekerRegister">Sign Up</a></li>
 
+                          @if (Session["Role"] != null && Session["Email"] != null)
+                          {
+                            if (Session["Role"].ToString() == "Seeker")
+                            {
+                                using (Html.BeginForm("Logout", "Seeker", FormMethod.Post, new { id = "logoutForm", role = "form", style="padding:5px 20px;width:200px;" }))
+                                {
+                                  <li><a href="/Seeker/SeekerProfile">View profile</a></li>
+                                  <li><a href="/Service/PostJobView">Post a job</a></li>
+                                  <li>
+
+                                    <a href="javascript:document.getElementById('logoutForm').submit()">Log out</a>
+
+                                  </li>}
+                            }
+                              else
+                              {
+                                <li><a href="/Seeker/SeekerLogin">Sign In</a></li>
+                                <li><a href="/Seeker/SeekerRegister">Sign Up</a></li>
+                              }
+
+                            }
+                            else
+                            {
+                              <li><a href="/Seeker/SeekerLogin">Sign In</a></li>
+                              <li><a href="/Seeker/SeekerRegister">Sign Up</a></li>
+                            }
                         </ul>
                       </li>
 
                       <li class="has-children">
                         <a href="#">For Providers</a>
                         <ul class="dropdown arrow-top">
-                          <li><a href="/JobProvider/ProviderLogin">Sign In</a></li>
-                          <li><a href="/JobProvider/RegisterProvider">Sign Up</a></li>
+                          @if (Session["Role"] != null && Session["Email"] != null)
+                          {
+                            if (Session["Role"].ToString() == "Provider")
+                            {
+                              using (Html.BeginForm("Logout", "JobProvider", FormMethod.Post, new { id = "logoutForm", role = "form", style = "padding:5px 20px;width:200px;" }))
+                              {
+                                <li><a href="/JobProvider/ProviderProfile">View profile</a></li>
+                                <li>
+                                  <a href="javascript:document.getElementById('logoutForm').submit()">Log out</a>
+                                </li>
+                              }
+                            }
+                            else
+                            {
+                              <li><a href = "/JobProvider/ProviderLogin">Sign In</a></li>
+                              <li><a href = "/JobProvider/RegisterProvider">Sign Up</a></li>
+                            }
+                            
 
+                          }
+                          else
+                          {
+                              <li><a href="/JobProvider/ProviderLogin">Sign In</a></li>
+                              <li><a href="/JobProvider/RegisterProvider">Sign Up</a></li>
+                            }
                         </ul>
                       </li>
                       <li class="has-children">

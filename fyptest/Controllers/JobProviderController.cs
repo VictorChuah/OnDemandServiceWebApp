@@ -802,6 +802,25 @@ namespace fyptest.Controllers
       ViewBag.Message = message;
       return View();
     }
+
+    [HttpPost]
+
+    public ActionResult Logout()
+    {
+      var ctx = Request.GetOwinContext();
+      var authenticationManager = ctx.Authentication;
+
+      //AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+      //Sign out
+      authenticationManager.SignOut();
+      Session.Clear();
+      Session.Abandon();
+      if (!string.IsNullOrEmpty(Convert.ToString(Session["Email"])))
+      {
+        return RedirectToAction("Index", "Home");
+      }
+      return RedirectToAction("Index", "Home");
+    }
   }
 
 

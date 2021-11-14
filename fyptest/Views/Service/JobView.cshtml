@@ -43,9 +43,9 @@
 
           <div class="img-border mb-5">
             @*<a href="https://vimeo.com/28959265" class="popup-vimeo image-play">
-              <span class="icon-wrap">
-                <span class="icon icon-play"></span>
-              </span>*@
+      <span class="icon-wrap">
+        <span class="icon icon-play"></span>
+      </span>*@
             <img src="@Model.Image" alt="Image" class="img-fluid rounded">
             @*</a>*@
           </div>
@@ -60,10 +60,17 @@
           <p>Dignissimos ipsa quibusdam id qui maiores magnam, nesciunt? Voluptatibus nulla quas itaque nostrum necessitatibus repudiandae quaerat facere, amet aperiam iste aspernatur ratione cupiditate est voluptates non. Suscipit corporis, soluta neque.</p>
           <p>Pariatur itaque reiciendis consectetur, deserunt quam adipisci odio doloribus voluptatem laboriosam magni ut repellat tempore? Minus sit officia impedit veritatis reiciendis debitis iure, porro in quaerat inventore nisi sequi quos!</p>
 
-          <p class="mt-5">
-            <a href="#" class="btn btn-primary  py-2 px-4">Apply Job</a>
-            <a href="#" class="btn btn-info  py-2 px-4">Chat with seeker</a>
-          </p>
+          @if (Session["Email"] != null)
+          {
+                if (Session["Role"].ToString() == "Provider")
+                {
+                <p class="mt-5">
+                  <div class="btn btn-primary  py-2 px-4" onclick="applyJob('@Model.JobID');">Apply Job</div>
+                  <a href="#" class="btn btn-info  py-2 px-4">Chat with seeker</a>
+                </p>
+                }
+          }
+
         </div>
       </div>
 
@@ -82,3 +89,22 @@
 
 
 
+<script type="text/javascript">
+        function applyJob(id) {
+          var data = {};
+          data.SId = id;
+          $.ajax({
+              type: "POST",
+              contentType: "application/json; charset=utf-8",
+              data:  JSON.stringify(data),
+              url: '@Url.Action("ApplyJob")',
+              success: function (success) {
+                  alert(success.Message);
+              },
+              error: function (result) {
+                  alert(result.Error);
+              }
+          })
+
+        }
+</script>

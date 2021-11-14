@@ -309,6 +309,21 @@ namespace fyptest.Controllers
 
       return View(model);
     }
+
+    public ActionResult ApplyJob(Request job)
+    {
+      var jobProfile = db.Requests.FirstOrDefault(a => a.SId.Equals(job.SId));
+      if (jobProfile != null && ModelState.IsValid)
+      {
+        jobProfile.Provider = Session["Email"].ToString();
+        db.SaveChanges();
+
+        string message = "You have accepted this job. You may view this job at your job list.";
+        return Json(new { Message = message, JsonRequestBehavior.AllowGet });
+
+      }
+      return Json(new { Message = "Failed to apply. Please try again.", JsonRequestBehavior.AllowGet });
+    }
   }
 
 }
