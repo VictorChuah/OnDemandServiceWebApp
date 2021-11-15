@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -45,7 +46,98 @@
   <link rel="stylesheet" href="@Url.Content("~/Content/main/")css/style.css">
   <link rel="stylesheet" href="~/Content/app.css">
   @RenderSection("head", false)
-  
+  <style>
+
+    .chat-btn {
+      position: fixed;
+      right: 14px;
+      bottom: 30px;
+      cursor: pointer
+    }
+
+      .chat-btn .close {
+        display: none
+      }
+
+      .chat-btn i {
+        transition: all 0.9s ease
+      }
+
+    #check:checked ~ .chat-btn i {
+      display: block;
+      pointer-events: auto;
+      transform: rotate(180deg)
+    }
+
+    #check:checked ~ .chat-btn .comment {
+      display: none
+    }
+
+    .chat-btn i {
+      font-size: 22px;
+      color: #fff !important
+    }
+
+    .chat-btn {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50px;
+      background-color: blue;
+      color: #fff;
+      font-size: 22px;
+      border: none
+    }
+
+    .wrapper {
+      position: fixed;
+      right: 20px;
+      bottom: 100px;
+      width: 300px;
+      background-color: #fff;
+      border-radius: 5px;
+      opacity: 0;
+      transition: all 0.4s
+    }
+
+    #check:checked ~ .wrapper {
+      opacity: 1
+    }
+
+    .header {
+      padding: 13px;
+      background-color: blue;
+      border-radius: 5px 5px 0px 0px;
+      margin-bottom: 10px;
+      color: #fff
+    }
+
+    .chat-form {
+      padding: 15px
+    }
+
+      .chat-form input,
+      textarea,
+      button {
+        margin-bottom: 10px
+      }
+
+      .chat-form textarea {
+        resize: none
+      }
+
+    .form-control:focus,
+    .btn:focus {
+      box-shadow: none
+    }
+
+    #check {
+      display: none !important
+    }
+
+  </style>
 </head>
 <body>
   <!-- Navigation -->
@@ -76,20 +168,73 @@
                     <ul class="site-menu js-clone-nav d-none d-lg-block">
                       <li><a href="/Home/Index">Home</a></li>
                       <li class="has-children">
-                        <a href="#">For Candidates</a>
+                        <a href="#">For Seekers</a>
                         <ul class="dropdown arrow-top">
-                          <li><a href="/JobSeekers/SeekerLogin">Sign In</a></li>
-                          <li><a href="/JobSeekers/Registration">Sign Up</a></li>
 
+                          @if (Session["Role"] != null && Session["Email"] != null)
+                          {
+                            if (Session["Role"].ToString() == "Seeker")
+                            {
+                              using (Html.BeginForm("Logout", "Seeker", FormMethod.Post, new { id = "logoutForm", role = "form", style = "padding:5px 20px;width:200px;" }))
+                              {
+                                <li><a href="/Seeker/SeekerProfile">View profile</a></li>
+                                <li><a href="/Service/PostJobView">Post a job</a></li>
+                                <li>
+
+                                  <a href="javascript:document.getElementById('logoutForm').submit()">Log out</a>
+
+                                </li>
+}
+                            }
+                            else
+                            {
+                              <li><a href="/Seeker/SeekerLogin">Sign In</a></li>
+                              <li><a href="/Seeker/SeekerRegister">Sign Up</a></li>
+                            }
+
+                          }
+                          else
+                          {
+                            <li><a href="/Seeker/SeekerLogin">Sign In</a></li>
+                            <li><a href="/Seeker/SeekerRegister">Sign Up</a></li>
+                          }
                         </ul>
                       </li>
 
                       <li class="has-children">
-                        <a href="#">For Employees</a>
+                        <a href="#">For Providers</a>
                         <ul class="dropdown arrow-top">
-                          <li><a href="/Employers/EmployerLogin">Sign In</a></li>
-                          <li><a href="/Employers/Registration">Sign Up</a></li>
+                          @if (Session["Role"] != null && Session["Email"] != null)
+                          {
+                            if (Session["Role"].ToString() == "Provider")
+                            {
+                              using (Html.BeginForm("Logout", "JobProvider", FormMethod.Post, new { id = "logoutForm", role = "form", style = "padding:5px 20px;width:200px;" }))
+                              {
+                                <li><a href="/JobProvider/ProviderProfile">View profile</a></li>
+                                <li>
+                                  <a href="javascript:document.getElementById('logoutForm').submit()">Log out</a>
+                                </li>
+                              }
+                            }
+                            else
+                            {
+                              <li><a href="/JobProvider/ProviderLogin">Sign In</a></li>
+                                        <li><a href="/JobProvider/RegisterProvider">Sign Up</a></li> }
 
+
+                                              }
+                                              else
+                                              {
+                                                <li><a href="/JobProvider/ProviderLogin">Sign In</a></li>
+                                                <li><a href="/JobProvider/RegisterProvider">Sign Up</a></li>
+                                              }
+                        </ul>
+                      </li>
+                      <li class="has-children">
+                        <a href="#">For Admin</a>
+                        <ul class="dropdown arrow-top">
+                          <li><a href="/Admin/AdminLogin">Sign In</a></li>
+                          <li><a href="#">Sign Up</a></li>
                         </ul>
                       </li>
                       <li><a href="/Home/Contact/">Contact</a></li>
@@ -106,7 +251,15 @@
     </div>
   </div>
 
+  <input type="checkbox" id="check"> <label class="chat-btn" for="check"> <i class="fa fa-commenting-o comment"></i> <i class="fa fa-close close"></i> </label>
+  <div class="wrapper">
+    <div class="header">
+      <h6>Let's Chat - Online</h6>
+    </div>
+
+  </div>
   <div class="info">@TempData["Info"]</div>
+
 
   @RenderBody()
 
@@ -199,7 +352,22 @@
 
   <script src="@Url.Content("~/Content/main/")js/mediaelement-and-player.min.js"></script>
   <script src="@Url.Content("~/Content/main/")js/main.js"></script>
+
+  <script src="~/Scripts/jquery.signalR-2.4.2.min.js"></script>
+  <script src="~/SignalR/Hubs" type="text/javascript"></script>
+  <script>
+    if ('@Session["Email"]' != '') {
+      var objHub = $.connection.chatHub;
+      $.connection.hub.start().done(function () {
+        //loadEvents(objHub);
+
+        console.log("Connected");
+        objHub.server.connect('@Session["Email"]', '@Session["Role"]');
+      });
+    }
+  </script>
   @RenderSection("foot", required: false)
+
 </body>
 </html>
 

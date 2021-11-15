@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'D:\2 assignment shit\FYP\fyptest\fyptest\Models\ServerDB.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Users\maykimah.KEYSIGHT\Downloads\New folder (3)\fyptest\Models\ServerDB.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.
