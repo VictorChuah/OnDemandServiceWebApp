@@ -170,8 +170,10 @@
         </div>
         <div class="p-4 mb-3 bg-white">
           <h3 class="h5 text-black mb-3">Namecard</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa ad iure porro mollitia architecto hic consequuntur. Distinctio nisi perferendis dolore, ipsa consectetur? Fugiat quaerat eos qui, libero neque sed nulla.</p>
-          <p><a href="#" class="btn btn-primary px-4 py-2 text-white pill">Learn More</a></p>
+          <label class="text-info p-2 rounded border border-info">
+            <img src="~/Image/NameCard/@Model.accDetail.Namecard" style="width:300px; height:200px"/>
+          </label>
+          <p><a href="~/JobProvider/EditNameCard" class="btn btn-primary px-4 py-2 text-white pill">Edit</a></p>
         </div>
       </div>
     </div>
@@ -325,7 +327,7 @@
 
       $('#editPhone').show(500);
       $('#editAddress').show(500);
-      $('#image').show();
+      //$('#image').show();
       $('#cancel').show(500);
       $('#confirm').show(500);
     });
@@ -337,7 +339,7 @@
 
       $('#editPhone').hide(500);
       $('#editAddress').hide(500);
-      $('#image').hide();
+      //$('#image').hide();
       $('#cancel').hide(500);
       $('#confirm').hide(500);
     });
@@ -406,7 +408,7 @@
       }
     });
 
-
+    //change profilepic
     function update() {
       console.log("1234")
       $.ajax({

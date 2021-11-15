@@ -157,7 +157,9 @@ namespace fyptest.Controllers
           professionalism = 0
         };
 
-
+        var dup = db.Providers.Find(m.Email);
+        if (dup != null)
+          db.Providers.Remove(dup);
 
         db.Providers.Add(dbProvider);
         db.Ratings.Add(dbRate);
@@ -165,7 +167,7 @@ namespace fyptest.Controllers
 
         SendEmail(m.Email, generate);
 
-        TempData["Info"] = "Account registered. Please go to email to active account.";
+        TempData["Info"] = "Account registered. Please check your email to confirm.";
 
       }
 
@@ -184,7 +186,7 @@ namespace fyptest.Controllers
     {
       var user = db.Providers.Find(email);
 
-      ViewBag.MetaRefresh = "<meta http-equiv='refresh' content='3;url=" + Url.Action("Index", "Home") + "' />";
+      ViewBag.MetaRefresh = "<meta http-equiv='refresh' content='5;url=" + Url.Action("Index", "Home") + "' />";
 
       if (token == user.token)
       {
@@ -192,10 +194,15 @@ namespace fyptest.Controllers
         user.token = null;
         user.tokenExpire = null;
         db.SaveChanges();
-        TempData["Info"] = "Account Activated!";
+        TempData["Info"] = "Account Comfirmed!";
+        ViewBag.message = "Please wait for admin approval in 3 to 5 working days.";
       }
       else
+      {
         TempData["Info"] = "Invalid activate token!";
+        ViewBag.message = "Please confirm you have select the right email, or contact customer service if problem presist.";
+      }
+        
 
       return View();
     }
@@ -217,12 +224,13 @@ namespace fyptest.Controllers
         Email = data.email,
         Phone = data.phone,
         Address = data.address,
-        Name = data.name,
-        ProfileImage = data.profileImage,
-        Wallet = data.walletAmount,
         CompanyIndividual = data.companyIndividual,
+        Name = data.name,
         CompanyName = data.companyName,
         ServiceType = type.name,
+        ProfileImage = data.profileImage,
+        Wallet = data.walletAmount,
+        Namecard = data.namecard,
         Attitude = rating.attitude,
         Quality = rating.quality,
         Efficiency = rating.efficiency,
@@ -273,7 +281,7 @@ namespace fyptest.Controllers
       if (file == null)
         return Json(String.Format("'Error' : '{0}'", "Failed"));
 
-      DeletePhoto(p.profileImage);
+      DeletePhoto(p.profileImage,'p');
 
       p.profileImage = SavePhoto(file);
       db.SaveChanges();
@@ -339,19 +347,21 @@ namespace fyptest.Controllers
 
       }
 
-      return RedirectToAction("TopupPaypal", "JobProvider");
+      return RedirectToAction("ProviderProfile", "JobProvider");
     }
 
     [HttpPost]
-    public JsonResult PaypalAmount (double amount)
+    public JsonResult PaypalAmount(double amount)
     {
       paypalTopup = amount;
-      
+
+      System.Diagnostics.Debug.WriteLine(paypalTopup);
+
       return Json(String.Format("'Success':'true'"));
     }
 
 
-    public ActionResult TopupPaypal(string Cancel = null)
+    public ActionResult TopupPaypal(string Cancel = null) //payment got problem
     {
       //getting the apiContext  
       APIContext apiContext = PaypalConfiguration.GetAPIContext();
@@ -366,7 +376,7 @@ namespace fyptest.Controllers
           //it is returned by the create function call of the payment class  
           // Creating a payment  
           // baseURL is the url on which paypal sendsback the data.  
-          string baseURI = Request.Url.Scheme + "://" + Request.Url.Authority + "/JobProvider/TopupPaypal?";
+          string baseURI = Request.Url.Scheme + "://" + Request.Url.Authority + "/JobProvider/ProviderProfile?";
           //here we are generating guid for storing the paymentID received in session  
           //which will be used in the payment execution  
           var guid = Convert.ToString((new Random()).Next(100000));
@@ -387,6 +397,13 @@ namespace fyptest.Controllers
           }
           // saving the paymentID in the key guid  
           Session.Add(guid, createdPayment.id);
+
+          var p = db.Providers.Find("victorritdemo+p1@gmail.com");//User.Identity.Name
+          p.walletAmount += paypalTopup;
+          db.SaveChanges();
+
+          TempData["Info"] = "Top up sucessfully";
+
           return Redirect(paypalRedirectUrl);
         }
         else
@@ -405,10 +422,10 @@ namespace fyptest.Controllers
       {
         return View("FailureView");
       }
-      //on successful payment, show success page to user.  
+      //on successful payment, show success page to user.
       return View("SuccessView");
     }
-    private PayPal.Api.Payment payment;
+    private Payment payment;
     private Payment ExecutePayment(APIContext apiContext, string payerId, string paymentId)
     {
       var paymentExecution = new PaymentExecution()
@@ -419,7 +436,7 @@ namespace fyptest.Controllers
       {
         id = paymentId
       };
-      return this.payment.Execute(apiContext, paymentExecution);
+      return this.payment.Execute(apiContext, paymentExecution); //paypal amount ???
     }
 
     private Payment CreatePayment(APIContext apiContext, string redirectUrl)
@@ -432,9 +449,11 @@ namespace fyptest.Controllers
       //Adding Item Details like name, currency, price etc  
       itemList.items.Add(new Item()
       {
-        name = "Top Up",
+        name = "Top up",
         currency = "MYR",
-        price = paypalTopup.ToString()
+        price = paypalTopup.ToString(),
+        quantity = "1",
+        sku = "sku"
       });
       var payer = new Payer()
       {
@@ -446,7 +465,7 @@ namespace fyptest.Controllers
         cancel_url = redirectUrl + "&Cancel=true",
         return_url = redirectUrl
       };
-      //// Adding Tax, shipping and Subtotal details  
+      // Adding Tax, shipping and Subtotal details  
       //var details = new Details()
       //{
       //  tax = "1",
@@ -457,14 +476,15 @@ namespace fyptest.Controllers
       var amount = new Amount()
       {
         currency = "MYR",
-        total = "3", // Total must be equal to sum of tax, shipping and subtotal.  
+        total = paypalTopup.ToString() // Total must be equal to sum of tax, shipping and subtotal.  
+        //details = details
       };
       var transactionList = new List<Transaction>();
       // Adding description about the transaction  
       transactionList.Add(new Transaction()
       {
-        description = "Transaction description",
-        invoice_number = "your generated invoice number", //Generate an Invoice No  
+        description = "Top",
+        invoice_number = "test1", //Generate an Invoice No  
         amount = amount,
         item_list = itemList
       });
@@ -479,12 +499,58 @@ namespace fyptest.Controllers
       return this.payment.Create(apiContext);
     }
 
+    public ActionResult EditNameCard()
+    {
+      var p = db.Providers.Find("victorritdemo+p1@gmail.com");//User.Identity.Name
+
+      ViewBag.namecard = p.namecard;
+
+      return View();
+    }
+
+    [HttpPost]
+    public JsonResult EditNameCard(string img)
+    {
+      var p = db.Providers.Find("victorritdemo+p1@gmail.com");//User.Identity.Name
+
+      string name = p.name != null ? p.name : p.companyName;
+
+      string fileName = name + " namecard.jpg";
+      string fileNameWitPath = Path.Combine(Server.MapPath("~/Image/NameCard/"), fileName);
+
+      using (FileStream fs = new FileStream(fileNameWitPath, FileMode.Create))
+      {
+        using (BinaryWriter bw = new BinaryWriter(fs))
+        {
+          byte[] data = Convert.FromBase64String(img);
+          bw.Write(data);
+          bw.Close();
+        }
+        fs.Close();
+      }
+
+      if (p.namecard != null)
+        DeletePhoto(p.profileImage, 'n');
+
+      p.namecard = fileName;
+      db.SaveChanges();
+
+      TempData["Info"] = "Namecard Saved";
+
+      return Json(String.Format("'Success':'true'"));
+    }
+
 
     //================================================================================================================
 
     public ActionResult CheckEmail(string email)
     {
-      bool isValid = (db.Providers.Find(email) == null || db.Seekers.Find(email) == null);
+      bool isValid = false;
+      if (db.Providers.Find(email) == null || db.Seekers.Find(email) == null)
+        isValid = true;
+      else if (db.Providers.Find(email) != null && db.Providers.Find(email).status == 0)
+        isValid = true;
+
       return Json(isValid, JsonRequestBehavior.AllowGet);
     }
 
@@ -559,10 +625,13 @@ namespace fyptest.Controllers
       return name;
     }
 
-    private void DeletePhoto(string name)
+    private void DeletePhoto(string name, char type)
     {
       name = System.IO.Path.GetFileName(name);
       string path = Server.MapPath($"~/Image/Profile/{name}");
+      if (type == 'n')
+        path = Server.MapPath($"~/Image/NameCard/{name}");
+
       System.IO.File.Delete(path);
     }
 
@@ -591,6 +660,7 @@ namespace fyptest.Controllers
                 <img src='cid:photo' style='width: 100px; height: 100px;
                                             border: 1px solid #333'>
                 <p>Dear {name},<p>
+                <p>Thank you for registering, please noted that after activation, it would take 3 to 5 working days for account approval</p>
                 <p>Please click the following link to activate your account</p>
                 <h1 style='color: red'><a href='{url2}'>Activate Account</a></h1>
                 <p>If link above failed, please try the following link</p>

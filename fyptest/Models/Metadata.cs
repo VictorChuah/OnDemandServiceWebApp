@@ -7,6 +7,7 @@ using System.Web.Mvc;
 
 namespace fyptest.Models
 {
+
   //view model
   public class OverallAccVM
   {
@@ -29,11 +30,30 @@ namespace fyptest.Models
     public string ServiceType { get; set; }
     public string ProfileImage { get; set; }
     public double? Wallet { get; set; }
+    public string Namecard { get; set; }
     public int Attitude { get; set; }
     public int Quality { get; set; }
     public int Efficiency { get; set; }
     public int Professionalism { get; set; }
+  }
 
+  public class AdminApprovalVM
+  {
+    public string Email { get; set; }
+    public string Phone { get; set; }
+    public string Address { get; set; }
+    public bool CompanyIndividual { get; set; }
+    public string Name { get; set; }
+    public string CompanyName { get; set; }
+    public string ServiceType { get; set; }
+    public string ProfileImage { get; set; }
+    public IEnumerable<Document> document { get; set; }
+  }
+
+  public class ServiceCRUDVM
+  {
+    public IEnumerable<Service_Type> Types { get ; set;}
+    public IEnumerable<Service_Category> Categories { get; set; }
   }
 
   public class RequestDetail

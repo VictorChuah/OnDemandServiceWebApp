@@ -130,6 +130,18 @@ namespace fyptest.Controllers
 
       return File(bytes, "application/octet-stream", file);
     }
+
+    public ActionResult Tracking(string requestId)
+    {
+      var r = db.Requests.Find(requestId);
+
+      if (r?.status != 1)
+      {
+        TempData["Info"] = "Tracking is unavailable or expired";
+        return RedirectToAction("RequestList", "Service", new { status = 1 } );
+      }
+      return View(r);
+    }
   }
 
 }

@@ -8,7 +8,7 @@
   max-width: 500px;
   left: 50%;
   transform: translate(-50%);
-  top: 200px; /*the content will above 100%*/
+  top: 300px; /*the content will above 100%*/
   opacity: 0;
   animation: fade 3s linear 0s 1 normal;
 }
