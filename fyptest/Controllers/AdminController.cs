@@ -18,8 +18,8 @@ using System.Web.Helpers;
 
 namespace fyptest.Controllers
 {
-    public class AdminController : Controller
-    {
+  public class AdminController : Controller
+  {
     // GET: Admin
     private ServerDBEntities db = new ServerDBEntities();
     // GET: Admin
@@ -27,7 +27,7 @@ namespace fyptest.Controllers
     {
       var data = db.Providers.Where(s => s.status == 1);
       return View(data);
-      
+
     }
 
     public ActionResult AdminSeekerView()
@@ -254,9 +254,9 @@ namespace fyptest.Controllers
         Credentials = new NetworkCredential(fromEmail.Address, fromEmailPassword)
       };
 
-      foreach (var provider in providerList)
+      foreach (var p in providerList)
       {
-        var toEmail = new MailAddress(provider.email);
+        var toEmail = new MailAddress(p.email);
         using (var message = new MailMessage(fromEmail, toEmail)
         {
           Subject = subject,
@@ -264,27 +264,29 @@ namespace fyptest.Controllers
           IsBodyHtml = true
         })
 
-      if (p != null)
-      {
-        var d = db.Documents.Where(h => h.holder == id);
+          if (p != null)
+          {
+            var d = db.Documents.Where(h => h.holder == jobId);
 
-        var data = new AdminApprovalVM
-        {
-          Email = p.email,
-          Phone = p.phone,
-          Address = p.address,
-          CompanyIndividual = p.companyIndividual,
-          Name = p.name,
-          CompanyName = p.companyName,
-          ServiceType = p.Service_Type.name,
-          ProfileImage = p.profileImage,
-          document = d
-        };
+            var data = new AdminApprovalVM
+            {
+              Email = p.email,
+              Phone = p.phone,
+              Address = p.address,
+              CompanyIndividual = p.companyIndividual,
+              Name = p.name,
+              CompanyName = p.companyName,
+              ServiceType = p.Service_Type.name,
+              ProfileImage = p.profileImage,
+              document = d
+            };
 
-          smtp.Send(message);
+            smtp.Send(message);
+          }
       }
-
     }
+
+      
 
     [AllowAnonymous]
     public ActionResult AdminLogin(string returnUrl)
@@ -292,7 +294,7 @@ namespace fyptest.Controllers
       return View();
     }
 
-    //
+      //
     // POST: /Account/Login
     [HttpPost]
     [AllowAnonymous]
@@ -320,12 +322,7 @@ namespace fyptest.Controllers
 
         else if (admin.Count() > 0 && admin != null)
         {
-      var user = db.Providers.Find(email);
-
-      string name = "";
-      name = user.name != null ? user.name : user.companyName;
-
-      var m = new MailMessage();
+          var m = new MailMessage();
 
           var logindetails = admin.First();
           // Login In.    
@@ -371,7 +368,7 @@ namespace fyptest.Controllers
       return RedirectToAction("Index", "Home");
     }
 
-    //@Html.ActionLink("Document", "DownloadFile", new { filename = Model.File })
-    }
+      //@Html.ActionLink("Document", "DownloadFile", new { filename = Model.File })
+  }
 
 }

@@ -452,19 +452,6 @@ namespace fyptest.Models
     public string Status { get; set; }
   }
 
-  public class AdminApprovalVM
-  {
-    public string Email { get; set; }
-    public string Phone { get; set; }
-    public string Address { get; set; }
-    public bool CompanyIndividual { get; set; }
-    public string Name { get; set; }
-    public string CompanyName { get; set; }
-    public string ServiceType { get; set; }
-    public string ProfileImage { get; set; }
-    public IEnumerable<Document> document { get; set; }
-  }
-
   public class Rate{
 
     public string JobID { get; set; }
@@ -474,5 +461,7 @@ namespace fyptest.Models
     public string Efficiency { get; set; }
     public string Profesionalism { get; set; }
   }
+
+
 }
 
