@@ -181,7 +181,7 @@
       <div class="col-md-8 mb-5 mb-md-0" data-aos="fade-up" data-aos-delay="100">
         <h2 class="mb-5 h3"><a class="mb-5 h3" href="~/Service/RequestList?status=1">Recent Jobs</a></h2>
         <div class="rounded border jobs-wrap">
-          @foreach (var r in Model.requestDetail.Take(5))
+          @foreach (var r in Model.requestDetail)
           {
             if (r.status == 1)
             {
@@ -206,11 +206,15 @@
                   <div class="p-3">
                     @if (r.seekerComplete == false && r.providerComplete == true)
                     {
-                      <span class="text-info p-2 rounded border border-info">Pending</span> ;
+                      <span class="text-info p-2 rounded border border-info btn">Pending</span> ;
+                    }
+                    else if (r.providerComplete == false)
+                    {
+                      <span class="text-danger p-2 rounded border border-danger btn" onclick="completeJob('@r.SId')">Ongoing</span>;
                     }
                     else
                     {
-                      <span class="text-warning p-2 rounded border border-warning">Ongoing</span>;
+                      <span class="text-warning p-2 rounded border border-warning btn">Ongoing</span>;
                     }
                   </div>
                 </div>
@@ -425,6 +429,26 @@
         },
         error: function () {
           $('#image').text("Upload Failed");
+        }
+      });
+    }
+
+    function completeJob(sid) {
+      $.ajax({
+        url: '/Service/ProviderCompleteJob',
+        data: JSON.stringify({
+          model: {
+            Provider: $('#email').text(),
+            JobID: sid
+          }
+        }),
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        success: data => {
+          alert("You have completed this service.");
+        },
+        error: function(response) {
+          alert("Something went wrong. Please try again.");
         }
       });
     }

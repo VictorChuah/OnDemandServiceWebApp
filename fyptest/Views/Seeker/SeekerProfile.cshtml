@@ -12,6 +12,13 @@
       height: 200px;
       cursor: pointer;
     }
+    .yellow {
+      color: #ffab2e
+    }
+
+    .gray {
+      color: grey
+    }
   </style>
 }
 
@@ -180,13 +187,13 @@
     @*middle ongoing*@
     <div class="row">
       <div class="col-md-8 mb-5 mb-md-0" data-aos="fade-up" data-aos-delay="100">
-        <h2 class="mb-5 h3"><a class="mb-5 h3" href="~/Service/RequestList?status=1">Recent Jobs</a></h2>
+        <h2 class="mb-5 h3"><a class="mb-5 h3" @*href="~/Service/RequestList?status=1"*@>Recent Jobs</a></h2>
         <div class="rounded border jobs-wrap">
           @foreach (var r in Model.requestDetail.Take(5))
           {
             if (r.status == 1)
             {
-              <a href="~/Service/RequestList?status=1&selected=@r.title" class="job-item d-block d-md-flex align-items-center  border-bottom fulltime">
+              <a @*href="~/Service/RequestList?status=1&selected=@r.title"*@ class="job-item d-block d-md-flex align-items-center  border-bottom fulltime">
                 <div class="company-logo blank-logo text-center text-md-left pl-3">
                   <img src="~/Content/main/images/company_logo_blank.png" alt="Image" class="img-fluid mx-auto">
                 </div>
@@ -205,13 +212,17 @@
                 </div>
                 <div class="job-category align-self-center">
                   <div class="p-3">
-                    @if (r.seekerComplete == false && r.providerComplete == true)
+                    @if (r.seekerComplete == true && r.providerComplete == false)
                     {
                       <span class="text-info p-2 rounded border border-info">Pending</span> ;
                     }
+                    else if (r.seekerComplete == false)
+                    {
+                      <span class="text-danger p-2 rounded border border-danger btn" onclick="completeJob('@r.SId')">Ongoing</span>;
+                    }
                     else
                     {
-                      <span class="text-warning p-2 rounded border border-warning">Ongoing</span>;
+                      <span class="text-warning p-2 rounded border border-warning btn">Ongoing</span>;
                     }
                   </div>
                 </div>
@@ -262,19 +273,100 @@
         </div>
         <div class="nonloop-block-16 owl-carousel">
           @*@foreach (var r in Model.recommend.Take(4))
-          {
-            <div class="border rounded p-4 bg-white">
-              <h2 class="h5">@r.title</h2>
-              <p style="cursor:pointer"><a href="~/Service/RequestList?status=0&selected=@r.title"><span class="text-info p-2 rounded border border-info">Recommend</span></a></p>
-              <p>
-                <span class="d-block"><span class="icon-suitcase"></span> @(r.Service_Category.SCId == r.Category? r.Service_Category.name: "-" )</span>
-                <span class="d-block"><span class="icon-room"></span> @(r.address==null? "-" : r.address)</span>
-                <span class="d-block"><span class="icon-money mr-1"></span> RM @r.price </span>
-              </p>
-              <p class="mb-0">@r.description</p>
-            </div>
-          }*@
+            {
+              <div class="border rounded p-4 bg-white">
+                <h2 class="h5">@r.title</h2>
+                <p style="cursor:pointer"><a href="~/Service/RequestList?status=0&selected=@r.title"><span class="text-info p-2 rounded border border-info">Recommend</span></a></p>
+                <p>
+                  <span class="d-block"><span class="icon-suitcase"></span> @(r.Service_Category.SCId == r.Category? r.Service_Category.name: "-" )</span>
+                  <span class="d-block"><span class="icon-room"></span> @(r.address==null? "-" : r.address)</span>
+                  <span class="d-block"><span class="icon-money mr-1"></span> RM @r.price </span>
+                </p>
+                <p class="mb-0">@r.description</p>
+              </div>
+            }*@
 
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modal_rate" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Rate and Comment</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body well horizontal">
+          <div id="rate_modal_msg"></div>
+          <div class="row align-items-center pt-4 pb-3">
+            <div class="col-md-3 ps-5">
+              <label class="col-md-4">Service ID</label>
+            </div>
+            <div class="col-md-9 pe-5">
+              <label id="modal_rate_id"></label>
+            </div>
+          </div>
+          <div class="row align-items-center pt-4 pb-3">
+            <div class="col-md-3 ps-5">
+              <label class="col-md-4 control-label">Efficiency</label>
+            </div>
+            <div class="col-md-9 pe-5" id="rate_efficiency">
+              <i class="fa fa-star fa-3x rate yellow"></i>
+              <i class="fa fa-star fa-3x rate yellow"></i>
+              <i class="fa fa-star fa-3x rate yellow"></i>
+              <i class="fa fa-star fa-3x rate yellow"></i>
+              <i class="fa fa-star fa-3x rate yellow"></i>
+            </div>
+          </div>
+          <div class="row align-items-center pt-4 pb-3">
+            <div class="col-md-3 ps-5">
+              <label class="col-md-4 control-label">Professionalism</label>
+            </div>
+            <div class="col-md-9 pe-5" id="rate_professionalism">
+              <i class="fa fa-star fa-3x rate yellow"></i>
+              <i class="fa fa-star fa-3x rate yellow"></i>
+              <i class="fa fa-star fa-3x rate yellow"></i>
+              <i class="fa fa-star fa-3x rate yellow"></i>
+              <i class="fa fa-star fa-3x rate yellow"></i>
+            </div>
+          </div>
+          <div class="row align-items-center pt-4 pb-3">
+            <div class="col-md-3 ps-5">
+              <label class="col-md-4 control-label">Quality</label>
+            </div>
+            <div class="col-md-9 pe-5" id="rate_quality">
+              <i class="fa fa-star fa-3x rate yellow"></i>
+              <i class="fa fa-star fa-3x rate yellow"></i>
+              <i class="fa fa-star fa-3x rate yellow"></i>
+              <i class="fa fa-star fa-3x rate yellow"></i>
+              <i class="fa fa-star fa-3x rate yellow"></i>
+            </div>
+          </div>
+          <div class="row align-items-center pt-4 pb-3">
+            <div class="col-md-3 ps-5">
+              <label class="col-md-4 control-label">Attitude</label>
+            </div>
+            <div class="col-md-9 pe-5" id="rate_attitude">
+              <i class="fa fa-star fa-3x rate yellow"></i>
+              <i class="fa fa-star fa-3x rate yellow"></i>
+              <i class="fa fa-star fa-3x rate yellow"></i>
+              <i class="fa fa-star fa-3x rate yellow"></i>
+              <i class="fa fa-star fa-3x rate yellow"></i>
+            </div>
+          </div>
+          <div class="row align-items-center pt-4 pb-3">
+            <div class="col-md-3 ps-5">
+              <label class="col-md-4 control-label">Comment</label>
+            </div>
+            <div class="col-md-9 pe-5">
+              <textarea id="modal_rate-comment" class="form-control" type="text"></textarea>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" id="rate_btn_save" onclick="comment()" class="btn btn-primary">Submit</button>
+          </div>
         </div>
       </div>
     </div>
@@ -430,6 +522,74 @@
       });
     }
 
+    function completeJob(sid) {
+      $.ajax({
+        url: '/Service/SeekerCompleteJob',
+        data: JSON.stringify({
+          model: {
+            Seeker: $('#email').text(),
+            JobID: sid
+          }
+        }),
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        success: data => {
+          openModal(sid);
+          alert("You have completed this service.");
+        },
+        error: function (response) {
+          alert("Something went wrong. Please try again.");
+        }
+      });
+    }
 
+    function comment() {
+
+      var data = {};
+      data.JobID = $("#modal_rate_id").html();
+      data.job_comment = $("#modal_rate-comment").val();
+      data.Efficiency = $("#rate_efficiency").find(".fa.fa-star.yellow").length;
+      data.Attitude = $("#rate_attitude").find(".fa.fa-star.yellow").length;
+      data.Profesionalism = $("#rate_professionalism").find(".fa.fa-star.yellow").length;
+      data.Quality = $("#rate_quality").find(".fa.fa-star.yellow").length;
+
+      $.ajax({
+          type: "POST",
+          contentType: "application/json; charset=utf-8",
+          data:  JSON.stringify(data),
+          url: "/Service/CommentAndRateJob",
+          success: function (success) {
+            console.log(success.d);
+            $("#rate_modal_msg").html(success.Message);
+            $("#rate_modal_msg").addClass("text-success");
+            $("modal_rate").modal("hide");
+          },
+          error: function (result) {
+              $("#rate_modal_msg").html(result.Error);
+          }
+      })
+    }
+
+    $(".rate").on("click", function () {
+
+      console.log("Hello");
+      if ($(this).hasClass("yellow")) {
+        console.log("Yellow");
+        $(this).removeClass("yellow");
+        $(this).addClass("gray");
+      }
+      else {
+        console.log("Grey");
+        $(this).addClass("yellow");
+        $(this).removeClass("gray");
+      }
+      
+
+    });
+
+    function openModal(sid) {
+      $("#modal_rate").modal("show");
+      $("#modal_rate_id").html(sid);
+    }
   </script>
 }

@@ -43,6 +43,7 @@ namespace fyptest.Controllers
           seeker.phone = model.Phone;
           seeker.email = model.Email;
           seeker.walletAmount = 0;
+          seeker.status = 1;
           //Upload file
           var path = "~/UploadedDocument/" + model.Email;
           var docPath = path;

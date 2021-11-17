@@ -84,6 +84,7 @@
           <Property Name="STId" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="RId" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="reset_pwd" Type="nvarchar(max)" />
+          <Property Name="postNamecard" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Rating">
           <Key>
@@ -515,6 +516,7 @@
           <NavigationProperty Name="Service_Type" Relationship="ServerDBModel.FK_Provider_ServiceType" FromRole="Provider" ToRole="Service_Type" />
           <NavigationProperty Name="Requests" Relationship="ServerDBModel.FK_Request_Provider" FromRole="Provider" ToRole="Request" />
           <Property Name="reset_pwd" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="postNamecard" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="Rating">
           <Key>
@@ -814,6 +816,7 @@
           <EntitySetMapping Name="Providers">
             <EntityTypeMapping TypeName="ServerDBModel.Provider">
               <MappingFragment StoreEntitySet="Provider">
+                <ScalarProperty Name="postNamecard" ColumnName="postNamecard" />
                 <ScalarProperty Name="reset_pwd" ColumnName="reset_pwd" />
                 <ScalarProperty Name="RId" ColumnName="RId" />
                 <ScalarProperty Name="STId" ColumnName="STId" />
