@@ -1,0 +1,232 @@
+@using fyptest.Models
+@model Request
+@{
+  ViewBag.Title = "Tracking";
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section head{
+  <style>
+    #app {
+      height: 500px;
+    }
+
+    #map {
+      height: 100%;
+    }
+
+    [v-cloak] {
+      display: none;
+    }
+
+    .fade-enter-active, .fade-leave-active {
+      transition: opacity .5s;
+    }
+
+    .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+      opacity: 0;
+    }
+  </style>
+}
+
+<div style="height: 113px;"></div>
+
+<div class="unit-5 overlay" style="background-image: url('../../Image/Background/hero_2.jpg');">
+  <div class="container text-center">
+    <h2 class="mb-0">Tracking</h2>
+    <a href="index.html">Home</a> <span class="sep">></span>
+    <a href="/JobProvider/ProviderProfile">Profile</a> <span class="sep"> > </span>
+    <a href="/Service/RequestList?status=1">Requests</a> <span class="sep"> > </span>
+    <span>Tracking</span>
+  </div>
+</div>
+
+<div class="site-section bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 mb-1 mb-md-5">
+
+        <div id="app" v-cloak>
+          <div class="rounded border jobs-wrap">
+            <div class="job-item d-block d-md-flex align-items-center  border-bottom fulltime">
+              <div class="company-logo blank-logo text-center text-md-left pl-3">
+                <img src="~/Content/main/images/company_logo_blank.png" alt="Image" class="img-fluid mx-auto">
+              </div>
+              <div class="job-details h-100">
+                <div class="p-3 align-self-center">
+                  <h3>@Model.title</h3>
+                  <div class="d-block d-lg-flex">
+                    <div class="mr-3">
+                      <span class="icon-suitcase mr-1"></span>
+                      @(Model.Service_Category.SCId == Model.Category? Model.Service_Category.name: "-" )
+                    </div>
+                    <div class="mr-3"><span class="icon-room mr-1"></span>@(Model.address==null? "-" : Model.address)</div>
+                    <div><span class="icon-money mr-1"></span>  RM @Model.price </div>
+                  </div>
+                </div>
+              </div>
+              <div class="job-category align-self-center">
+                <div class="p-1">
+                  <transition name="fade">
+                    <p style="cursor:pointer" v-if="!tracking">
+                      <span class="text-success p-2 rounded border border-success" v-on:click="startLocationUpdates">
+                        Enable Tracking
+                      </span>
+                    </p>
+                    <p style="cursor:pointer" v-else>
+                      <span class="text-danger p-2 rounded border border-danger" v-on:click="stopLocationUpdates">
+                        Disable Tracking
+                      </span>
+                    </p>
+                  </transition>
+                </div>
+              </div>
+            </div>
+          </div>
+          {{ tm }}
+          <br />
+          <div id="map" ref="map"></div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@section foot {
+  @*<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>*@
+  <script src="~/Scripts/vue.js"></script>
+  <script src="~/Scripts/vuefire.js"></script>
+  @*<script src="https://www.gstatic.com/firebasejs/7.21.0/firebase.js"></script>*@
+  <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-firestore.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=&libraries=places"></script>
+
+  <script>
+    //init firebase
+    //var config  = {
+    //  apiKey: "AIzaSyBjGc-5LcQz42Fc6eAGQxpDLxdpOJVNcSY",
+    //  authDomain: "rit3mwxccx-fyp.firebaseapp.com",
+    //  databaseURL: "https://rit3mwxccx-fyp-default-rtdb.asia-southeast1.firebasedatabase.app",
+    //  projectId: "rit3mwxccx-fyp",
+    //  storageBucket: "rit3mwxccx-fyp.appspot.com",
+    //  messagingSenderId: "150878204903",
+    //  appId: "1:150878204903:web:7a62d43231189aa8240342"
+    //};
+
+    firebase.initializeApp({
+      projectId: "rit3mwxccx-fyp",
+      storageBucket: 'gs://rit3mwxccx-fyp.appspot.com'
+    });
+
+    const db = firebase.firestore().collection('map');
+    const geopoint = firebase.firestore.GeoPoint;
+    const gm = google.maps;
+
+    Vue.use(Vuefire.firestorePlugin);
+
+
+    const app = new Vue({
+      el: '#app',
+      data: {
+        tm: 'testmessage',
+        //======
+        map: '',
+        trackMarker: null,
+        lat: 0,
+        lng: 0,
+        watchPositionId: null,
+        id: '',
+        center: 0,
+
+        tracking: false
+      },
+      async mounted() {
+        
+        //init google map
+        this.map = new gm.Map(this.$refs.map, {
+          zoom: 16,
+          center: new gm.LatLng(3.214957, 101.728436),
+          mapTypeId: gm.MapTypeId.ROADMAP
+        });
+       
+       //init marker
+        //const destMarker = new gm.Marker({
+        //  map: this.map,
+        //  position: { lat: 3.214957, lng: 101.728436 }
+        //});
+
+
+      },
+
+      methods: {
+        startLocationUpdates() {
+
+          this.tracking = true;
+
+          this.trackMarker = new gm.Marker({
+            map: this.map
+          });
+
+          //start real time track
+          this.watchPositionId = navigator.geolocation.watchPosition(
+            position => {
+              this.lat = position.coords.latitude;
+              this.lng = position.coords.longitude;
+
+              this.map.setCenter(new gm.LatLng(this.lat, this.lng));
+              this.trackMarker.setPosition(new gm.LatLng(this.lat, this.lng));
+              this.updateLocation(this.lat, this.lng);
+            },
+            error => {
+              console.log(error.message);
+            }
+          )
+        },
+        //stop tracking
+        stopLocationUpdates() {
+          this.tracking = false;
+          navigator.geolocation.clearWatch(this.watchPositionId);
+        },
+        updateLocation(lat, lng) {
+          //update location
+          db.doc('@Model.SId').set({
+            location: new geopoint(lat, lng)
+          });
+        }
+      },
+      created() {
+        
+      }
+    });
+
+    // ====================================================================
+    // Google Maps
+    // ====================================================================
+
+
+    @*const gm = google.maps;
+
+    const center = { lat: 3.214957, lng: 101.728436 };
+
+    const map = new gm.Map($('#map')[0], {
+      center,
+      zoom: 16,
+      disableDefaultUI: true,
+      clickableIcons: false,
+      scaleControl: true,
+      fullscreenControl: true,
+      zoomControl: true,
+      disableDoubleClickZoom: true,
+      mapTypeId: 'roadmap'
+    });
+
+    const searchBox = new google.maps.places.SearchBox(@Model.address);*@
+
+  </script>
+
+  @*<script src="~/Scripts/app/tracking/main.js"></script>*@
+  @*<script src="~/Scripts/bundle/tracking.js"></script>*@
+}
+

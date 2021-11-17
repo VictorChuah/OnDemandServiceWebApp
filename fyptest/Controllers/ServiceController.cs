@@ -326,6 +326,18 @@ namespace fyptest.Controllers
       return Json(new { Message = "Failed to apply. Please try again.", JsonRequestBehavior.AllowGet });
     }
 
+    public ActionResult Tracking(string requestId)
+    {
+      var r = db.Requests.Find(requestId);
+
+      if (r?.status != 1)
+      {
+        TempData["Info"] = "Tracking is unavailable or expired";
+        return RedirectToAction("RequestList", "Service", new { status = 1 } );
+      }
+      return View(r);
+    }
+
     [HttpPost]
     public JsonResult ProviderCompleteJob(JobViewModel model)
     {

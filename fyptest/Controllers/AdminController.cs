@@ -264,7 +264,22 @@ namespace fyptest.Controllers
           IsBodyHtml = true
         })
 
+      if (p != null)
+      {
+        var d = db.Documents.Where(h => h.holder == id);
 
+        var data = new AdminApprovalVM
+        {
+          Email = p.email,
+          Phone = p.phone,
+          Address = p.address,
+          CompanyIndividual = p.companyIndividual,
+          Name = p.name,
+          CompanyName = p.companyName,
+          ServiceType = p.Service_Type.name,
+          ProfileImage = p.profileImage,
+          document = d
+        };
 
           smtp.Send(message);
       }
@@ -305,6 +320,12 @@ namespace fyptest.Controllers
 
         else if (admin.Count() > 0 && admin != null)
         {
+      var user = db.Providers.Find(email);
+
+      string name = "";
+      name = user.name != null ? user.name : user.companyName;
+
+      var m = new MailMessage();
 
           var logindetails = admin.First();
           // Login In.    
@@ -350,5 +371,7 @@ namespace fyptest.Controllers
       return RedirectToAction("Index", "Home");
     }
 
-  }
+    //@Html.ActionLink("Document", "DownloadFile", new { filename = Model.File })
+    }
+
 }

@@ -1,0 +1,38 @@
+@using fyptest.Models
+@model ServiceCRUDVM 
+
+@{
+  ViewBag.Title = "ServiceCRUD";
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="height: 113px;"></div>
+
+<div class="unit-5 overlay" style="background-image: url('../../Image/Background/hero_1.jpg');">
+  <div class="container text-center">
+    <h2 class="mb-0">Modify Services</h2>
+    <p class="mb-0 unit-6"><a href="index.html">Home</a> <span class="sep">></span> <span>Modify Service</span></p>
+  </div>
+</div>
+
+<div class="site-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 mx-auto text-center mb-5 section-heading">
+        <h2 class="mb-5">Services Types</h2>
+      </div>
+    </div>
+    <div class="row">
+      @foreach (var p in Model.Types)
+      {
+        <div class="col-sm-6 col-md-4 col-lg-3 mb-3" data-aos="fade-up" data-aos-delay="100">
+          <a href="#" class="h-100 feature-item">
+            <span><img src="~/Image/Background/plumbing1.png" /></span>
+            @*<h2> @(p.name != null? p.name : p.companyName)</h2>
+            <span class="counting">@p.Service_Type.name</span>*@
+          </a>
+        </div>}
+    </div>
+  </div>
+</div>
+
