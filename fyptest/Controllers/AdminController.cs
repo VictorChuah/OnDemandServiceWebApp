@@ -294,6 +294,7 @@ namespace fyptest.Controllers
       return View();
     }
 
+
       //
     // POST: /Account/Login
     [HttpPost]
@@ -368,7 +369,24 @@ namespace fyptest.Controllers
       return RedirectToAction("Index", "Home");
     }
 
-      //@Html.ActionLink("Document", "DownloadFile", new { filename = Model.File })
+    //@Html.ActionLink("Document", "DownloadFile", new { filename = Model.File })
+
+    public ActionResult Logout()
+    {
+      var ctx = Request.GetOwinContext();
+      var authenticationManager = ctx.Authentication;
+
+      //AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+      //Sign out
+      authenticationManager.SignOut();
+      Session.Clear();
+      Session.Abandon();
+      if (!string.IsNullOrEmpty(Convert.ToString(Session["Email"])))
+      {
+        return RedirectToAction("Index", "Home");
+      }
+      return RedirectToAction("Index", "Home");
+    }
   }
 
 }
