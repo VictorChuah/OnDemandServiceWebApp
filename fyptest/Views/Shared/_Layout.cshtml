@@ -222,19 +222,41 @@
                                         <li><a href="/JobProvider/RegisterProvider">Sign Up</a></li> }
 
 
-                                              }
-                                              else
-                                              {
-                                                <li><a href="/JobProvider/ProviderLogin">Sign In</a></li>
-                                                <li><a href="/JobProvider/RegisterProvider">Sign Up</a></li>
-                                              }
+                            }
+                            else
+                            {
+                              <li><a href="/JobProvider/ProviderLogin">Sign In</a></li>
+                              <li><a href="/JobProvider/RegisterProvider">Sign Up</a></li>
+                            }
                         </ul>
                       </li>
                       <li class="has-children">
                         <a href="#">For Admin</a>
                         <ul class="dropdown arrow-top">
-                          <li><a href="/Admin/AdminLogin">Sign In</a></li>
-                          <li><a href="#">Sign Up</a></li>
+                          @if (Session["Role"] != null && Session["Email"] != null)
+                          {
+                            if (Session["Role"].ToString() == "Provider")
+                            {
+                              using (Html.BeginForm("Logout", "Admin", FormMethod.Post, new { id = "logoutForm", role = "form", style = "padding:5px 20px;width:200px;" }))
+                              {
+                        <li>
+                          <a href="javascript:document.getElementById('logoutForm').submit()">Log out</a>
+                        </li>
+                      }
+                    }
+                    else
+                    {
+                        <li><a href="/Admin/AdminLogin">Sign In</a></li>
+                                  <li><a href="#"> Sign Up </a></li>
+                                }
+
+                              }
+                              else
+                              {
+                                <li><a href="/Admin/AdminLogin">Sign In</a></li>
+                                <li><a href="#"> Sign Up </a></li>
+                              }
+
                         </ul>
                       </li>
                       <li><a href="/Home/Contact/">Contact</a></li>
