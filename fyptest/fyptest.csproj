@@ -879,6 +879,10 @@
     <Content Include="Views\Admin\AdminProviderView.cshtml" />
     <Content Include="Views\Admin\ApprovalDetail.cshtml" />
     <Content Include="Views\Admin\AdminSeekerView.cshtml" />
+    <Content Include="Views\Admin\SeekerApprovalDetail.cshtml" />
+    <Content Include="Views\Admin\AdminServiceView.cshtml" />
+    <Content Include="Views\Admin\AdminInProgressServiceView.cshtml" />
+    <Content Include="Views\Admin\RequestDetail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

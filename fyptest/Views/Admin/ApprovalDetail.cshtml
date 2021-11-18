@@ -6,6 +6,213 @@
   Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div style="height: 113px;"></div>
-<h2>ApprovalDetail</h2>
 
-@Model.email
+<div class="unit-5 overlay" style="background-image: url('../../Image/Background/hero_2.jpg');">
+  <div class="container text-center">
+    <h2 class="mb-0">Provider Profile</h2>
+    <p class="mb-0 unit-6"><a href="index.html">Home</a> <span class="sep">></span> <span>Provider Profile</span></p>
+  </div>
+</div>
+
+<!-- Page Content -->
+
+<div class="site-section bg-light">
+  <div class="container">
+    @*top*@
+    <div class="row">
+      @*left panel*@
+      <div class="col-md-12 col-lg-8 mb-5">
+        <div class="p-5 bg-white">
+          <div class="row form-group">
+            <div class="col-md-12 mb-3 mb-md-0">
+              <label class="font-weight-bold" for="email">Email</label>
+              <p class="mb-4" id="email">@Model.Email</p>
+            </div>
+          </div>
+
+          <div class="row form-group">
+            <div class="col-md-12 mb-3 mb-md-0">
+              <label class="font-weight-bold" for="phone">Phone</label>
+              <p class="mb-4" id="phone">@Model.Phone</p>
+            </div>
+          </div>
+
+          <div class="row form-group">
+            <div class="col-md-12 mb-3 mb-md-0">
+              <label class="font-weight-bold" for="Address">Address</label>
+              <p class="mb-4" id="address">@Model.Address</p>
+            </div>
+          </div>
+
+          @if (@Model.CompanyIndividual)
+          {
+            <div class="row form-group">
+              <div class="col-md-12">
+                <label class="font-weight-bold" for="name">Name</label>
+                <p class="mb-4">@Model.Name</p>
+              </div>
+            </div> }
+          else if (!@Model.CompanyIndividual)
+          {
+            <div class="row form-group">
+              <div class="col-md-12">
+                <label class="font-weight-bold" for="companyName">Company Name</label>
+                <p class="mb-4">@Model.CompanyName</p>
+              </div>
+            </div>}
+
+          <div class="row form-group">
+            <div class="col-md-12">
+              <label class="font-weight-bold" for="serviceType">Services</label>
+              <p class="mb-4">@Model.ServiceType</p>
+            </div>
+          </div>
+
+          <div class="row form-group">
+            <div class="col-md-12">
+              <label class="font-weight-bold" for="document">Documents</label>
+              <br />
+              @foreach (var item in Model.document)
+              {
+                <p class="mb-4 btn btn-info pill" onclick="window.open('/UploadedFiles/@item.file');" target="_blank">@item.file</p>
+                <br />
+              }
+
+            </div>
+          </div>
+
+          @*<div class="row form-group">
+            <div class="col-md-3">
+              <label class="font-weight-bold" for="attitude">Attitude</label>
+              @switch (Model.Attitude)
+              {
+                case 1:<p class="mb-4"> &#9733;&#9734;&#9734;&#9734;&#9734; </p> ; break;
+                case 2: <p class="mb-4"> &#9733;&#9733;&#9734;&#9734;&#9734;</p> ; break;
+                case 3: <p class="mb-4"> &#9733;&#9733;&#9733;&#9734;&#9734; </p> ; break;
+                case 4: <p class="mb-4"> &#9733;&#9733;&#9733;&#9733;&#9734; </p> ; break;
+                case 5: <p class="mb-4"> &#9733;&#9733;&#9733;&#9733;&#9733; </p> ; break;
+                default: <p class="mb-4"> &#9734;&#9734;&#9734;&#9734;&#9734; </p>; break;
+              }
+            </div>
+            <div class="col-md-3">
+              <label class="font-weight-bold" for="quality">Quality</label>
+              @switch (Model.Quality)
+              {
+                case 1:<p class="mb-4"> &#9733;&#9734;&#9734;&#9734;&#9734; </p> ; break;
+                case 2: <p class="mb-4"> &#9733;&#9733;&#9734;&#9734;&#9734;</p> ; break;
+                case 3: <p class="mb-4"> &#9733;&#9733;&#9733;&#9734;&#9734; </p> ; break;
+                case 4: <p class="mb-4"> &#9733;&#9733;&#9733;&#9733;&#9734; </p> ; break;
+                case 5: <p class="mb-4"> &#9733;&#9733;&#9733;&#9733;&#9733; </p> ; break;
+                default: <p class="mb-4"> &#9734;&#9734;&#9734;&#9734;&#9734; </p>; break;
+              }
+            </div>
+            <div class="col-md-3">
+              <label class="font-weight-bold" for="efficiency">Efficiency</label>
+              @switch (Model.Efficiency)
+              {
+                case 1:<p class="mb-4"> &#9733;&#9734;&#9734;&#9734;&#9734; </p> ; break;
+                case 2: <p class="mb-4"> &#9733;&#9733;&#9734;&#9734;&#9734;</p> ; break;
+                case 3: <p class="mb-4"> &#9733;&#9733;&#9733;&#9734;&#9734; </p> ; break;
+                case 4: <p class="mb-4"> &#9733;&#9733;&#9733;&#9733;&#9734; </p> ; break;
+                case 5: <p class="mb-4"> &#9733;&#9733;&#9733;&#9733;&#9733; </p> ; break;
+                default: <p class="mb-4"> &#9734;&#9734;&#9734;&#9734;&#9734; </p>; break;
+              }
+            </div>
+            <div class="col-md-3">
+              <label class="font-weight-bold" for="professionalism">Professionalism</label>
+              @switch (Model.Professionalism)
+              {
+                case 1:<p class="mb-4"> &#9733;&#9734;&#9734;&#9734;&#9734; </p> ; break;
+                case 2: <p class="mb-4"> &#9733;&#9733;&#9734;&#9734;&#9734;</p> ; break;
+                case 3: <p class="mb-4"> &#9733;&#9733;&#9733;&#9734;&#9734; </p> ; break;
+                case 4: <p class="mb-4"> &#9733;&#9733;&#9733;&#9733;&#9734; </p> ; break;
+                case 5: <p class="mb-4"> &#9733;&#9733;&#9733;&#9733;&#9733; </p> ; break;
+                default: <p class="mb-4"> &#9734;&#9734;&#9734;&#9734;&#9734; </p>; break;
+              }
+            </div>
+          </div>*@
+
+          <div class="row form-group">
+            <div class="col-md-12">
+              @if (Model.Status == "0")
+              {
+                <input type="button" value="Approve Provider" class="btn btn-primary pill px-4 py-2" id="approve">
+                <input type="button" value="Block Provider" class="btn btn-danger pill px-4 py-2" id="block" style="display:none;">
+              }
+              else
+              {
+            <input type="button" value="Approve Provider" class="btn btn-primary pill px-4 py-2" id="approve" style="display:none;">
+            <input type="button" value="Block Provider" class="btn btn-danger pill px-4 py-2" id="block">
+          }
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      @*right panel*@
+      <div class="col-lg-4">
+        <div class="p-4 mb-3 bg-white">
+          <h3 class="h5 text-black mb-3">Profile Image</h3>
+          <form enctype="multipart/form-data" name="file">
+            <label class="text-info p-2 rounded border border-info" id="upload">
+              <input type="file" id="file" name="file" accept="image/jpeg,image/png,image/jpg" hidden="" />
+              @*@Html.TextBoxFor(m => m.ProfileImage, new { type = "file", accept = "image/jpeg,image/png,image/jpg", hidden = "" })*@
+              <img src="~/Image/Profile/@Model.ProfileImage" />
+              <br />
+            </label>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+@section foot {
+  @Scripts.Render("~/bundles/jqueryval")
+  <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+  <script>
+
+    $("#approve").on("click", function () {
+      $.ajax({
+          type: "POST",
+          contentType: "application/json; charset=utf-8",
+        data: "{'provider_id':'" + $("#email").html()+"'}",
+          url: '/Admin/ApproveProvider',
+          success: function (success) {
+            alert(success.Message);
+            $("#approve").hide();
+            $("#block").show();
+          },
+          error: function (result) {
+              alert(result.Error);
+          }
+      })
+    });
+
+    $("#block").on("click", function () {
+      $.ajax({
+          type: "POST",
+          contentType: "application/json; charset=utf-8",
+        data: "{'provider_id':'" + $("#email").html()+"'}",
+        url: '/Admin/BlockProvider',
+          success: function (success) {
+            alert(success.Message);
+            $("#block").hide();
+            $("#approve").show();
+          },
+          error: function (result) {
+              alert(result.Error);
+          }
+      })
+    });
+
+
+
+  </script>
+}
+

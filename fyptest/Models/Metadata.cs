@@ -47,6 +47,7 @@ namespace fyptest.Models
     public string CompanyName { get; set; }
     public string ServiceType { get; set; }
     public string ProfileImage { get; set; }
+    public string Status { get; set; }
     public IEnumerable<Document> document { get; set; }
   }
 
@@ -66,9 +67,12 @@ namespace fyptest.Models
     public string Image { get; set; }
     public string File { get; set; }
     public DateTime? DateCreated { get; set; }
+    public DateTime? DateCompleted { get; set; }
     public double Price { get; set; }
     public string Category { get; set; }
     public int Status { get; set; }
+    public string Seeker { get; set; }
+    public string Provider { get; set; }
     public bool? SeekerComplete { get; set; }
     public bool? ProviderComplete { get; set; }
   }

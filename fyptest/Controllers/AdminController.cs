@@ -25,14 +25,26 @@ namespace fyptest.Controllers
     // GET: Admin
     public ActionResult AdminProviderView()
     {
-      var data = db.Providers.Where(s => s.status == 1);
+      var data = db.Providers.ToList();
       return View(data);
 
     }
 
     public ActionResult AdminSeekerView()
     {
-      var data = db.Seekers.Where(s => s.status == 1);
+      var data = db.Seekers.ToList();
+      return View(data);
+    }
+
+    public ActionResult AdminServiceView()
+    {
+      var data = db.Requests.ToList();
+      return View(data);
+    }
+
+    public ActionResult AdminInProgressServiceView()
+    {
+      var data = db.Requests.Where(m =>m.status==1).ToList();
       return View(data);
     }
 
@@ -42,7 +54,7 @@ namespace fyptest.Controllers
 
       if (p != null)
       {
-        var d = db.Documents.Where(h => h.holder == id);
+        var d = db.Documents.Where(h => h.holder == id).ToList();
 
         var data = new AdminApprovalVM
         {
@@ -54,6 +66,7 @@ namespace fyptest.Controllers
           CompanyName = p.companyName,
           ServiceType = p.Service_Type.name,
           ProfileImage = p.profileImage,
+          Status = p.status.ToString(),
           document = d
         };
 
@@ -62,7 +75,121 @@ namespace fyptest.Controllers
       }
 
       TempData["Info"] = "Invalid ID";
-      return RedirectToAction("ApprovalList", "Admin");
+      return RedirectToAction("AdminProviderView", "Admin");
+    }
+    public ActionResult SeekerApprovalDetail(string id)
+    {
+      var p = db.Seekers.Find(id);
+
+      if (p != null)
+      {
+        var data = new AdminApprovalVM
+        {
+          Email = p.email,
+          Phone = p.phone,
+          Name = p.name,
+          ProfileImage = p.profileImage,
+          Status = p.status.ToString()
+        };
+        return View(data);
+      }
+
+      TempData["Info"] = "Invalid ID";
+      return RedirectToAction("AdminSeekerView", "Admin");
+    }
+
+    public ActionResult RequestDetail(string id)
+    {
+      var p = db.Requests.Find(id);
+
+      if (p != null)
+      {
+        var data = new RequestDetail
+        {
+          Title = p.title,
+          Price = p.price,
+          Seeker = p.Seeker,
+          Provider = p.Provider,
+          Id = p.SId,
+          Address = p.address,
+          Image = p.image,
+          Description = p.description,
+          File = p.file,
+          DateCreated = p.dateCreated,
+          Category = p.Category,
+          DateCompleted = p.dateCompleted,
+          Status = p.status,
+        };
+        return View(data);
+      }
+
+      TempData["Info"] = "Invalid ID";
+      return RedirectToAction("AdminRequestView", "Admin");
+    }
+
+
+    [HttpPost]
+    public ActionResult ApproveProvider(string provider_id)
+    {
+      var provider = db.Providers.Where(m => m.email == provider_id).FirstOrDefault();
+      provider.status = 1;
+      try
+      {
+        db.SaveChanges();
+        return Json(new { Message = provider_id+" is activated.", JsonRequestBehavior.AllowGet });
+      }
+      catch(Exception e)
+      {
+        return Json(new { Message = "Failed to update. "+e.Message, JsonRequestBehavior.AllowGet });
+      }
+    }
+
+    [HttpPost]
+    public ActionResult BlockProvider(string provider_id)
+    {
+      var provider = db.Providers.Where(m => m.email == provider_id).FirstOrDefault();
+      provider.status = 0;
+      try
+      {
+        db.SaveChanges();
+        return Json(new { Message = provider_id+" is blocked.", JsonRequestBehavior.AllowGet });
+      }
+      catch(Exception e)
+      {
+        return Json(new { Message = "Failed to update. "+e.Message, JsonRequestBehavior.AllowGet });
+      }
+    }
+
+    [HttpPost]
+    public ActionResult ApproveSeeker(string seeker_id)
+    {
+      var seeker = db.Seekers.Where(m => m.email == seeker_id).FirstOrDefault();
+      seeker.status = 1;
+      try
+      {
+        db.SaveChanges();
+        return Json(new { Message = seeker_id + " is activated.", JsonRequestBehavior.AllowGet });
+      }
+      catch(Exception e)
+      {
+        return Json(new { Message = "Failed to update. "+e.Message, JsonRequestBehavior.AllowGet });
+      }
+    }
+
+    [HttpPost]
+    public ActionResult BlockSeeker(string seeker_id)
+    {
+      var provider = db.Seekers.Where(m => m.email == seeker_id).FirstOrDefault();
+      provider.status = 0;
+      try
+      {
+        db.SaveChanges();
+        return Json(new { Message = seeker_id + " is blocked.", JsonRequestBehavior.AllowGet });
+      }
+      catch(Exception e)
+      {
+        return Json(new { Message = "Failed to update. "+e.Message, JsonRequestBehavior.AllowGet });
+      }
     }
     //private List<AdminUserView> getUserList()
     //{

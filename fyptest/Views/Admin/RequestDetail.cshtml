@@ -1,0 +1,65 @@
+@using fyptest.Models
+@model RequestDetail
+@{
+  ViewBag.Title = "RequestDetail";
+}
+
+<div style="height: 113px;"></div>
+
+<div class="unit-5 overlay" style="background-image: url(@Url.Content("~/Content/main/")images/hero_2.jpg);">
+  <div class="container text-center">
+    <h2 class="mb-0">@Model.Title</h2>
+    <p class="mb-0 unit-6"><a href="index.html">Home</a> <span class="sep">></span> <span>Job Item</span></p>
+  </div>
+</div>
+<div class="site-section bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 col-lg-8 mb-5">
+        <div class="p-5 bg-white">
+          <div class="mb-4 mb-md-5 mr-5">
+            <div class="job-post-item-header d-flex align-items-center">
+              <h2 class="mr-3 text-black h4">@Model.Title</h2>
+              <div class="badge-wrap">
+                <span class="border border-warning text-warning py-2 px-4 rounded">@Model.Category</span>
+              </div>
+            </div>
+            <div class="job-post-item-body d-block d-md-flex">
+              <div class="mr-3"><span class="fl-bigmug-line-portfolio23"></span> <a href="#">@Model.Address</a></div>
+              <div><span class="fl-bigmug-line-big104"></span> <span>@Model.Address</span></div>
+            </div>
+          </div>
+
+
+
+          <div class="img-border mb-5">
+            @*<a href="https://vimeo.com/28959265" class="popup-vimeo image-play">
+              <span class="icon-wrap">
+                <span class="icon icon-play"></span>
+              </span>*@
+            <img src="@Model.Image" alt="Image" class="img-fluid rounded">
+            @*</a>*@
+          </div>
+
+
+
+          <p>Category<br> @Model.Category</p>
+          
+
+          @if (Session["Email"] != null)
+          {
+            if (Session["Role"].ToString() == "Provider")
+            {
+              <p class="mt-5">
+                <div class="btn btn-primary  py-2 px-4" onclick="applyJob('@Model.Id');">Apply Job</div>
+                <a href='@Url.Action("Contact", "Chat",new { id=Model.Id})' style="text-decoration: none;" class="btn btn-info  py-2 px-4">Chat with seeker</a>
+              </p>
+            }
+          }
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
