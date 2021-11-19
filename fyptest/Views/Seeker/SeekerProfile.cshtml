@@ -56,15 +56,15 @@
             </div>
           </div>
 
-          <div class="row form-group">
+          @*<div class="row form-group">
             <div class="col-md-12 mb-3 mb-md-0">
               <label class="font-weight-bold" for="Address">Address</label>
               <p class="mb-4" id="address">@Model.accDetail.Address</p>
               <input type="text" id="editAddress" class="form-control" placeholder="Address" value=@Model.accDetail.Address required>
             </div>
-          </div>
+          </div>*@
 
-          @if (@Model.accDetail.CompanyIndividual)
+          @*@if (@Model.accDetail.CompanyIndividual)
           {
             <div class="row form-group">
               <div class="col-md-12">
@@ -137,7 +137,7 @@
                 default: <p class="mb-4"> &#9734;&#9734;&#9734;&#9734;&#9734; </p>; break;
               }
             </div>
-          </div>
+          </div>*@
 
           <div class="row form-group">
             <div class="col-md-12">
@@ -477,8 +477,8 @@
           data: JSON.stringify({
             model: {
               Email: $('#email').text(),
-              Phone: $('#editPhone').val(),
-              Address: $('#editAddress').val(),
+              Phone: $('#editPhone').val()
+              //Address: $('#editAddress').val(),
               //ProfileImage: file
             }
           }),
@@ -486,7 +486,7 @@
           contentType: 'application/json; charset=utf-8',
           success: data => {
             $('#phone').text(data.Phone);
-            $('#address').text(data.Address);
+            //$('#address').text(data.Address);
           },
           error: () => {
             $('#phone').text("error");

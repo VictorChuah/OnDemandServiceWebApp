@@ -302,6 +302,15 @@ namespace fyptest.Controllers
       model.Price = (double)job.price;
       model.Image = job.image;
       model.Seeker = job.Seeker;
+      model.Status = job.status.ToString();
+      if (job.file != null)
+      {
+        model.Files = job.file.Split('#');
+      }
+      else
+      {
+        model.Files = new List<string>();
+      }
       if (model.Image == null)
         model.Image = "/Service/noimage.jpg";
       //model.Contact = job.Contact;

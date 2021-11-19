@@ -34,28 +34,88 @@
 
           <div class="img-border mb-5">
             @*<a href="https://vimeo.com/28959265" class="popup-vimeo image-play">
-              <span class="icon-wrap">
-                <span class="icon icon-play"></span>
-              </span>*@
+      <span class="icon-wrap">
+        <span class="icon icon-play"></span>
+      </span>*@
             <img src="@Model.Image" alt="Image" class="img-fluid rounded">
             @*</a>*@
           </div>
 
 
 
-          <p>Category<br> @Model.Category</p>
-          
+          <div class="row form-group">
+            <div class="col-md-12 mb-3 mb-md-0">
+              <label class="font-weight-bold">Category</label>
+              <p class="mb-4">@Model.Category</p>
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-md-12 mb-3 mb-md-0">
+              <label class="font-weight-bold">Price</label>
+              <p class="mb-4">RM @Model.Price</p>
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-md-12 mb-3 mb-md-0">
+              <label class="font-weight-bold" for="phone">Job Type</label>
+              <p class="mb-4">RM @Model.Type</p>
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-md-12 mb-3 mb-md-0">
+              <label class="font-weight-bold" for="phone">Description</label>
+              <p class="mb-4">@Model.Description</p>
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-md-12 mb-3 mb-md-0">
+              <label class="font-weight-bold">Documents</label>
 
-          @if (Session["Email"] != null)
-          {
-            if (Session["Role"].ToString() == "Provider")
-            {
-              <p class="mt-5">
-                <div class="btn btn-primary  py-2 px-4" onclick="applyJob('@Model.Id');">Apply Job</div>
-                <a href='@Url.Action("Contact", "Chat",new { id=Model.Id})' style="text-decoration: none;" class="btn btn-info  py-2 px-4">Chat with seeker</a>
-              </p>
-            }
-          }
+              @if (Model.Files.Count() > 0)
+              {
+                foreach (var item in Model.Files)
+                {
+                  <br />
+                  if (item != "")
+                  {
+                    <p class="mb-4 btn btn-info pill" onclick="window.open('/UploadedDocument/@Model.Seeker/Job\@Model.Id/@item');" target="_blank">@item</p>
+                  }
+
+
+                }
+              }
+              else
+              {
+                <p class="mb-4">No document uploaded</p>
+              }
+
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-md-12 mb-3 mb-md-0">
+              <label class="font-weight-bold">Status</label>
+              @if (Model.Status == 0)
+              {
+                <div class="badge-wrap">
+                  <span class="border border-warning text-warning py-2 px-4 rounded">Pending Provider</span>
+                </div>
+              }
+              else if (Model.Status == 1)
+              {
+                <div class="badge-wrap">
+                  <span class="border border-info text-info py-2 px-4 rounded">In Progress</span>
+                </div>
+              }
+              else if (Model.Status == 2)
+              {
+                <div class="badge-wrap">
+                  <span class="border border-success text-success py-2 px-4 rounded">Completed</span>
+                </div>
+              }
+
+
+            </div>
+          </div>
 
         </div>
       </div>

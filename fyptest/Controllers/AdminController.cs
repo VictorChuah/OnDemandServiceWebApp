@@ -114,12 +114,20 @@ namespace fyptest.Controllers
           Address = p.address,
           Image = p.image,
           Description = p.description,
-          File = p.file,
           DateCreated = p.dateCreated,
+          Type = p.Type,
           Category = p.Category,
           DateCompleted = p.dateCompleted,
           Status = p.status,
         };
+        if(p.file != null)
+        {
+          data.Files = p.file.Split('#');
+        }
+        else
+        {
+          data.Files = new List<string>();
+        }
         return View(data);
       }
 

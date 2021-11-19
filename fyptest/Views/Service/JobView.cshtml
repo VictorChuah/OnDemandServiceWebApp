@@ -45,25 +45,86 @@
             @*</a>*@
           </div>
 
+          <div class="row form-group">
+            <div class="col-md-12 mb-3 mb-md-0">
+              <label class="font-weight-bold">Category</label>
+              <p class="mb-4">@Model.Category</p>
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-md-12 mb-3 mb-md-0">
+              <label class="font-weight-bold">Price</label>
+              <p class="mb-4">RM @Model.Price</p>
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-md-12 mb-3 mb-md-0">
+              <label class="font-weight-bold" for="phone">Job Type</label>
+              <p class="mb-4">RM @Model.SelectedType</p>
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-md-12 mb-3 mb-md-0">
+              <label class="font-weight-bold" for="phone">Description</label>
+              <p class="mb-4">@Model.Description</p>
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-md-12 mb-3 mb-md-0">
+              <label class="font-weight-bold">Documents</label>
+              @if (Model.Files.Count() > 0)
+              {
+                foreach (var item in Model.Files)
+                {
+                  <br />
+                  if (item != "")
+                  {
+                    <p class="mb-4 btn btn-info pill" onclick="window.open('/UploadedDocument/@Model.Seeker/Job\@Model.JobID/@item');" target="_blank">@item</p>
+                  }
+                }
+              }
+              else
+              {
+                <p class="mb-4">No document uploaded</p>
+              }
+
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-md-12 mb-3 mb-md-0">
+              <label class="font-weight-bold">Status</label>
+              @if (Model.Status == "0")
+              {
+                <div class="badge-wrap">
+                  <span class="border border-warning text-warning py-2 px-4 rounded">Pending Provider</span>
+                </div>
+              }
+              else if (Model.Status == "1")
+              {
+                <div class="badge-wrap">
+                  <span class="border border-info text-info py-2 px-4 rounded">In Progress</span>
+                </div>
+              }
+              else if (Model.Status == "2")
+              {
+                <div class="badge-wrap">
+                  <span class="border border-success text-success py-2 px-4 rounded">Completed</span>
+                </div>
+              }
 
 
-          <p>Category<br> @Model.Category</p>
-          <p>Qui corrupti animi, dignissimos veritatis, necessitatibus consequuntur nobis, placeat beatae dolorum ullam harum at atque dolor! Accusantium cupiditate ipsum placeat, vel voluptatibus non eaque, animi neque minima facere provident aspernatur!</p>
-          <p>Porro magni numquam ex natus repellat accusamus laborum blanditiis odit consequatur at veritatis nostrum provident recusandae dolores incidunt distinctio facere, nulla odio quo tempore libero! Voluptatum porro velit, qui optio.</p>
-          <p>Ducimus odio, fugiat pariatur. Corporis nobis perferendis voluptatum nostrum nesciunt, voluptates pariatur architecto consequatur! Praesentium dicta enim, laboriosam natus doloribus corrupti in sequi perferendis, cupiditate perspiciatis, porro animi sed impedit.</p>
-          <p>Illum possimus, enim eaque recusandae earum omnis tempore suscipit sapiente voluptas nam quia dicta, repellendus incidunt dolor dolores nemo laboriosam, quasi nulla deserunt neque est ipsam velit cumque. Quos, ipsum!</p>
-          <p>Dignissimos ipsa quibusdam id qui maiores magnam, nesciunt? Voluptatibus nulla quas itaque nostrum necessitatibus repudiandae quaerat facere, amet aperiam iste aspernatur ratione cupiditate est voluptates non. Suscipit corporis, soluta neque.</p>
-          <p>Pariatur itaque reiciendis consectetur, deserunt quam adipisci odio doloribus voluptatem laboriosam magni ut repellat tempore? Minus sit officia impedit veritatis reiciendis debitis iure, porro in quaerat inventore nisi sequi quos!</p>
+            </div>
+          </div>
 
           @if (Session["Email"] != null)
           {
-                if (Session["Role"].ToString() == "Provider")
-                {
-                <p class="mt-5">
-                  <div class="btn btn-primary  py-2 px-4" onclick="applyJob('@Model.JobID');">Apply Job</div>
-                  <a href='@Url.Action("Contact", "Chat",new { id=Model.JobID})' style="text-decoration: none;" class="btn btn-info  py-2 px-4">Chat with seeker</a>
-                </p>
-                }
+            if (Session["Role"].ToString() == "Provider")
+            {
+              <p class="mt-5">
+                <div class="btn btn-primary  py-2 px-4" onclick="applyJob('@Model.JobID');">Apply Job</div>
+                <a href='@Url.Action("Contact", "Chat",new { id=Model.JobID})' style="text-decoration: none;" class="btn btn-info  py-2 px-4">Chat with seeker</a>
+              </p>
+            }
           }
 
         </div>

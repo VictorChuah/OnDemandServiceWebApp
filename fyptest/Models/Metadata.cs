@@ -75,6 +75,8 @@ namespace fyptest.Models
     public string Provider { get; set; }
     public bool? SeekerComplete { get; set; }
     public bool? ProviderComplete { get; set; }
+    public IEnumerable<string> Files{ get; set; }
+    public string Type { get; set; }
   }
 
 
@@ -454,6 +456,7 @@ namespace fyptest.Models
     public string Provider { get; set; }
     public string Seeker { get; set; }
     public string Status { get; set; }
+    public IEnumerable<string> Files { get; set; }
   }
 
   public class Rate{
