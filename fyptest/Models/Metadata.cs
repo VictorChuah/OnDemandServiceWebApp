@@ -12,29 +12,36 @@ namespace fyptest.Models
   public class OverallAccVM
   {
     public AccountDetailVM accDetail { get; set; }
-    public IEnumerable<Request> requestDetail { get; set; }
-    public IEnumerable<Service_Category> categories { get; set; }
-    public IEnumerable<Request> recommend { get; set; }
+    public Provider Account { get; set; }
+    public Rating Rate { get; set; }
+    public IEnumerable<Request> RequestDetail { get; set; }
+    public IEnumerable<Service_Category> Categories { get; set; }
+    public IEnumerable<Request> Recommend { get; set; }
+    public string Role { get; set; }
+
   }
 
   public class AccountDetailVM
   {
     public string Email { get; set; }
     public string Phone { get; set; }
-    public string Address { get; set; }
-    public bool CompanyIndividual { get; set; }
+    //public string Address { get; set; }
+    //public bool CompanyIndividual { get; set; }
     public string Name { get; set; }
-    [Display(Name = "Company Name")]
-    public string CompanyName { get; set; }
-    [Display(Name = "Service")]
-    public string ServiceType { get; set; }
+    //[Display(Name = "Company Name")]
+    //public string CompanyName { get; set; }
+    //[Display(Name = "Service")]
+    //public string ServiceType { get; set; }
     public string ProfileImage { get; set; }
     public double? Wallet { get; set; }
-    public string Namecard { get; set; }
-    public int Attitude { get; set; }
-    public int Quality { get; set; }
-    public int Efficiency { get; set; }
-    public int Professionalism { get; set; }
+    //public string Namecard { get; set; }
+
+    //public int Attitude { get; set; }
+    //public int Quality { get; set; }
+    //public int Efficiency { get; set; }
+    //public int Professionalism { get; set; }
+    //public string Role { get; set; }
+
   }
 
   public class AdminApprovalVM
@@ -51,11 +58,11 @@ namespace fyptest.Models
     public IEnumerable<Document> document { get; set; }
   }
 
-  public class ServiceCRUDVM
-  {
-    public IEnumerable<Service_Type> Types { get ; set;}
-    public IEnumerable<Service_Category> Categories { get; set; }
-  }
+  //public class ServiceCRUDVM
+  //{
+  //  public IEnumerable<Service_Type> Types { get ; set;}
+  //  public IEnumerable<Service_Category> Categories { get; set; }
+  //}
 
   public class RequestDetail
   {
@@ -467,6 +474,17 @@ namespace fyptest.Models
     public string Quality { get; set; }
     public string Efficiency { get; set; }
     public string Profesionalism { get; set; }
+  }
+
+  public class ServiceCRUD
+  {
+    public IEnumerable<Service_Type> Types { get; set; }
+    public IEnumerable<Service_Category> Categories { get; set; }
+    public Service_Type Type { get; set; }
+    public Service_Category Category { get; set; }
+
+    //public ServiceTypeMod Type { get; set; }
+    //public ServiceCategoryMod Category { get; set; }
   }
 
 

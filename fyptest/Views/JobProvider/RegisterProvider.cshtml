@@ -27,7 +27,7 @@
         </span>
       </div>
 
-      @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
       @using (Html.BeginForm("RegisterProvider", "JobProvider", FormMethod.Post, new { enctype = "multipart/form-data" }))
       {
 @Html.AntiForgeryToken()
@@ -36,7 +36,15 @@
           <h4 style="text-align: center; font-weight: bold;">(Only For Provider)</h4>
           <hr />
 
+          @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
+          @*<div class="form-group">
+              @Html.LabelFor(model => model.Name, "", htmlAttributes: new { @class = "control-label col-md-2" })
+              <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control input100", placeholder = "Name" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+              </div>
+            </div>*@
           <div class="form-group">
             @Html.LabelFor(model => model.Email, "", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -87,16 +95,16 @@
 
 
           @*trigger*@
-        <div class="form-group">
-          <label class="control-label col-md-10">Are you under an organisation or work individually?</label>
-          @Html.LabelFor(model => model.CompanyIndividual, "", htmlAttributes: new { @class = "control-label col-md-2" })
-          <div>
-            <label style="padding-left: 1em">@Html.RadioButtonFor(model => model.CompanyIndividual, false, htmlAttributes: new { @id = "option-job-type-1", @class = "sIndi" }) Individual</label>
-            <label style="padding-left: 1em">@Html.RadioButtonFor(model => model.CompanyIndividual, true, htmlAttributes: new { @id = "option-job-type-2", @class = "sCompany" }) Company/Team</label>
+          <div class="form-group">
+            <label class="control-label col-md-10">Are you under an organisation or work individually?</label>
+            @Html.LabelFor(model => model.CompanyIndividual, "", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div>
+              <label style="padding-left: 1em">@Html.RadioButtonFor(model => model.CompanyIndividual, false, htmlAttributes: new { @id = "option-job-type-1", @class = "sIndi" }) Individual</label>
+              <label style="padding-left: 1em">@Html.RadioButtonFor(model => model.CompanyIndividual, true, htmlAttributes: new { @id = "option-job-type-2", @class = "sCompany" }) Company/Team</label>
+            </div>
+            @Html.ValidationMessageFor(model => model.CompanyIndividual, "", new { @class = "text-danger" })
           </div>
-          @Html.ValidationMessageFor(model => model.CompanyIndividual, "", new { @class = "text-danger" })
-        </div>
-         
+
 
           @*individual selected*@
           <div id="indi">
@@ -112,10 +120,16 @@
               @Html.LabelFor(model => model.Formality, "", htmlAttributes: new { @class = "control-label col-md-2" })
               <div>
                 <label style="padding-left: 1em">@Html.RadioButtonFor(model => model.Formality, false, htmlAttributes: new { @id = "option-job-type-1", @class = "formality" }) Self-learnt</label>
-                <label style="padding-left: 1em">@Html.RadioButtonFor(model => model.Formality, true , htmlAttributes: new { @id = "option-job-type-2", @class = "formality" }) Certified</label>
+                <label style="padding-left: 1em">@Html.RadioButtonFor(model => model.Formality, true, htmlAttributes: new { @id = "option-job-type-2", @class = "formality" }) Certified</label>
               </div>
               @Html.ValidationMessageFor(model => model.Formality, "", new { @class = "text-danger" })
             </div>
+
+            <div class="form-group">
+              <label class="control-label col-md-10">Please upload your documentation as a prove that you have comprehend knowledge of selected service.</label>
+              <label class="control-label col-md-10">For example, previous completed work (raw .ai file of Photoshop work, or a proof of working experience in a plumbing service shop)</label>
+            </div>
+
           </div>
 
           @*company selected*@
@@ -127,12 +141,16 @@
                 @Html.ValidationMessageFor(model => model.CompanyName, "", new { @class = "text-danger" })
               </div>
             </div>
+
+            <div class="form-group">
+              <label class="control-label col-md-10">Please upload company documents like SSM, and other related document. Achievement certificates are welcome to upload too</label>
+            </div>
           </div>
 
 
 
           <div class="form-group">
-            @Html.LabelFor(model => model.Document, "Document", htmlAttributes: new { @class = "control-label col-md-5" })
+            @Html.LabelFor(model => model.Document, "Document (Multiple file upload is supported)", htmlAttributes: new { @class = "control-label col-md-7" })
             <div class="col-md-10">
               @Html.TextBoxFor(m => m.Document, new { type = "file", @multiple = "@multiple" })
               @Html.ValidationMessageFor(model => model.Document, "", new { @class = "text-danger" })
@@ -146,7 +164,7 @@
                 @Html.TextBoxFor(m => m.ProfileImage, new
                 {
                   type = "file",
-                  accept = "image/jpeg,image/png",
+                  accept = "image/jpeg,image/png,image/jpeg",
                   hidden = ""
                 })
                 <img src="~/Image/Profile/photo.jpg">
@@ -164,9 +182,10 @@
 
 
           <div class="container-login100-form-btn" style="padding-left: 1em; padding-bottom: 1em">
-            <button class="login100-form-btn">
+            <button class="login100-form-btn" id="submit">
               Sign Up
             </button>
+            <img id="loading" src="~/Image/Background/loading.gif" style="height:50px; width:50px" />
           </div>
         </div>}
     </div>
@@ -184,12 +203,13 @@
     $(document).ready(() => {
       $('#indi').hide();
       $('#company').hide();
+      $('#loading').hide();
     });
 
     $('.sCompany').change(() => {
       $('#indi').hide(500);
       $('#company').show(500);
-      $('#name').val(null) ;
+      $('#name').val(null);
       $('.formality').prop('checked', false);
     })
 
@@ -230,5 +250,10 @@
       }
       $(e.target).valid();
     });
+
+    $('#submit').click(() => {
+      $('loading').show();
+    });
   </script>
 }
+

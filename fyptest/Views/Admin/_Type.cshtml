@@ -1,0 +1,23 @@
+@using fyptest.Models
+@model ServiceCRUD
+
+<div class="row form-group">
+  <div class="col-md-12 mb-3 mb-md-0">
+    <label class="font-weight-bold">Type name</label>
+    <img class="loading" src="~/Image/Background/loading.gif" style="height:30px; width:30px" />
+    <input type="text" id="type" class="form-control" value="@(Model.Type.name != null? @Model.Type.name : "empty" )" placeholder="Name" required>
+  </div>
+</div>
+
+<div class="row form-group">
+  <div class="col-md-12 mb-3 mb-md-0">
+    <label class="font-weight-bold">Description</label>
+    <input type="text" id="typeDescription" class="form-control" value="@(Model.Type.description != null ? @Model.Type.description : "empty" )" placeholder="Description" required>
+  </div>
+</div>
+
+<p id="typeValidate"><label class="text-danger">Please fill in all the fields.</label></p>
+
+<input type="button" id="typeEdit" value="Edit" class="btn btn-primary pill px-4 py-2" onclick="AddEditType('@Model.Type.STId')">
+<input type="button" id="typeAdd" value="Add" class="btn btn-primary pill px-4 py-2" onclick="AddEditType();">
+<input type="button" value="Delete" class="btn btn-primary pill px-4 py-2" onclick="deleteService('@Model.Type.STId')">

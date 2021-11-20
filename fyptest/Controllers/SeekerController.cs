@@ -320,7 +320,7 @@ namespace fyptest.Controllers
       var model = new OverallAccVM
       {
         accDetail = accModel,
-        requestDetail = request,
+        RequestDetail = request,
         //categories = category,
         //recommend = recommend
       };

@@ -152,8 +152,11 @@ namespace fyptest.Controllers
           tokenExpire = null,
           connectionGroup = null,
           walletAmount = 0,
+          postNamecard = false,
+          dataPostNamecard = null,
           STId = m.ServiceType,
-          RId = m.Email
+          RId = m.Email,
+          reset_pwd = null,
         };
 
         var dbRate = new Rating
@@ -215,15 +218,38 @@ namespace fyptest.Controllers
         TempData["Info"] = "Invalid activate token!";
         ViewBag.message = "Please confirm you have select the right email, or contact customer service if problem presist.";
       }
-        
+
 
       return View();
     }
 
 
-    public ActionResult ProviderProfile()
+    public ActionResult ProviderProfile(string viewProfile = "")
     {
-      string user = Session["Email"].ToString();//"victorritdemo+p1@gmail.com"; //User.Identity.Name
+      string user = "";
+      //string user = "victorritdemo+p1@gmail.com";
+
+
+      if (Session["Email"] == null) //no login, or seeker email but no parameter, redirect, else enter profile according to mode
+      {
+        TempData["Info"] = "Please login!";
+        return RedirectToAction("ProviderLogin", "JobProvider");
+      }
+      else if (Session["Role"].ToString() == "Provider")
+      {
+        user = Session["Email"].ToString();
+      }
+      else if (Session["Role"].ToString() == "Seeker" && viewProfile == "")
+      {
+        TempData["Info"] = "Invalid Action!";
+        return RedirectToAction("Index", "Home");
+      }
+      else if (Session["Role"].ToString() == "Seeker")
+      {
+        user = viewProfile;
+      }
+
+
       var data = db.Providers.Find(user);
       var type = db.Service_Types.Find(data.STId);
       var rating = db.Ratings.Find(user);
@@ -234,29 +260,33 @@ namespace fyptest.Controllers
 
       var accModel = new AccountDetailVM
       {
-        Email = data.email,
-        Phone = data.phone,
-        Address = data.address,
-        CompanyIndividual = data.companyIndividual,
-        Name = data.name,
-        CompanyName = data.companyName,
-        ServiceType = type.name,
-        ProfileImage = data.profileImage,
-        Wallet = data.walletAmount,
-        Namecard = data.namecard,
-        Attitude = rating.attitude,
-        Quality = rating.quality,
-        Efficiency = rating.efficiency,
-        Professionalism = rating.professionalism
+        //Email = data.email,
+        //Phone = data.phone,
+        //Address = data.address,
+        //CompanyIndividual = data.companyIndividual,
+        //Name = data.name,
+        //CompanyName = data.companyName,
+        //ServiceType = type.name,
+        //ProfileImage = data.profileImage,
+        //Wallet = data.walletAmount,
+        //Namecard = data.namecard,
+        //Attitude = rating.attitude,
+        //Quality = rating.quality,
+        //Efficiency = rating.efficiency,
+        //Professionalism = rating.professionalism,
+
       };
 
 
       var model = new OverallAccVM
       {
-        accDetail = accModel,
-        requestDetail = request,
-        categories = category,
-        recommend = recommend
+        Account = data,
+        Rate = rating,
+        RequestDetail = request,
+        Categories = category,
+        Recommend = recommend,
+        Role = Session["Role"].ToString()
+
       };
 
       return View(model);
@@ -294,7 +324,7 @@ namespace fyptest.Controllers
       if (Request.Files.Count<=0)
         return Json(String.Format("'Error' : '{0}'", "Failed"));
 
-      DeletePhoto(p.profileImage,'p');
+      DeletePhoto(p.profileImage, 'p');
 
       p.profileImage = SavePhoto(file);
       db.SaveChanges();
@@ -514,7 +544,7 @@ namespace fyptest.Controllers
 
     public ActionResult EditNameCard()
     {
-      var p = db.Providers.Find("victorritdemo+p1@gmail.com");//User.Identity.Name
+      var p = db.Providers.Find(Session["Email"].ToString()); //victorritdemo+p1@gmail.com" 
 
       ViewBag.namecard = p.namecard;
 
@@ -524,7 +554,7 @@ namespace fyptest.Controllers
     [HttpPost]
     public JsonResult EditNameCard(string img)
     {
-      var p = db.Providers.Find("victorritdemo+p1@gmail.com");//User.Identity.Name
+      var p = db.Providers.Find(Session["Email"].ToString()); //victorritdemo+p1@gmail.com" 
 
       string name = p.name != null ? p.name : p.companyName;
 
@@ -551,6 +581,63 @@ namespace fyptest.Controllers
       TempData["Info"] = "Namecard Saved";
 
       return Json(String.Format("'Success':'true'"));
+    }
+
+    [HttpPost]
+    public JsonResult PostNamecard(bool posting)
+    {
+      var p = db.Providers.Find(Session["Email"].ToString()); //victorritdemo+p1@gmail.com" 
+      string message = "Failed, please check your wallet amount";
+
+      if (posting && p.walletAmount >= 5.00)
+      {
+        p.postNamecard = true;
+        p.walletAmount -= 5.00;
+        p.dataPostNamecard = DateTime.Now.ToLocalTime();
+        message = "Successfully Posted'";
+      }
+      else if (!posting)
+      {
+        p.postNamecard = false;
+        p.dataPostNamecard = null;
+
+        message = "Successfully unposted";
+      }
+
+      db.SaveChanges();
+
+      return Json(String.Format(message));
+    }
+
+    public ActionResult NamecardPage()
+    {
+      var p = db.Providers.Where(n => n.postNamecard == true && n.namecard != null);
+      DateTime today = DateTime.Now.ToLocalTime();
+
+      foreach (var n in p)
+      {
+        DateTime postDate = (DateTime)n.dataPostNamecard;
+        int date = DateTime.Compare(today.AddMonths(-1), postDate);
+
+        if (date > 0)
+        {
+          if (n.walletAmount < 5.00)
+          {
+            n.postNamecard = false;
+          }
+          else
+          {
+            n.walletAmount -= 5.00;
+            n.dataPostNamecard = DateTime.Now.ToLocalTime();
+          }
+
+        }
+      }
+      db.SaveChanges();
+
+      IEnumerable<Provider> model = p;
+
+      return View(model);
     }
 
 
@@ -683,6 +770,8 @@ namespace fyptest.Controllers
 
       new SmtpClient().Send(m);
     }
+
+    //==============================================================================
 
     [AllowAnonymous]
     public ActionResult ProviderLogin(string returnUrl)

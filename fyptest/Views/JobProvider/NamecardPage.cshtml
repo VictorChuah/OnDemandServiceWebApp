@@ -1,0 +1,95 @@
+@using fyptest.Models
+@model IEnumerable<Provider>
+
+@{
+  ViewBag.Title = "NamecardPage";
+}
+
+<div style="height: 113px;"></div>
+
+<div class="unit-5 overlay" style="background-image: url('../../Image/Background/hero_1.jpg');">
+  <div class="container text-center">
+    <h2 class="mb-0">Categories / Candidates</h2>
+    <p class="mb-0 unit-6"><a href="index.html">Home</a> <span class="sep">></span> <span>Namecard</span></p>
+  </div>
+</div>
+
+
+
+
+<div class="site-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 mx-auto text-center mb-5 section-heading">
+        <h2 class="mb-5">Namecard</h2>
+      </div>
+    </div>
+    <div class="row">
+      @foreach (var p in Model)
+      {
+        //if (p.postNamecard && p.namecard != null)
+       // {
+          <div class="col-sm-6 col-md-4 col-lg-4 mb-3" data-aos="fade-up" data-aos-delay="100">
+            <a href="#" class="h-100 feature-item">
+              <img src="~/Image/NameCard/@p.namecard" style="width: 300px; height: 200px" />
+              <h2>@(p.name != null ? p.name : p.companyName ) </h2>
+              <span class="counting">@p.Service_Type.name</span>
+            </a>
+          </div>
+        //}
+      }
+      <!--<div class="col-sm-6 col-md-4 col-lg-3 mb-3" data-aos="fade-up" data-aos-delay="200">
+    <a href="#" class="h-100 feature-item">-->
+      @*<span class="d-block icon flaticon-wrench mb-3 text-primary"></span>*@
+      <!--<h2>Automotive Jobs</h2>
+      <span class="counting">192</span>
+    </a>
+  </div>
+  <div class="col-sm-6 col-md-4 col-lg-3 mb-3" data-aos="fade-up" data-aos-delay="300">
+    <a href="#" class="h-100 feature-item">-->
+      @*<span class="d-block icon flaticon-worker mb-3 text-primary"></span>*@
+      <!--<h2>Construction / Facilities</h2>
+      <span class="counting">1,021</span>
+    </a>
+  </div>
+  <div class="col-sm-6 col-md-4 col-lg-3 mb-3" data-aos="fade-up" data-aos-delay="400">
+    <a href="#" class="h-100 feature-item">-->
+      @*<span class="d-block icon flaticon-telecommunications mb-3 text-primary"></span>*@
+      <!--<h2>Telecommunications</h2>
+      <span class="counting">1,219</span>
+    </a>
+  </div>
+
+  <div class="col-sm-6 col-md-4 col-lg-3 mb-3" data-aos="fade-up" data-aos-delay="500">
+    <a href="#" class="h-100 feature-item">
+      <span class="d-block icon flaticon-stethoscope mb-3 text-primary"></span>
+      <h2>Healthcare</h2>
+      <span class="counting">482</span>
+    </a>
+  </div>
+  <div class="col-sm-6 col-md-4 col-lg-3 mb-3" data-aos="fade-up" data-aos-delay="600">
+    <a href="#" class="h-100 feature-item">
+      <span class="d-block icon flaticon-computer-graphic mb-3 text-primary"></span>
+      <h2>Design, Art &amp; Multimedia</h2>
+      <span class="counting">5,409</span>
+    </a>
+  </div>
+  <div class="col-sm-6 col-md-4 col-lg-3 mb-3" data-aos="fade-up" data-aos-delay="700">
+    <a href="#" class="h-100 feature-item">
+      <span class="d-block icon flaticon-trolley mb-3 text-primary"></span>
+      <h2>Transportation &amp; Logistics</h2>
+      <span class="counting">291</span>
+    </a>
+  </div>
+  <div class="col-sm-6 col-md-4 col-lg-3 mb-3" data-aos="fade-up" data-aos-delay="800">
+    <a href="#" class="h-100 feature-item">
+      <span class="d-block icon flaticon-restaurant mb-3 text-primary"></span>
+      <h2>Restaurant / Food Service</h2>
+      <span class="counting">329</span>
+    </a>
+  </div>-->
+    </div>
+
+  </div>
+</div>
+

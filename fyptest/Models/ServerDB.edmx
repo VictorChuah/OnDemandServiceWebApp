@@ -81,6 +81,8 @@
           <Property Name="tokenExpire" Type="datetime" />
           <Property Name="connectionGroup" Type="varchar" MaxLength="50" />
           <Property Name="walletAmount" Type="float" Nullable="false" />
+          <Property Name="postNamecard" Type="bit" Nullable="false" />
+          <Property Name="dataPostNamecard" Type="datetime" />
           <Property Name="STId" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="RId" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="reset_pwd" Type="nvarchar(max)" />
@@ -508,8 +510,11 @@
           <Property Name="tokenExpire" Type="DateTime" Precision="3" />
           <Property Name="connectionGroup" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="walletAmount" Type="Double" Nullable="false" />
+          <Property Name="postNamecard" Type="Boolean" Nullable="false" />
+          <Property Name="dataPostNamecard" Type="DateTime" Precision="3" />
           <Property Name="STId" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="RId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="reset_pwd" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ChatConnections" Relationship="ServerDBModel.FK_Provider_Connection" FromRole="Provider" ToRole="ChatConnection" />
           <NavigationProperty Name="Documents" Relationship="ServerDBModel.FK_Document_Provider" FromRole="Provider" ToRole="Document" />
           <NavigationProperty Name="Rating" Relationship="ServerDBModel.FK_Provider_Rating" FromRole="Provider" ToRole="Rating" />
@@ -574,9 +579,9 @@
           <Property Name="tokenExpire" Type="DateTime" Precision="3" />
           <Property Name="connectionGroup" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="walletAmount" Type="Double" Nullable="false" />
+          <Property Name="reset_pwd" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="ChatConnections" Relationship="ServerDBModel.FK_Seeker_Connection" FromRole="Seeker" ToRole="ChatConnection" />
           <NavigationProperty Name="Requests" Relationship="ServerDBModel.FK_Request_User" FromRole="Seeker" ToRole="Request" />
-          <Property Name="reset_pwd" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Service_Category">
           <Key>
@@ -820,6 +825,8 @@
                 <ScalarProperty Name="reset_pwd" ColumnName="reset_pwd" />
                 <ScalarProperty Name="RId" ColumnName="RId" />
                 <ScalarProperty Name="STId" ColumnName="STId" />
+                <ScalarProperty Name="dataPostNamecard" ColumnName="dataPostNamecard" />
+                <ScalarProperty Name="postNamecard" ColumnName="postNamecard" />
                 <ScalarProperty Name="walletAmount" ColumnName="walletAmount" />
                 <ScalarProperty Name="connectionGroup" ColumnName="connectionGroup" />
                 <ScalarProperty Name="tokenExpire" ColumnName="tokenExpire" />

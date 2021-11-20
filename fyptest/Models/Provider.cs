@@ -38,6 +38,8 @@ namespace fyptest.Models
         public Nullable<System.DateTime> tokenExpire { get; set; }
         public string connectionGroup { get; set; }
         public double walletAmount { get; set; }
+        public bool postNamecard { get; set; }
+        public Nullable<System.DateTime> dataPostNamecard { get; set; }
         public string STId { get; set; }
         public string RId { get; set; }
         public string reset_pwd { get; set; }

@@ -1,11 +1,14 @@
+@using System.Web.Mvc.Ajax
 @using fyptest.Models
-@model ServiceCRUDVM 
+@model ServiceCRUD
 
-@{
-  ViewBag.Title = "ServiceCRUD";
-  Layout = "~/Views/Shared/_Layout.cshtml";
+@{ ViewBag.Title = "ServiceCRUD";
+  Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+@section head
+{
+  <link rel="stylesheet" type="text/css" href="your_website_domain/css_root/flaticon.css">
 }
-
 <div style="height: 113px;"></div>
 
 <div class="unit-5 overlay" style="background-image: url('../../Image/Background/hero_1.jpg');">
@@ -15,6 +18,7 @@
   </div>
 </div>
 
+@*upper section*@
 <div class="site-section">
   <div class="container">
     <div class="row">
@@ -22,17 +26,337 @@
         <h2 class="mb-5">Services Types</h2>
       </div>
     </div>
-    <div class="row">
-      @foreach (var p in Model.Types)
-      {
-        <div class="col-sm-6 col-md-4 col-lg-3 mb-3" data-aos="fade-up" data-aos-delay="100">
-          <a href="#" class="h-100 feature-item">
-            <span><img src="~/Image/Background/plumbing1.png" /></span>
-            @*<h2> @(p.name != null? p.name : p.companyName)</h2>
-            <span class="counting">@p.Service_Type.name</span>*@
-          </a>
-        </div>}
+    <div id="ajaxTypeList">
+      @Html.Partial("_TypeList", Model)
     </div>
   </div>
 </div>
+
+@*lower section*@
+<div class="site-section bg-light">
+  <div class="container">
+    <div class="row" id="ajaxSection">
+      @*left*@
+      <div class="col-md-12 col-lg-6 mb-5">
+        <div class="p-5 bg-white">
+          <div id="ajaxType">
+            @Html.Partial("_Type", Model)
+          </div>
+        </div>
+      </div>
+      @*right*@
+      <div class="col-lg-6">
+        <div class="p-5 bg-white">
+          <div class="row form-group">
+            <div class="col-md-12 mb-3 mb-md-0">
+              <label class="font-weight-bold">Record</label>
+              <select id="recordDDL">
+                <option value="add">Add new category</option>
+              </select>
+              <img class="loading" src="~/Image/Background/loading.gif" style="height:30px; width:30px" />
+            </div>
+          </div>
+          <div id="ajaxCategory">
+            @Html.Partial("_Category", Model)
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div> Icons made by <a href="https://www.freepik.com" title="Freepik"> Freepik </a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com'</a></div>
+
+@section foot
+{
+
+  <script>
+
+    var typeSelected = "";
+
+    function hideCatValMessage() {
+      $('#typeValidate').hide();
+      $('#catValidate').hide();
+      $('#priceValidate').hide();
+    }
+
+    $(document).ready(() => {
+      console.log("ew");
+      $('.loading').hide()
+      $('#ajaxSection').hide()
+
+      hideCatValMessage();
+
+      getList();
+    });
+
+    //data retrieving =================================================================================
+
+    function getList() {
+      $.ajax({
+        type: 'GET',
+        success: function (data) {
+          $('#ajaxTypeList').html(data);
+        },
+        error: function () {
+          alert('Error getting data.');
+        }
+      });
+    }
+
+    //select one of the type
+    function selectType(id) {
+      $('.loading').show()
+      $('#ajaxSection').show(500)
+
+      typeSelected = id;
+      ddlData(id);
+
+      //generate data for type
+      $.ajax({
+        url: '/Admin/GetType',
+        type: 'GET',
+        data: { tid: id, },
+        success: function (data) {
+          console.log("yes");
+          if (data != null) {
+            $("#ajaxType").html(data);
+            $('.loading').hide();
+
+            hideCatValMessage();
+            $('#typeAdd').hide();
+
+          } else {
+            alert('Error getting data.');
+          }
+        },
+        error: function () {
+          alert('Error getting data.');
+        }
+      });
+    }
+
+    function ddlData(id) {
+      //generate data for categoryddl
+      $.ajax({
+        url: '/Admin/GetCategories',
+        type: 'GET',
+        data: { tid: id },
+        success: function (data) {
+
+          //select html
+          $('#recordDDL').html('');
+          var options = '';
+
+          if (data.length > 0) {
+
+            for (var i = 0; i < data.length; i++) {
+              options += '<option value="' + data[i] + '">' + data[i] + '</option>';
+            };
+            options += '<option value="add">Add new category</option>';
+          }
+          else {
+            options += '<option value="empty">-No Record-</option>';
+            $('#category').val("");
+            $('#catDescription').val("");
+            $('#price').val("");
+          }
+
+          $('#recordDDL').append(options);
+          $('.loading').hide();
+          $('#recordDDL').trigger('change');
+        },
+        error: () => {
+          alert('Error getting record.');
+        }
+      });
+    }
+
+    //trigger on downdroplist change
+    $('#recordDDL').change(() => {
+      console.log("category");
+
+      let x = $('#recordDDL option:selected').val();
+      console.log(x);
+
+      if (x == "add" || x == "empty") {
+        $('#catEdit').hide();
+        $('#catAdd').show();
+        add(true);
+        return;
+      }
+
+      //generate data for category
+      $.ajax({
+        url: '/Admin/GetCategory',
+        type: 'GET',
+        data: { categoryName: x },
+        success: function (data) {
+          if (data != null) {
+            $("#ajaxCategory").html(data);
+            //ddlData(id);
+            hideCatValMessage();
+            $('.loading').hide();
+            $('#catAdd').hide();
+
+          } else {
+            alert('Error getting category data.');
+          }
+        },
+        error: function () {
+          alert('Error getting category data.');
+        }
+      });
+    });
+
+    //data CRUD ===========================================================================================================================================
+
+
+    function add(category) {
+
+      if (!category) {
+        $('#type').val("");
+        $('#typeDescription').val("");
+        $('#typeAdd').show();
+        $('#typeEdit').hide();
+        typeSelected = "";
+        $('#recordDDL').html('');
+        var options = '';
+        options += '<option value="add">Add new category</option>';
+        $('#recordDDL').append(options);
+      }
+      $('#category').val("");
+      $('#catDescription').val("");
+      $('#price').val("");
+
+      
+
+      $('#catEdit').hide();
+      $('#catAdd').show();
+      $('#ajaxSection').show(500)
+    }
+
+    function deleteService(sid) {
+      console.log(sid);
+      //delete type or category
+      $.ajax({
+        url: '/Admin/DeleteService',
+        type: 'POST',
+        data: { id: sid },
+        //contentType: 'application/json; charset=utf-8',
+        success: data => {
+          add(true);
+          getList();
+
+          alert("Deleted!")
+        },
+        error: () => {
+          console.log("errord");
+        }
+      });
+    }
+
+    function AddEditType(id) {
+
+      let name = $('#type').val();
+      let des = $('#typeDescription').val();
+      if (name == "" || des == "") {
+        $('#typeValidate').show();
+        return;
+      }
+      else {
+        $('#typeValidate').hide();
+      }
+
+      if (id == null)
+        id = "";
+
+      //add or edit
+      $.ajax({
+        url: '/Admin/EditType',
+        data: JSON.stringify({
+          model: {
+            STId: id,
+            name: name,
+            description: des
+          }
+        }),
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        success: data => {
+
+          $('#catEdit').show();
+          $('#typeEdit').show();
+          $('#catAdd').hide();
+          $('#typeAdd').hide();
+
+          console.log("addt");
+          getList();
+
+          alert("Updated!")
+        },
+        error: () => {
+          console.log("errort");
+        }
+      });
+    };
+
+    function AddEditCategory(cid) {
+
+      if (cid == null)
+        cid = "";
+
+      if (typeSelected == "") {
+        alert("Please select one of the service type.");
+        return;
+      }
+
+      var name = $('#category').val()
+      var des = $('#catDescription').val()
+      var price = $('#price').val()
+
+      if (name == "" || des == "" || price == "") {
+        $('#catValidate').show();
+        return
+      }
+      else if (!price.match(/^[0-9]+\.[0-9]{2}$/)) {
+        $('#priceValidate').show();
+        return
+      }
+      else {
+        $('#catValidate').hide();
+        $('#priceValidate').hide();
+      }
+
+
+      $.ajax({
+        url: '/Admin/EditCategory',
+        data: JSON.stringify({
+          model: {
+            SCId: cid,
+            name: name,
+            description: des,
+            averagePrice: price,
+            STId: typeSelected 
+          }
+        }),
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        success: data => {
+          alert("Added!")
+          //ddlData(data.SCId)
+          console.log("addc");
+        },
+        error: () => {
+          console.log("errorc");
+          alert("Error occur")
+        }
+      });
+    };
+
+    
+
+  </script>
+}
+
 
