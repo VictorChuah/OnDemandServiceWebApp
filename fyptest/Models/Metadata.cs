@@ -486,6 +486,12 @@ namespace fyptest.Models
     //public ServiceTypeMod Type { get; set; }
     //public ServiceCategoryMod Category { get; set; }
   }
+  public class ChatList
+  {
+    public string ReceiverName { get; set; }
+    public string ReceiverEmail { get; set; }
+    public string ProfilePic { get; set; }
+  }
 
 
 }
