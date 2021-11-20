@@ -177,17 +177,17 @@
                           {
                             if (Session["Role"].ToString() == "Seeker")
                             {
-                              
-                                <li><a href="/Seeker/SeekerProfile">View profile</a></li>
-                                <li><a href="/Service/PostJobView">Post a job</a></li>
-                                <li>
-                                  @using (Html.BeginForm("Logout", "Seeker", FormMethod.Post, new { id = "logoutForm", role = "form", style = "padding:5px 20px;width:200px;" }))
-                                  {
+
+                              <li><a href="/Seeker/SeekerProfile">View profile</a></li>
+                              <li><a href="/Service/PostJobView">Post a job</a></li>
+                              <li>
+                                @using (Html.BeginForm("Logout", "Seeker", FormMethod.Post, new { id = "logoutForm", role = "form", style = "padding:5px 20px;width:200px;" }))
+                                {
                                   <a href="javascript:document.getElementById('logoutForm').submit()">Log out</a>
-                                  }
-                                </li>
-}
-                            
+                                }
+                              </li>
+                            }
+
                             else
                             {
                               <li><a href="/Seeker/SeekerLogin">Sign In</a></li>
@@ -208,30 +208,31 @@
                         <ul class="dropdown arrow-top">
                           @if (Session["Role"] != null && Session["Email"] != null)
                           {
-                            if (Session["Role"].ToString() == "Provider"|| Session["Role"].ToString() == "Pending Provider")
+                            if (Session["Role"].ToString() == "Provider" || Session["Role"].ToString() == "Pending Provider")
                             {
-                              
-                                <li><a href="/JobProvider/ProviderProfile">View profile</a></li>
-                                <li>
-                                  @using (Html.BeginForm("Logout", "JobProvider", FormMethod.Post, new { id = "logoutForm", role = "form", style = "padding:5px 20px;width:200px;" }))
-                                  {
-                                  <a href="javascript:document.getElementById('logoutForm').submit()">Log out</a>
-                                  }
-                                </li>
-                              
-                            }
-                            else
-                            {
-                              <li><a href="/JobProvider/ProviderLogin">Sign In</a></li>
-                              <li><a href="/JobProvider/RegisterProvider">Sign Up</a></li> }
 
+                              <li><a href="/JobProvider/ProviderProfile">View profile</a></li>
+                              <li>
+                                @using (Html.BeginForm("Logout", "JobProvider", FormMethod.Post, new { id = "logoutForm", role = "form", style = "padding:5px 20px;width:200px;" }))
+                                {
+                                  <a href="javascript:document.getElementById('logoutForm').submit()">Log out</a>
+                                }
+                              </li>
 
                             }
                             else
                             {
                               <li><a href="/JobProvider/ProviderLogin">Sign In</a></li>
                               <li><a href="/JobProvider/RegisterProvider">Sign Up</a></li>
-                            }
+ }
+
+
+                          }
+                          else
+                          {
+                            <li><a href="/JobProvider/ProviderLogin">Sign In</a></li>
+                            <li><a href="/JobProvider/RegisterProvider">Sign Up</a></li>
+                          }
                         </ul>
                       </li>
                       <li class="has-children">
@@ -243,27 +244,27 @@
                             {
                               using (Html.BeginForm("Logout", "Admin", FormMethod.Post, new { id = "logoutForm", role = "form", style = "padding:5px 20px;width:400px;" }))
                               {
-                        <li><a href="/Admin/AdminSeekerView">Seekers List</a></li>
-                        <li><a href="/Admin/AdminProviderView">Providers List</a></li>
-                        <li><a href="/Admin/AdminServiceView">Pending & Completed Requests List</a></li>
-                        <li><a href="/Admin/AdminInProgressServiceView">In Progress Request</a></li>
-                        <li>
-                          <a href="javascript:document.getElementById('logoutForm').submit()">Log out</a>
-                        </li>
-                      }
-                    }
-                    else
-                    {
-                        <li><a href="/Admin/AdminLogin">Sign In</a></li>
-                        <li><a href="#"> Sign Up </a></li>
-                      }
+                                <li><a href="/Admin/AdminSeekerView">Seekers List</a></li>
+                                <li><a href="/Admin/AdminProviderView">Providers List</a></li>
+                                <li><a href="/Admin/AdminServiceView">Pending & Completed Requests List</a></li>
+                                <li><a href="/Admin/AdminInProgressServiceView">In Progress Request</a></li>
+                                <li>
+                                  <a href="javascript:document.getElementById('logoutForm').submit()">Log out</a>
+                                </li>
+                              }
+                            }
+                            else
+                            {
+                              <li><a href="/Admin/AdminLogin">Sign In</a></li>
+                              <li><a href="#"> Sign Up </a></li>
+                            }
 
-                    }
-                    else
-                    {
-                        <li><a href="/Admin/AdminLogin">Sign In</a></li>
-                        <li><a href="#"> Sign Up </a></li>
-                      }
+                          }
+                          else
+                          {
+                            <li><a href="/Admin/AdminLogin">Sign In</a></li>
+                            <li><a href="#"> Sign Up </a></li>
+                          }
 
                         </ul>
                       </li>
@@ -280,14 +281,17 @@
       </div>
     </div>
   </div>
-
-  <input type="checkbox" id="check"> <label class="chat-btn" for="check"> <i class="fa fa-commenting-o comment"></i> <i class="fa fa-close close"></i> </label>
-  <div class="wrapper">
-    <div class="header">
-      <h6>Let's Chat - Online</h6>
-    </div>
-
+  @if (Session["Email"] != null)
+  {
+<input type="checkbox" id="check"> <label class="chat-btn" for="check"> <i class="fa fa-commenting-o comment"></i> <i class="fa fa-close close"></i> </label>
+<div class="wrapper">
+  <div class="header">
+    <h6>Let's Chat - Online</h6>
   </div>
+
+</div>
+  }
+
   <div class="info">@TempData["Info"]</div>
 
 
@@ -395,7 +399,7 @@
         objHub.server.connect('@Session["Email"]', '@Session["Role"]');
       });
     }
-    
+
   </script>
   @RenderSection("foot", required: false)
 

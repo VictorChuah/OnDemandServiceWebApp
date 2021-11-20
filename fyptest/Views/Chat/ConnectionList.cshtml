@@ -1,0 +1,32 @@
+@using fyptest.Models
+@model IEnumerable<ChatList>
+
+@{ ViewBag.Title = "Contact"; }
+@{ ViewBag.Title = "ConnectionList"; }
+
+<div style="height: 113px;"></div>
+<div class="unit-5 overlay" style="background-image: url('../../Image/Background/hero_1.jpg');">
+  <div class="container text-center">
+    <h2 class="mb-0">Chat</h2>
+    <p class="mb-0 unit-6"><a href="index.html">Home</a> <span class="sep">></span> <span>Chat</span></p>
+  </div>
+</div>
+
+@foreach (var r in Model)
+{
+<a @*href="~/Admin/RequestDetail?id=@System.Web.HttpUtility.UrlEncode(r.SId)"*@ class="job-item d-block d-md-flex align-items-center border-bottom fulltime">
+  <div class="company-logo blank-logo text-center text-md-left pl-3">
+    <img src="@r.ProfilePicture" alt="Image" class="img-fluid mx-auto">
+  </div>
+  <div class="job-details h-100 col-md-8">
+    <div class="p-3 align-self-center">
+      <h3>@r.ReceiverName</h3>
+      <div class="d-block d-lg-flex">
+        <div class="mr-3">
+          <span class="icon-suitcase mr-1"></span>
+          @r.ReceiverEmail
+        </div>
+      </div>
+    </div>
+  </div>
+</a>}

@@ -216,5 +216,50 @@ namespace fyptest.Controllers
       }
       return new JsonResult { Data = message, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
     }
+
+    public ActionResult Chats()
+    {
+      var email = Session["Email"];
+      var chatList = new List<ChatList>();
+      if (email!= null)
+      {
+        if (Session["Role"].ToString() == "Provider")
+        {
+          var connections = db.ChatConnections.Where(m => m.provider_email == email.ToString()).ToList();
+          if(connections!= null)
+          {
+            foreach(var i in connections)
+            {
+              var seeker = db.Seekers.Where(m => m.email == i.seeker_email).FirstOrDefault();
+              var chat = new ChatList() {
+                ReceiverEmail=seeker.email,
+                ReceiverName = seeker.name,
+                ProfilePic = seeker.profileImage
+              };
+              chatList.Add(chat);
+            }
+          }
+        }
+        else if (Session["Role"].ToString() == "Seeker")
+        {
+          var connections = db.ChatConnections.Where(m => m.seeker_email == email.ToString()).ToList();
+          if (connections != null)
+          {
+            foreach (var i in connections)
+            {
+              var provider = db.Providers.Where(m => m.email == i.provider_email).FirstOrDefault();
+              var chat = new ChatList()
+              {
+                ReceiverEmail = provider.email,
+                ReceiverName = provider.name,
+                ProfilePic = "Image/Profile/"+provider.profileImage
+              };
+              chatList.Add(chat);
+            }
+          }
+        }
+      }
+      return View(chatList);
+    }
   }
 }
