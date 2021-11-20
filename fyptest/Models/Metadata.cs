@@ -151,7 +151,7 @@ namespace fyptest.Models
     [StringLength(100)]
     public string Address { get; set; }
 
-    //public HttpPostedFileBase ProfileImage { get; set; }
+    public HttpPostedFileBase ProfileImage { get; set; }
   }
 
   public class WithdrawModel

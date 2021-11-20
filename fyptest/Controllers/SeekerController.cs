@@ -343,7 +343,7 @@ namespace fyptest.Controllers
         p.phone = model.Phone;
         //p.address = model.Address;
         //if (model.ImageFile != null)
-        //  p.profileImage = SavePhoto(model.ImageFile);
+        //p.profileImage = SavePhoto(model.ImageFile);
 
         db.SaveChanges();
         return Json(model);
@@ -357,7 +357,7 @@ namespace fyptest.Controllers
     {
       var p = db.Seekers.Find(Session["Email"].ToString());//User.Identity.Name
 
-      if (file == null)
+      if (Request.Files.Count <= 0)
         return Json(String.Format("'Error' : '{0}'", "Failed"));
 
       DeletePhoto(p.profileImage);
@@ -378,7 +378,7 @@ namespace fyptest.Controllers
     private string SavePhoto(HttpPostedFileBase f)
     {
       //string name = Guid.NewGuid().ToString("n") + ".jpg";
-      var pathStr = "~/UploadedDocument/" + Session["Email"].ToString();
+      var pathStr = "/UploadedDocument/" + Session["Email"].ToString();
       var extension = Path.GetExtension(f.FileName).ToLower();
       pathStr = pathStr + "/profile_picture" + extension;
       //path = Path.Combine(Server.MapPath(path), "profile_picture" + extension);

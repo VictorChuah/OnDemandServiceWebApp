@@ -291,7 +291,7 @@ namespace fyptest.Controllers
     {
       var p = db.Providers.Find(Session["Email"].ToString());//User.Identity.Name
 
-      if (file == null)
+      if (Request.Files.Count<=0)
         return Json(String.Format("'Error' : '{0}'", "Failed"));
 
       DeletePhoto(p.profileImage,'p');
@@ -718,8 +718,11 @@ namespace fyptest.Controllers
           var logindetails = provider.First();
           // Login In.    
           //SignInUser(logindetails.email, "Provider", false);
-          // setting.    
-          Session["Role"] = "Provider";
+          // setting.
+          if(logindetails.status==0)
+            Session["Role"] = "Pending Provider";
+          else
+            Session["Role"] = "Provider";
           Session["Email"] = logindetails.email;
           Session["user"] = logindetails;
 
@@ -876,7 +879,6 @@ namespace fyptest.Controllers
     }
 
     [HttpPost]
-
     public ActionResult Logout()
     {
       var ctx = Request.GetOwinContext();
@@ -887,7 +889,7 @@ namespace fyptest.Controllers
       authenticationManager.SignOut();
       Session.Clear();
       Session.Abandon();
-      if (!string.IsNullOrEmpty(Convert.ToString(Session["Email"])))
+      if (string.IsNullOrEmpty(Convert.ToString(Session["Email"])))
       {
         return RedirectToAction("Index", "Home");
       }
