@@ -54,6 +54,7 @@ namespace fyptest.Models
     public string CompanyName { get; set; }
     public string ServiceType { get; set; }
     public string ProfileImage { get; set; }
+    public string Status { get; set; }
     public IEnumerable<Document> document { get; set; }
   }
 
@@ -73,11 +74,16 @@ namespace fyptest.Models
     public string Image { get; set; }
     public string File { get; set; }
     public DateTime? DateCreated { get; set; }
+    public DateTime? DateCompleted { get; set; }
     public double Price { get; set; }
     public string Category { get; set; }
     public int Status { get; set; }
+    public string Seeker { get; set; }
+    public string Provider { get; set; }
     public bool? SeekerComplete { get; set; }
     public bool? ProviderComplete { get; set; }
+    public IEnumerable<string> Files{ get; set; }
+    public string Type { get; set; }
   }
 
 
@@ -221,7 +227,7 @@ namespace fyptest.Models
 
   public class AdminJobViewModel
   {
-    public int JobID { get; set; }
+    public string JobID { get; set; }
     public string Title { get; set; }
 
     public string Handphone { get; set; }
@@ -244,7 +250,7 @@ namespace fyptest.Models
     public int Rating { get; set; }
     public string Provider { get; set; }
     public string Seeker { get; set; }
-    public string Status { get; set; }
+    public int Status { get; set; }
   }
 
   public class SeekerRegisterModel
@@ -443,28 +449,31 @@ namespace fyptest.Models
   {
     public string JobID { get; set; }
     public string Title { get; set; }
-
     public string Handphone { get; set; }
-
     public string Category { get; set; }
-
     public string Location { get; set; }
-
     public string SelectedType { get; set; }
-
     public double Price { get; set; }
-
     public string Description { get; set; }
-
     public DateTime Date { get; set; }
     public DateTime CompleteDate { get; set; }
-
     public string Image { get; set; }
     public string Comment { get; set; }
     public int Rating { get; set; }
     public string Provider { get; set; }
     public string Seeker { get; set; }
     public string Status { get; set; }
+    public IEnumerable<string> Files { get; set; }
+  }
+
+  public class Rate{
+
+    public string JobID { get; set; }
+    public string Provider { get; set; }
+    public string Attitude { get; set; }
+    public string Quality { get; set; }
+    public string Efficiency { get; set; }
+    public string Profesionalism { get; set; }
   }
 
   public class ServiceCRUD
@@ -477,30 +486,6 @@ namespace fyptest.Models
     //public ServiceTypeMod Type { get; set; }
     //public ServiceCategoryMod Category { get; set; }
   }
-
-  //public class ServiceTypeMod
-  //{
-  //  [Required(ErrorMessage = "Field cannot be empty!")]
-  //  [Remote("CheckName", "Admin", ErrorMessage = "Duplicated {0}.")]
-  //  public string Name { get; set; }
-
-  //  [Required(ErrorMessage = "Field cannot be empty!")]
-  //  public string Description { get; set; }
-  //}
-
-  //public class ServiceCategoryMod
-  //{
-  //  [Required(ErrorMessage = "Field cannot be empty!")]
-  //  [Remote("CheckName", "Admin", ErrorMessage = "Duplicated {0}.")]
-  //  public string Name { get; set; }
-
-  //  [Required(ErrorMessage = "Field cannot be empty!")]
-  //  public string Description { get; set; }
-
-  //  [Required(ErrorMessage = "Field cannot be empty!")]
-  //  [RegularExpression(@"[0-9]+(.[0-9]{2})?", ErrorMessage = "Please enter a valid amount.")]
-  //  public double AveragePrice { get; set; }
-  //}
 
 
 }

@@ -302,6 +302,15 @@ namespace fyptest.Controllers
       model.Price = (double)job.price;
       model.Image = job.image;
       model.Seeker = job.Seeker;
+      model.Status = job.status.ToString();
+      if (job.file != null)
+      {
+        model.Files = job.file.Split('#');
+      }
+      else
+      {
+        model.Files = new List<string>();
+      }
       if (model.Image == null)
         model.Image = "/Service/noimage.jpg";
       //model.Contact = job.Contact;
@@ -316,6 +325,7 @@ namespace fyptest.Controllers
       if (jobProfile != null && ModelState.IsValid)
       {
         jobProfile.Provider = Session["Email"].ToString();
+        jobProfile.status = 1;
         db.SaveChanges();
 
         string message = "You have accepted this job. You may view this job at your job list.";
@@ -335,6 +345,74 @@ namespace fyptest.Controllers
         return RedirectToAction("RequestList", "Service", new { status = 1 });
       }
       return View(r);
+    }
+
+    [HttpPost]
+    public JsonResult ProviderCompleteJob(JobViewModel model)
+    {
+      var job = db.Requests.Where(m => m.SId == model.JobID).FirstOrDefault();
+
+      if (ModelState.IsValid)
+      {
+        job.providerComplete = true;
+        if (job.seekerComplete == true)
+        {
+          job.dateCompleted = DateTime.Now;
+          job.status = 2;
+        }
+        db.SaveChanges();
+        return Json("You saved this job successfully.");
+      }
+
+      return Json(String.Format("'Error' : '{0}'", "Failed"));
+    }
+
+    [HttpPost]
+    public JsonResult SeekerCompleteJob(JobViewModel model)
+    {
+      var job = db.Requests.Where(m => m.SId == model.JobID).FirstOrDefault();
+
+      if (ModelState.IsValid)
+      {
+        job.seekerComplete = true;
+        if (job.providerComplete== true)
+        {
+          job.dateCompleted = DateTime.Now;
+          job.status = 2;
+        }
+        db.SaveChanges();
+        return Json("You saved this job successfully.");
+      }
+
+      return Json(String.Format("'Error' : '{0}'", "Failed"));
+    }
+
+
+    [HttpPost]
+    public ActionResult CommentAndRateJob(Rate jobRate)
+    {
+
+      var jobProfile = db.Requests.FirstOrDefault(a => a.SId.Equals(jobRate.JobID));
+      var ratedJobCount = db.Requests.Where(a => a.Provider == jobProfile.Provider && jobProfile.seekerComplete == true).Count() -1;
+      
+      var providerRate = db.Ratings.FirstOrDefault(a =>a.RId==jobProfile.Provider);
+      if (providerRate != null && ModelState.IsValid)
+      {
+        var profesionalism = providerRate.professionalism * ratedJobCount;
+        var quality = providerRate.quality * ratedJobCount;
+        var efficiency = providerRate.efficiency * ratedJobCount;
+        var attitude = providerRate.attitude * ratedJobCount;
+        providerRate.professionalism = (profesionalism + Convert.ToInt32(jobRate.Profesionalism)) / (ratedJobCount + 1);
+        providerRate.quality = (quality + Convert.ToInt32(jobRate.Quality)) / (ratedJobCount + 1);
+        providerRate.efficiency = (efficiency + Convert.ToInt32(jobRate.Efficiency)) / (ratedJobCount + 1);
+        providerRate.attitude = (attitude + Convert.ToInt32(jobRate.Attitude)) / (ratedJobCount + 1);
+        db.SaveChanges();
+
+        string message = "Comment successfully.";
+        return Json(new { Message = message, JsonRequestBehavior.AllowGet });
+
+      }
+      return Json(new { Message = "Failed to update", JsonRequestBehavior.AllowGet });
     }
   }
 

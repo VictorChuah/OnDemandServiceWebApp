@@ -1,0 +1,104 @@
+@using fyptest.Models
+@model IEnumerable<Request>
+
+@{ ViewBag.Title = "AdminServiceView";
+  Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<div style="height: 113px;"></div>
+
+<div class="unit-5 overlay" style="background-image: url('../../Image/Background/hero_1.jpg');">
+  <div class="container text-center">
+    <h2 class="mb-0">Service List</h2>
+    <p class="mb-0 unit-6"><a href="index.html">Home</a> <span class="sep">></span> <span>Categories</span></p>
+  </div>
+</div>
+
+<div class="site-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 mx-auto text-center mb-5 section-heading">
+        <h2 class="mb-5">Pending Request</h2>
+      </div>
+    </div>
+    <div class="row">
+      @foreach (var r in Model)
+      {
+        if (r.status == 0)
+        {
+          <a href="~/Admin/RequestDetail?id=@System.Web.HttpUtility.UrlEncode(r.SId)" class="col-md-12 job-item d-block d-md-flex align-items-center  border-bottom fulltime">
+            <div class="company-logo blank-logo text-center text-md-left pl-3">
+              <img src="~/Content/main/images/company_logo_blank.png" alt="Image" class="img-fluid mx-auto">
+            </div>
+            <div class="job-details h-100 col-md-8">
+              <div class="p-3 align-self-center">
+                <h3>@r.title</h3>
+                <div class="d-block d-lg-flex">
+                  <div class="mr-3">
+                    <span class="icon-suitcase mr-1"></span>
+                    @(r.Service_Category.SCId == r.Category? r.Service_Category.name: "-" )
+                  </div>
+                  <div class="mr-3"><span class="icon-room mr-1"></span> @(r.address==null? "-" : r.address)</div>
+                  <div><span class="icon-money mr-1"></span> RM @r.price </div>
+                </div>
+              </div>
+            </div>
+            <div class="job-category align-self-center">
+              <div class="p-3">
+                <span class="text-success p-2 rounded border border-success">Pending</span>
+              </div>
+            </div>
+          </a>
+          @*<div class="col-sm-6 col-md-4 col-lg-3 mb-3" data-aos="fade-up" data-aos-delay="100">
+            <a href="~/Admin/SeekerApprovalDetail?id=@System.Web.HttpUtility.UrlEncode(p.email)" class="h-100 feature-item">
+              <span><img src="@p.profileImage" /></span>
+              <h2> @p.name </h2>
+              <span class="counting">@p.status</span>
+            </a>
+          </div>*@
+        }
+
+      }
+    </div>
+    <div style="height: 50px;"></div>
+    <div class="row">
+
+      <div class="col-md-6 mx-auto text-center mb-5 section-heading">
+        <h2 class="mb-5">Completed Service</h2>
+      </div>
+    </div>
+    <div class="row">
+      @foreach (var r in Model)
+      {
+        if (r.status == 2)
+        {
+          <a href="~/Admin/RequestDetail?id=@System.Web.HttpUtility.UrlEncode(r.SId)" class="col-md-12 job-item d-block d-md-flex align-items-center  border-bottom fulltime">
+            <div class="company-logo blank-logo text-center text-md-left pl-3">
+              <img src="~/Content/main/images/company_logo_blank.png" alt="Image" class="img-fluid mx-auto">
+            </div>
+            <div class="job-details h-100 col-md-8">
+              <div class="p-3 align-self-center">
+                <h3>@r.title</h3>
+                <div class="d-block d-lg-flex">
+                  <div class="mr-3">
+                    <span class="icon-suitcase mr-1"></span>
+                    @(r.Service_Category.SCId == r.Category? r.Service_Category.name: "-" )
+                  </div>
+                  <div class="mr-3"><span class="icon-room mr-1"></span> @(r.address==null? "-" : r.address)</div>
+                  <div><span class="icon-money mr-1"></span> RM @r.price </div>
+                </div>
+              </div>
+            </div>
+            <div class="job-category align-self-center">
+              <div class="p-3">
+                <span class="text-success p-2 rounded border border-success">Completed</span>
+              </div>
+            </div>
+          </a>
+        }
+
+      }
+    </div>
+  </div>
+</div>
+
+

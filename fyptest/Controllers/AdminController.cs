@@ -18,22 +18,182 @@ namespace fyptest.Controllers
     // GET: Admin
     private ServerDBEntities db = new ServerDBEntities();
     // GET: Admin
-    //public ActionResult AdminListView()
-    //{
+    public ActionResult AdminProviderView()
+    {
+      var data = db.Providers.ToList();
+      return View(data);
 
-    //  List<AdminUserView> list = getUserList();
-    //  List<AdminJobViewModel> jobList = getJobList();
-    //  AdminViewModel model = new AdminViewModel();
-    //  model.UserList = list;
-    //  model.JobList = jobList;
-    //  return View(model);
-    //}
+    }
 
-    //public ActionResult ProviderListView()
-    //{
+    public ActionResult AdminSeekerView()
+    {
+      var data = db.Seekers.ToList();
+      return View(data);
+    }
 
-    //  return PartialView("_ProviderList");
-    //}
+    public ActionResult AdminServiceView()
+    {
+      var data = db.Requests.ToList();
+      return View(data);
+    }
+
+    public ActionResult AdminInProgressServiceView()
+    {
+      var data = db.Requests.Where(m =>m.status==1).ToList();
+      return View(data);
+    }
+
+    public ActionResult ApprovalDetail(string id)
+    {
+      var p = db.Providers.Find(id);
+
+      if (p != null)
+      {
+        var d = db.Documents.Where(h => h.holder == id).ToList();
+
+        var data = new AdminApprovalVM
+        {
+          Email = p.email,
+          Phone = p.phone,
+          Address = p.address,
+          CompanyIndividual = p.companyIndividual,
+          Name = p.name,
+          CompanyName = p.companyName,
+          ServiceType = p.Service_Type.name,
+          ProfileImage = p.profileImage,
+          Status = p.status.ToString(),
+          document = d
+        };
+
+
+        return View(data);
+      }
+
+      TempData["Info"] = "Invalid ID";
+      return RedirectToAction("AdminProviderView", "Admin");
+    }
+    public ActionResult SeekerApprovalDetail(string id)
+    {
+      var p = db.Seekers.Find(id);
+
+      if (p != null)
+      {
+        var data = new AdminApprovalVM
+        {
+          Email = p.email,
+          Phone = p.phone,
+          Name = p.name,
+          ProfileImage = p.profileImage,
+          Status = p.status.ToString()
+        };
+        return View(data);
+      }
+
+      TempData["Info"] = "Invalid ID";
+      return RedirectToAction("AdminSeekerView", "Admin");
+    }
+
+    public ActionResult RequestDetail(string id)
+    {
+      var p = db.Requests.Find(id);
+
+      if (p != null)
+      {
+        var data = new RequestDetail
+        {
+          Title = p.title,
+          Price = p.price,
+          Seeker = p.Seeker,
+          Provider = p.Provider,
+          Id = p.SId,
+          Address = p.address,
+          Image = p.image,
+          Description = p.description,
+          DateCreated = p.dateCreated,
+          Type = p.Type,
+          Category = p.Category,
+          DateCompleted = p.dateCompleted,
+          Status = p.status,
+        };
+        if(p.file != null)
+        {
+          data.Files = p.file.Split('#');
+        }
+        else
+        {
+          data.Files = new List<string>();
+        }
+        return View(data);
+      }
+
+      TempData["Info"] = "Invalid ID";
+      return RedirectToAction("AdminRequestView", "Admin");
+    }
+
+
+    [HttpPost]
+    public ActionResult ApproveProvider(string provider_id)
+    {
+      var provider = db.Providers.Where(m => m.email == provider_id).FirstOrDefault();
+      provider.status = 1;
+      try
+      {
+        db.SaveChanges();
+        return Json(new { Message = provider_id+" is activated.", JsonRequestBehavior.AllowGet });
+      }
+      catch(Exception e)
+      {
+        return Json(new { Message = "Failed to update. "+e.Message, JsonRequestBehavior.AllowGet });
+      }
+    }
+
+    [HttpPost]
+    public ActionResult BlockProvider(string provider_id)
+    {
+      var provider = db.Providers.Where(m => m.email == provider_id).FirstOrDefault();
+      provider.status = 0;
+      try
+      {
+        db.SaveChanges();
+        return Json(new { Message = provider_id+" is blocked.", JsonRequestBehavior.AllowGet });
+      }
+      catch(Exception e)
+      {
+        return Json(new { Message = "Failed to update. "+e.Message, JsonRequestBehavior.AllowGet });
+      }
+    }
+
+    [HttpPost]
+    public ActionResult ApproveSeeker(string seeker_id)
+    {
+      var seeker = db.Seekers.Where(m => m.email == seeker_id).FirstOrDefault();
+      seeker.status = 1;
+      try
+      {
+        db.SaveChanges();
+        return Json(new { Message = seeker_id + " is activated.", JsonRequestBehavior.AllowGet });
+      }
+      catch(Exception e)
+      {
+        return Json(new { Message = "Failed to update. "+e.Message, JsonRequestBehavior.AllowGet });
+      }
+    }
+
+    [HttpPost]
+    public ActionResult BlockSeeker(string seeker_id)
+    {
+      var provider = db.Seekers.Where(m => m.email == seeker_id).FirstOrDefault();
+      provider.status = 0;
+      try
+      {
+        db.SaveChanges();
+        return Json(new { Message = seeker_id + " is blocked.", JsonRequestBehavior.AllowGet });
+      }
+      catch(Exception e)
+      {
+        return Json(new { Message = "Failed to update. "+e.Message, JsonRequestBehavior.AllowGet });
+      }
+    }
     //private List<AdminUserView> getUserList()
     //{
 
@@ -82,7 +242,7 @@ namespace fyptest.Controllers
     //[HttpPost]
     //public ActionResult EditRole(Provider user)
     //{
-    //  var userProfile = objDbEntity.Providers.FirstOrDefault(a => a.id.Equals(user.id));
+    //  var userProfile = db.Providers.FirstOrDefault(a => a.id.Equals(user.id));
     //  var action = "";
     //  //if (userProfile != null && ModelState.IsValid)
     //  //{
@@ -114,44 +274,45 @@ namespace fyptest.Controllers
     //}
 
     //[HttpPost]
-    //public ActionResult EditJobStatus(Job job)
+    //public ActionResult EditJobStatus(Request job)
     //{
-    //  var jobs = objDbEntity.Jobs.Where(a => a.job_id == job.job_id).ToList();
+    //  var jobs = db.Requests.Where(a => a.SId == job.SId).ToList();
     //  var action = "";
     //  //if (jobProfile != null && ModelState.IsValid)
     //  //{
     //  //jobProfile.job_id= job.job_id;
     //  var jobProfile = jobs.First();
-    //  if (job.job_status == "approve")
+    //  //if (job.job_status == "approve")
+    //  //{
+    //  //  jobProfile.job_status = "Active";
+    //  //  jobProfile.job_actived_date = DateTime.Now;
+    //  //  action = "Approved";
+    //  //}
+    //  //else
+    //  if (job.status == 3)
     //  {
-    //    jobProfile.job_status = "Active";
-    //    jobProfile.job_actived_date = DateTime.Now;
-    //    action = "Approved";
-    //  }
-    //  else if (job.job_status == "block")
-    //  {
-    //    jobProfile.job_status = "Blocked";
+    //    jobProfile.status = "Blocked";
     //    action = "Blocked";
     //  }
-    //  else if (job.job_status == "unblock")
+    //  else if (job.status == 1)
     //  {
-    //    jobProfile.job_status = "Active";
+    //    jobProfile.status = "Active";
     //    action = "Unblocked";
     //  }
     //  else
     //  {
-    //    return Json(new { Message = job.job_status, JsonRequestBehavior.AllowGet });
+    //    return Json(new { Message = job.status, JsonRequestBehavior.AllowGet });
     //  }
-    //  objDbEntity.SaveChanges();
-    //  if (job.job_status == "approve" && job.job_type == "Immediate")
-    //  {
-    //    var notificationHub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+    //  db.SaveChanges();
+    //  //if (job.status == "approve" && job.job_type == "Immediate")
+    //  //{
+    //  //  var notificationHub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
 
-    //    notificationHub.Clients.All.notify("added", "<li><a href='/Job/JobView/" + job.job_id + "'>A job with immediated action is required (Job ID" + job.job_id + ") </a></li>");
-    //    SendEmail(job.job_id);
-    //    //reregister notification
-    //    //RegisterNotification(DateTime.Now);
-    //  }
+    //  //  notificationHub.Clients.All.notify("added", "<li><a href='/Job/JobView/" + job.job_id + "'>A job with immediated action is required (Job ID" + job.job_id + ") </a></li>");
+    //  //  SendEmail(job.job_id);
+    //  //  //reregister notification
+    //  //  //RegisterNotification(DateTime.Now);
+    //  //}
     //  string message = action;
     //  return Json(new { Message = message, JsonRequestBehavior.AllowGet });
 
@@ -159,109 +320,103 @@ namespace fyptest.Controllers
     //  //return Json(new { Message = "Failed to update", JsonRequestBehavior.AllowGet });
     //}
 
-    //public ActionResult AdminJobListView()
-    //{
-    //  List<AdminJobViewModel> model = getJobList();
+    public ActionResult AdminJobListView()
+    {
+      List<AdminJobViewModel> model = getJobList();
 
-    //  return PartialView("_AdminPendingJobView", model);
-    //}
+      return PartialView("_AdminPendingJobView", model);
+    }
 
-    //public ActionResult AdminAllJobListView()
-    //{
-    //  List<AdminJobViewModel> model = getJobList();
+    public ActionResult AdminAllJobListView()
+    {
+      List<AdminJobViewModel> model = getJobList();
 
-    //  return PartialView("_AdminJobView", model);
-    //}
+      return PartialView("_AdminJobView", model);
+    }
 
-    //private List<AdminJobViewModel> getJobList()
-    //{
+    private List<AdminJobViewModel> getJobList()
+    {
 
-    //  List<Job> jobs = objDbEntity.Jobs.ToList();
-    //  List<AdminJobViewModel> jobList = new List<AdminJobViewModel>();
-    //  foreach (var job in jobs)
-    //  {
-    //    AdminJobViewModel model = new AdminJobViewModel();
-    //    model.JobID = job.job_id;
-    //    model.Location = job.job_location;
-    //    model.Category = job.job_category;
-    //    if (job.job_date != null)
-    //      model.Date = (DateTime)job.job_date;
-    //    model.Handphone = job.job_handphone;
-    //    model.Price = (double)job.job_price;
-    //    model.Image = job.job_image;
-    //    if (job.job_image == null)
-    //      model.Image = "~/UploadedDocument/noimage.jpg";
-    //    model.Provider = job.job_provider;
-    //    model.Status = job.job_status;
-    //    model.SelectedType = job.job_type;
-    //    model.Title = job.job_title;
+      List<Request> jobs = db.Requests.ToList();
+      List<AdminJobViewModel> jobList = new List<AdminJobViewModel>();
+      foreach (var job in jobs)
+      {
+        AdminJobViewModel model = new AdminJobViewModel();
+        model.JobID = job.SId;
+        model.Location = job.address;
+        model.Category = job.Category;
+        model.Price = (double)job.price;
+        model.Image = job.image;
+        if (job.image == null)
+          model.Image = "~/UploadedDocument/noimage.jpg";
+        model.Provider = job.Provider;
+        model.Status = job.status;
+        model.SelectedType = job.Type;
+        model.Title = job.title;
 
-    //    jobList.Add(model);
-    //  }
-    //  return jobList;
-    //}
+        jobList.Add(model);
+      }
+      return jobList;
+    }
 
-    //[NonAction]
-    //public void SendEmail(int jobId)
-    //{
-    //  List<Provider> providerList = objDbEntity.Providers.ToList();
-    //  var job = objDbEntity.Jobs.Where(m => m.job_id == jobId).FirstOrDefault();
-    //  var fromEmail = new MailAddress("OnDemand.Service.2021@gmail.com", "Service On-Demand");
-    //  //var toEmail = new MailAddress(email);
-    //  var fromEmailPassword = "Abc123!@#";//real password
-    //  string subject = "Reset Password";
-    //  var body = "Hi, <br><br> There is a job that required immediate reaction by " + job.job_provider + ". The details are as below:<br>" +
-    //      "Title: " + job.job_title + "<br>" +
-    //      "Category: " + job.job_category + "<br>" +
-    //      "Description: " + job.job_description + "<br>" +
-    //      "Price: " + job.job_price + "<br>";
-    //  if (job.job_handphone != null)
-    //  {
-    //    body += "You nay reach the provider by " + job.job_handphone;
-    //  }
+    [NonAction]
+    public void SendEmail(string jobId)
+    {
+      List<Provider> providerList = db.Providers.ToList();
+      var job = db.Requests.Where(m => m.SId == jobId).FirstOrDefault();
+      var fromEmail = new MailAddress("OnDemand.Service.2021@gmail.com", "Service On-Demand");
+      //var toEmail = new MailAddress(email);
+      var fromEmailPassword = "Abc123!@#";//real password
+      string subject = "Reset Password";
+      var body = "Hi, <br><br> There is a job that required immediate reaction by " + job.Provider + ". The details are as below:<br>" +
+          "Title: " + job.title + "<br>" +
+          "Category: " + job.Category + "<br>" +
+          "Description: " + job.description + "<br>" +
+          "Price: " + job.price + "<br>";
 
+      var smtp = new SmtpClient
+      {
+        Host = "smtp.gmail.com",
+        Port = 587,
+        EnableSsl = true,
+        DeliveryMethod = SmtpDeliveryMethod.Network,
+        UseDefaultCredentials = false,
+        Credentials = new NetworkCredential(fromEmail.Address, fromEmailPassword)
+      };
 
-    //  var smtp = new SmtpClient
-    //  {
-    //    Host = "smtp.gmail.com",
-    //    Port = 587,
-    //    EnableSsl = true,
-    //    DeliveryMethod = SmtpDeliveryMethod.Network,
-    //    UseDefaultCredentials = false,
-    //    Credentials = new NetworkCredential(fromEmail.Address, fromEmailPassword)
-    //  };
+      foreach (var p in providerList)
+      {
+        var toEmail = new MailAddress(p.email);
+        using (var message = new MailMessage(fromEmail, toEmail)
+        {
+          Subject = subject,
+          Body = body,
+          IsBodyHtml = true
+        })
 
-    //  foreach (var provider in providerList)
-    //  {
-    //    var toEmail = new MailAddress(provider.email);
-    //    using (var message = new MailMessage(fromEmail, toEmail)
-    //    {
-    //      Subject = subject,
-    //      Body = body,
-    //      IsBodyHtml = true
-    //    })
+          if (p != null)
+          {
+            var d = db.Documents.Where(h => h.holder == jobId);
 
-    //if (p != null)
-    //{
-    //  var d = db.Documents.Where(h => h.holder == id);
+            var data = new AdminApprovalVM
+            {
+              Email = p.email,
+              Phone = p.phone,
+              Address = p.address,
+              CompanyIndividual = p.companyIndividual,
+              Name = p.name,
+              CompanyName = p.companyName,
+              ServiceType = p.Service_Type.name,
+              ProfileImage = p.profileImage,
+              document = d
+            };
 
-    //  var data = new AdminApprovalVM
-    //  {
-    //    Email = p.email,
-    //    Phone = p.phone,
-    //    Address = p.address,
-    //    CompanyIndividual = p.companyIndividual,
-    //    Name = p.name,
-    //    CompanyName = p.companyName,
-    //    ServiceType = p.Service_Type.name,
-    //    ProfileImage = p.profileImage,
-    //    document = d
-    //  };
+            smtp.Send(message);
+          }
+      }
+    }
 
-    //      smtp.Send(message);
-    //  }
-
-    //}
+      
 
     [AllowAnonymous]
     public ActionResult AdminLogin(string returnUrl)
@@ -269,7 +424,8 @@ namespace fyptest.Controllers
       return View();
     }
 
-    //
+
+      //
     // POST: /Account/Login
     [HttpPost]
     [AllowAnonymous]
@@ -297,12 +453,7 @@ namespace fyptest.Controllers
 
         else if (admin.Count() > 0 && admin != null)
         {
-          //var user = db.Providers.Find(email);
-
-          //string name = "";
-          //name = user.name != null ? user.name : user.companyName;
-
-          //var m = new MailMessage();
+          var m = new MailMessage();
 
           var logindetails = admin.First();
           // Login In.    
@@ -539,6 +690,23 @@ namespace fyptest.Controllers
     }
 
     //@Html.ActionLink("Document", "DownloadFile", new { filename = Model.File })
+
+    public ActionResult Logout()
+    {
+      var ctx = Request.GetOwinContext();
+      var authenticationManager = ctx.Authentication;
+
+      //AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+      //Sign out
+      authenticationManager.SignOut();
+      Session.Clear();
+      Session.Abandon();
+      if (!string.IsNullOrEmpty(Convert.ToString(Session["Email"])))
+      {
+        return RedirectToAction("Index", "Home");
+      }
+      return RedirectToAction("Index", "Home");
+    }
   }
 
 }

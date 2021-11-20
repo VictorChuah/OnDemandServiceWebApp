@@ -1,8 +1,8 @@
-@model fyptest.Models.JobViewModel
+@using fyptest.Models
+@model RequestDetail
 @{
-  ViewBag.Title = "JobView";
+  ViewBag.Title = "RequestDetail";
 }
-
 
 <div style="height: 113px;"></div>
 
@@ -12,10 +12,6 @@
     <p class="mb-0 unit-6"><a href="index.html">Home</a> <span class="sep">></span> <span>Job Item</span></p>
   </div>
 </div>
-
-
-
-
 <div class="site-section bg-light">
   <div class="container">
     <div class="row">
@@ -29,8 +25,8 @@
               </div>
             </div>
             <div class="job-post-item-body d-block d-md-flex">
-              <div class="mr-3"><span class="fl-bigmug-line-portfolio23"></span> <a href="#">@Model.Location</a></div>
-              <div><span class="fl-bigmug-line-big104"></span> <span>@Model.Location</span></div>
+              <div class="mr-3"><span class="fl-bigmug-line-portfolio23"></span> <a href="#">@Model.Address</a></div>
+              <div><span class="fl-bigmug-line-big104"></span> <span>@Model.Address</span></div>
             </div>
           </div>
 
@@ -44,6 +40,8 @@
             <img src="@Model.Image" alt="Image" class="img-fluid rounded">
             @*</a>*@
           </div>
+
+
 
           <div class="row form-group">
             <div class="col-md-12 mb-3 mb-md-0">
@@ -60,7 +58,7 @@
           <div class="row form-group">
             <div class="col-md-12 mb-3 mb-md-0">
               <label class="font-weight-bold" for="phone">Job Type</label>
-              <p class="mb-4">RM @Model.SelectedType</p>
+              <p class="mb-4">RM @Model.Type</p>
             </div>
           </div>
           <div class="row form-group">
@@ -72,6 +70,7 @@
           <div class="row form-group">
             <div class="col-md-12 mb-3 mb-md-0">
               <label class="font-weight-bold">Documents</label>
+
               @if (Model.Files.Count() > 0)
               {
                 foreach (var item in Model.Files)
@@ -79,8 +78,10 @@
                   <br />
                   if (item != "")
                   {
-                    <p class="mb-4 btn btn-info pill" onclick="window.open('/UploadedDocument/@Model.Seeker/Job\@Model.JobID/@item');" target="_blank">@item</p>
+                    <p class="mb-4 btn btn-info pill" onclick="window.open('/UploadedDocument/@Model.Seeker/Job\@Model.Id/@item');" target="_blank">@item</p>
                   }
+
+
                 }
               }
               else
@@ -93,19 +94,19 @@
           <div class="row form-group">
             <div class="col-md-12 mb-3 mb-md-0">
               <label class="font-weight-bold">Status</label>
-              @if (Model.Status == "0")
+              @if (Model.Status == 0)
               {
                 <div class="badge-wrap">
                   <span class="border border-warning text-warning py-2 px-4 rounded">Pending Provider</span>
                 </div>
               }
-              else if (Model.Status == "1")
+              else if (Model.Status == 1)
               {
                 <div class="badge-wrap">
                   <span class="border border-info text-info py-2 px-4 rounded">In Progress</span>
                 </div>
               }
-              else if (Model.Status == "2")
+              else if (Model.Status == 2)
               {
                 <div class="badge-wrap">
                   <span class="border border-success text-success py-2 px-4 rounded">Completed</span>
@@ -116,51 +117,9 @@
             </div>
           </div>
 
-          @if (Session["Email"] != null)
-          {
-            if (Session["Role"].ToString() == "Provider")
-            {
-              <p class="mt-5">
-                <div class="btn btn-primary  py-2 px-4" onclick="applyJob('@Model.JobID');">Apply Job</div>
-                <a href='@Url.Action("Contact", "Chat",new { id=Model.JobID})' style="text-decoration: none;" class="btn btn-info  py-2 px-4">Chat with seeker</a>
-              </p>
-            }
-          }
-
-        </div>
-      </div>
-
-      <div class="col-lg-4">
-
-
-        <div class="p-4 mb-3 bg-white">
-          <h3 class="h5 text-black mb-3">More Info</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa ad iure porro mollitia architecto hic consequuntur. Distinctio nisi perferendis dolore, ipsa consectetur</p>
-          <p><a href="#" class="btn btn-primary  py-2 px-4">Apply Job</a></p>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-
-
-<script type="text/javascript">
-        function applyJob(id) {
-          var data = {};
-          data.SId = id;
-          $.ajax({
-              type: "POST",
-              contentType: "application/json; charset=utf-8",
-              data:  JSON.stringify(data),
-              url: '@Url.Action("ApplyJob")',
-              success: function (success) {
-                  alert(success.Message);
-              },
-              error: function (result) {
-                  alert(result.Error);
-              }
-          })
-
-        }
-</script>

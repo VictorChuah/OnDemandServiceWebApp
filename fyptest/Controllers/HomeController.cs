@@ -21,7 +21,7 @@ namespace fyptest.Controllers
       ServerDBEntities db = new ServerDBEntities();
 
       //count total request
-      int count = db.Requests.Where(r => r.Provider == "victorritdemo+p1@gmail.com" && r.status == 2).Count();
+      int count = db.Requests.Where(r => r.Provider == "victorritdemo+p1@gmail.com" && r.status == 0).Count();
 
       //get providers current rating for each type
       var proRating = db.Ratings.Find("victorritdemo+p1@gmail.com").professionalism;
