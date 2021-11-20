@@ -6,20 +6,15 @@ using System.Web.Mvc;
 using Microsoft.AspNet.SignalR;
 using fyptest.Models;
 using fyptest.SignalR.Hubs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Web;
-using System.Web.Mvc;
 using System.Web.Security;
 using System.Web.Helpers;
 
 namespace fyptest.Controllers
 {
-    public class AdminController : Controller
-    {
+  public class AdminController : Controller
+  {
     // GET: Admin
     private ServerDBEntities db = new ServerDBEntities();
     // GET: Admin
@@ -246,22 +241,22 @@ namespace fyptest.Controllers
     //      IsBodyHtml = true
     //    })
 
-      if (p != null)
-      {
-        var d = db.Documents.Where(h => h.holder == id);
+    //if (p != null)
+    //{
+    //  var d = db.Documents.Where(h => h.holder == id);
 
-        var data = new AdminApprovalVM
-        {
-          Email = p.email,
-          Phone = p.phone,
-          Address = p.address,
-          CompanyIndividual = p.companyIndividual,
-          Name = p.name,
-          CompanyName = p.companyName,
-          ServiceType = p.Service_Type.name,
-          ProfileImage = p.profileImage,
-          document = d
-        };
+    //  var data = new AdminApprovalVM
+    //  {
+    //    Email = p.email,
+    //    Phone = p.phone,
+    //    Address = p.address,
+    //    CompanyIndividual = p.companyIndividual,
+    //    Name = p.name,
+    //    CompanyName = p.companyName,
+    //    ServiceType = p.Service_Type.name,
+    //    ProfileImage = p.profileImage,
+    //    document = d
+    //  };
 
     //      smtp.Send(message);
     //  }
@@ -302,12 +297,12 @@ namespace fyptest.Controllers
 
         else if (admin.Count() > 0 && admin != null)
         {
-      var user = db.Providers.Find(email);
+          //var user = db.Providers.Find(email);
 
-      string name = "";
-      name = user.name != null ? user.name : user.companyName;
+          //string name = "";
+          //name = user.name != null ? user.name : user.companyName;
 
-      var m = new MailMessage();
+          //var m = new MailMessage();
 
           var logindetails = admin.First();
           // Login In.    
@@ -344,6 +339,196 @@ namespace fyptest.Controllers
       return View(model);
     }
 
+    public ActionResult ServiceCRUD()
+    {
+      //if (Session["Email"] == null) 
+      //{
+      //  TempData["Info"] = "Please login!";
+      //  return RedirectToAction("AdminLogin", "Admin");
+      //}
+      //else if (Session["Role"].ToString() != "Admin")
+      //{
+      //  TempData["Info"] = "Unauthorized!";
+      //  return RedirectToAction("AdminLogin", "Admin");
+      //}
+
+
+      var types = db.Service_Types;
+      var categories = db.Service_Categories;
+
+      var data = new ServiceCRUD
+      {
+        Types = types,
+        Categories = categories,
+        Type = types.FirstOrDefault(),
+        Category = categories.FirstOrDefault()
+      };
+
+      if (Request.IsAjaxRequest())
+        return PartialView("_TypeList", data);
+
+      return View(data);
+    }
+
+    //[HttpPost]
+    //public ActionResult WorkCRUD()
+
+    public ActionResult GetType(string tid)
+    {
+      var type = db.Service_Types.Find(tid);
+
+      var data = new ServiceCRUD
+      {
+        Type = type,
+      };
+
+      return PartialView("_Type", data);
+    }
+
+    public JsonResult GetCategories(string tid) // string cid
+    {
+      var categories = db.Service_Categories.Where(t => t.STId == tid);
+
+      var model = new List<string>();
+
+      foreach (var c in categories)
+      {
+        model.Add(c.name);
+      }
+
+      return Json(model, JsonRequestBehavior.AllowGet);
+    }
+
+    public ActionResult GetCategory(string categoryName)
+    {
+      var category = db.Service_Categories.Where(c => c.name == categoryName).FirstOrDefault();
+
+      var data = new ServiceCRUD
+      {
+        Category = category
+      };
+
+      return PartialView("_Category", data);
+    }
+
+    public JsonResult EditType(Service_Type model)
+    {
+      var data = db.Service_Types.Find(model.STId);
+
+      //if got data, straight modify
+      if (data != null)
+      {
+        data.name = model.name;
+        data.description = model.description;
+      }
+      else if (data == null)
+      {
+        //process get latest id and auto increment in the format of "sc999"
+        var t = db.Service_Types.OrderByDescending(x => x.STId).FirstOrDefault();
+        string temp = t.STId;
+        string tempNum = "";
+
+        for (int x = 0; x < temp.Length; x++)
+        {
+          if (Char.IsDigit(temp[x]))
+            tempNum += temp[x];
+        }
+
+        int tempId = (int.Parse(tempNum)) + 1;
+        string id = "";
+
+        if (tempId < 10)
+          id = "st00";
+        else if (tempId < 100)
+          id = "st0";
+        else
+          id = "st";
+
+        model.STId = id + tempId.ToString();
+        db.Service_Types.Add(model); //check
+      }
+      else
+        return Json(String.Format("Error"));
+
+
+      db.SaveChanges();
+      return Json(String.Format("Success"));
+    }
+
+    
+    public JsonResult EditCategory(Service_Category model)
+    {
+      var data = db.Service_Categories.Find(model.STId);
+
+      //if got data, straight modify
+      if (data != null)
+      {
+        data.name = model.name;
+        data.description = model.description;
+        data.averagePrice = model.averagePrice;
+      }
+      else if (data == null)
+      {
+        //process get latest id and auto increment in the format of "sc999"
+        var t = db.Service_Categories.OrderByDescending(x => x.SCId).FirstOrDefault();
+        string temp = t.SCId;
+        string tempNum = "";
+
+        for (int x = 0; x < temp.Length; x++)
+        {
+          if (Char.IsDigit(temp[x]))
+            tempNum += temp[x];
+        }
+
+        int tempId = (int.Parse(tempNum)) + 1;
+        string id = "";
+
+        if (tempId < 10)
+          id = "sc00";
+        else if (tempId < 100)
+          id = "sc0";
+        else
+          id = "sc";
+
+        model.SCId = id + tempId.ToString();
+        db.Service_Categories.Add(model); //check
+      }
+      else
+        return Json(String.Format("Error"));
+
+
+      db.SaveChanges();
+      return Json(String.Format("Success"));
+    }
+
+    public JsonResult DeleteService(string id)
+    {
+      var type = db.Service_Types.Find(id);
+
+      if (type != null)
+        db.Service_Types.Remove(type);
+      else
+      {
+        var category = db.Service_Categories.Find(id);
+
+        if (category != null)
+          db.Service_Categories.Remove(category);
+        else
+          return Json(String.Format("Error"));
+      }
+
+      db.SaveChanges();
+      return Json(String.Format("Success"));
+    }
+
+
+    //=========================================================================================================================
+    //public ActionResult CheckName(string name)
+    //{
+    //  bool isValid = (db.Service_Types.Any(t => t.name != name) || db.Service_Categories.Any(c => c.name != name));
+    //  return Json(isValid, JsonRequestBehavior.AllowGet);
+    //}
+
     private ActionResult RedirectToLocal(string returnUrl)
     {
       if (Url.IsLocalUrl(returnUrl))
@@ -354,6 +539,6 @@ namespace fyptest.Controllers
     }
 
     //@Html.ActionLink("Document", "DownloadFile", new { filename = Model.File })
-    }
+  }
 
 }

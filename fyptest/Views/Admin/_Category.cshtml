@@ -1,0 +1,42 @@
+@using fyptest.Models
+@model ServiceCRUD
+
+
+<div class="row form-group">
+  <div class="col-md-12 mb-3 mb-md-0">
+    <label class="font-weight-bold">Category name</label>
+    <input type="text" id="category" class="form-control" value="@Model.Category.name" placeholder="Name" required>
+  </div>
+</div>
+
+<div class="row form-group">
+  <div class="col-md-12 mb-3 mb-md-0">
+    <label class="font-weight-bold">Description</label>
+    <input type="text" id="catDescription" class="form-control" value="@Model.Category.description" placeholder="Description" required>
+  </div>
+</div>
+
+<div class="row form-group">
+  <div class="col-md-12 mb-3 mb-md-0">
+    <label class="font-weight-bold">Average Price</label>
+    <input type="number" id="price" class="form-control" value="@Model.Category.averagePrice" placeholder="10.00" required>
+  </div>
+</div>
+
+<p id="catValidate"><label class="text-danger">Please fill in all the fields.</label></p>
+<p id="priceValidate"><label class="text-danger">Invalid price format. (10.00) </label></p>
+
+
+<input type="button" id="catEdit" value="Edit" class="btn btn-primary pill px-4 py-2" onclick="AddEditCategory('@Model.Category.SCId');">
+<input type="button" id="catAdd" value="Add" class="btn btn-primary pill px-4 py-2" onclick="AddEditCategory('@Model.Category.SCId');">
+<input type="button" value="Delete" class="btn btn-primary pill px-4 py-2" onclick="deleteService('@Model.Category.SCId');">
+
+
+
+@*<div class="form-group">
+    @Html.LabelFor(model => model.Email, "", htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+      @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control input100", placeholder = "Email" } })
+      @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+    </div>
+  </div>*@

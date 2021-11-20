@@ -35,15 +35,15 @@
           <div class="row form-group">
             <div class="col-md-12 mb-3 mb-md-0">
               <label class="font-weight-bold" for="email">Email</label>
-              <p class="mb-4" id="email">@Model.accDetail.Email</p>
+              <p class="mb-4" id="email">@Model.Account.email</p>
             </div>
           </div>
 
           <div class="row form-group">
             <div class="col-md-12 mb-3 mb-md-0">
               <label class="font-weight-bold" for="phone">Phone</label>
-              <p class="mb-4" id="phone">@Model.accDetail.Phone</p>
-              <input type="text" id="editPhone" class="form-control" placeholder="60123456789" value=@Model.accDetail.Phone required>
+              <p class="mb-4" id="phone">@Model.Account.phone</p>
+              <input type="text" id="editPhone" class="form-control" placeholder="60123456789" value=@Model.Account.phone required>
               <p><span id="error">Invalid Format (60123456789)</span> </p>
             </div>
           </div>
@@ -51,39 +51,39 @@
           <div class="row form-group">
             <div class="col-md-12 mb-3 mb-md-0">
               <label class="font-weight-bold" for="Address">Address</label>
-              <p class="mb-4" id="address">@Model.accDetail.Address</p>
-              <input type="text" id="editAddress" class="form-control" placeholder="Address" value=@Model.accDetail.Address required>
+              <p class="mb-4" id="address">@Model.Account.address</p>
+              <input type="text" id="editAddress" class="form-control" placeholder="Address" value=@Model.Account.address required>
             </div>
           </div>
 
-          @if (@Model.accDetail.CompanyIndividual)
+          @if (@Model.Account.companyIndividual)
           {
-            <div class="row form-group">
-              <div class="col-md-12">
-                <label class="font-weight-bold" for="name">Name</label>
-                <p class="mb-4">@Model.accDetail.Name</p>
-              </div>
-            </div> }
-          else if (!@Model.accDetail.CompanyIndividual)
-          {
-            <div class="row form-group">
-              <div class="col-md-12">
-                <label class="font-weight-bold" for="companyName">Company Name</label>
-                <p class="mb-4">@Model.accDetail.CompanyName</p>
-              </div>
-            </div>}
+    <div class="row form-group">
+      <div class="col-md-12">
+        <label class="font-weight-bold" for="name">Name</label>
+        <p class="mb-4">@Model.Account.name</p>
+      </div>
+    </div> }
+  else if (!@Model.Account.companyIndividual)
+  {
+<div class="row form-group">
+  <div class="col-md-12">
+    <label class="font-weight-bold" for="companyName">Company Name</label>
+    <p class="mb-4">@Model.Account.companyName</p>
+  </div>
+</div>}
 
           <div class="row form-group">
             <div class="col-md-12">
               <label class="font-weight-bold" for="serviceType">Services</label>
-              <p class="mb-4">@Model.accDetail.ServiceType</p>
+              <p class="mb-4">@Model.Account.Service_Type.name</p>
             </div>
           </div>
 
           <div class="row form-group">
             <div class="col-md-3">
               <label class="font-weight-bold" for="attitude">Attitude</label>
-              @switch (Model.accDetail.Attitude)
+              @switch (Model.Rate.attitude)
               {
                 case 1:<p class="mb-4"> &#9733;&#9734;&#9734;&#9734;&#9734; </p> ; break;
                 case 2: <p class="mb-4"> &#9733;&#9733;&#9734;&#9734;&#9734;</p> ; break;
@@ -95,7 +95,7 @@
             </div>
             <div class="col-md-3">
               <label class="font-weight-bold" for="quality">Quality</label>
-              @switch (Model.accDetail.Quality)
+              @switch (Model.Rate.quality)
               {
                 case 1:<p class="mb-4"> &#9733;&#9734;&#9734;&#9734;&#9734; </p> ; break;
                 case 2: <p class="mb-4"> &#9733;&#9733;&#9734;&#9734;&#9734;</p> ; break;
@@ -107,7 +107,7 @@
             </div>
             <div class="col-md-3">
               <label class="font-weight-bold" for="efficiency">Efficiency</label>
-              @switch (Model.accDetail.Efficiency)
+              @switch (Model.Rate.efficiency)
               {
                 case 1:<p class="mb-4"> &#9733;&#9734;&#9734;&#9734;&#9734; </p> ; break;
                 case 2: <p class="mb-4"> &#9733;&#9733;&#9734;&#9734;&#9734;</p> ; break;
@@ -119,7 +119,7 @@
             </div>
             <div class="col-md-3">
               <label class="font-weight-bold" for="professionalism">Professionalism</label>
-              @switch (Model.accDetail.Professionalism)
+              @switch (Model.Rate.professionalism)
               {
                 case 1:<p class="mb-4"> &#9733;&#9734;&#9734;&#9734;&#9734; </p> ; break;
                 case 2: <p class="mb-4"> &#9733;&#9733;&#9734;&#9734;&#9734;</p> ; break;
@@ -149,7 +149,7 @@
             <label class="text-info p-2 rounded border border-info" id="upload">
               <input type="file" id="file" name="file" accept="image/jpeg,image/png,image/jpg" hidden="" />
               @*@Html.TextBoxFor(m => m.ProfileImage, new { type = "file", accept = "image/jpeg,image/png,image/jpg", hidden = "" })*@
-              <img src="~/Image/Profile/@Model.accDetail.ProfileImage" />
+              <img src="~/Image/Profile/@Model.Account.profileImage" />
               <br />
               <small id="image">Select photo...</small>
             </label>
@@ -158,22 +158,42 @@
 
         <div class="p-4 mb-3 bg-white">
           <h3 class="h5 text-black mb-3">Wallet</h3>
-          <p>RM <b>@Model.accDetail.Wallet</b></p>
+          <p>RM <b>@Model.Account.walletAmount</b></p>
           <p>
             <button class="btn btn-primary px-4 py-2 text-white pill" id="topup">Top Up</button>
             <a href="~/JobProvider/Withdraw" class="btn btn-primary px-4 py-2 text-white pill">Withdrawn</a>
           </p>
           <p id="topupMethod">
             <a href="~/JobProvider/Topup" class="btn btn-primary px-2 py-1 text-white pill"><small>Debit Card</small></a>
-            <a href="~/JobProvider/TopupPaypal" class="btn btn-primary px-2 py-1 text-white pill"><small>PayPal</small></a>
+            <a href="~/JobProvider/TopupPaypal" class="btn btn-primary px-2 py-1 text-white pill"><small>PayPal Quick Topup (RM20)</small></a>
           </p>
         </div>
         <div class="p-4 mb-3 bg-white">
           <h3 class="h5 text-black mb-3">Namecard</h3>
           <label class="text-info p-2 rounded border border-info">
-            <img src="~/Image/NameCard/@Model.accDetail.Namecard" style="width:300px; height:200px"/>
+            <img src="~/Image/NameCard/@(Model.Account.namecard == null? "add.png" : Model.Account.namecard )" style="width:300px; height:200px" />
           </label>
           <p><a href="~/JobProvider/EditNameCard" class="btn btn-primary px-4 py-2 text-white pill">Edit</a></p>
+          @if (Model.Account.namecard != null)
+          {
+            if (!Model.Account.postNamecard)
+            {
+              <p id="postNamecard" class="btn btn-primary px-4 py-2 text-white pill">Post</p>
+              <div id="dialog-confirm" title="Post Namecard?">
+                <b>M5.00</b> will deduct upon confirmation and subsequent month. If you wallet does not have suffient fund, it will auto unpost your namecard. <b>Confirm Post?</b>
+              </div>
+            }
+            else
+            {
+              <p id="postNamecard" class="btn btn-primary px-4 py-2 text-white pill">Unpost</p>
+              <p id="notice"></p>
+              <div id="dialog-confirm" title="Unpost Namecard?">
+                Money that has been deduct will <b>not</b> be refund. <b>Confirm unpost?</b>
+              </div>
+            }
+
+          }
+
         </div>
       </div>
     </div>
@@ -183,75 +203,75 @@
       <div class="col-md-8 mb-5 mb-md-0" data-aos="fade-up" data-aos-delay="100">
         <h2 class="mb-5 h3"><a class="mb-5 h3" href="~/Service/RequestList?status=1">Recent Jobs</a></h2>
         <div class="rounded border jobs-wrap">
-          @foreach (var r in Model.requestDetail.Take(5))
+          @foreach (var r in Model.RequestDetail.Take(5))
           {
             if (r.status == 1)
             {
-              <a href="~/Service/RequestList?status=1&selected=@r.title" class="job-item d-block d-md-flex align-items-center  border-bottom fulltime">
-                <div class="company-logo blank-logo text-center text-md-left pl-3">
-                  <img src="~/Content/main/images/company_logo_blank.png" alt="Image" class="img-fluid mx-auto">
-                </div>
-                <div class="job-details h-100">
-                  <div class="p-3 align-self-center">
-                    <h3>@r.title</h3>
-                    <div class="d-block d-lg-flex">
-                      <div class="mr-3">
-                        <span class="icon-suitcase mr-1"></span>
-                        @(r.Service_Category.SCId == r.Category? r.Service_Category.name: "-" )
-                      </div>
-                      <div class="mr-3"><span class="icon-room mr-1"></span> @(r.address==null? "-" : r.address)</div>
-                      <div><span class="icon-money mr-1"></span> RM @r.price </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="job-category align-self-center">
-                  <div class="p-3">
-                    @if (r.seekerComplete == false && r.providerComplete == true)
-                    {
-                      <span class="text-info p-2 rounded border border-info">Pending</span> ;
-                    }
-                    else
-                    {
-                      <span class="text-warning p-2 rounded border border-warning">Ongoing</span>;
-                    }
-                  </div>
-                </div>
-              </a>}
-          }
+    <a href="~/Service/RequestList?status=1&selected=@r.title" class="job-item d-block d-md-flex align-items-center  border-bottom fulltime">
+      <div class="company-logo blank-logo text-center text-md-left pl-3">
+        <img src="~/Content/main/images/company_logo_blank.png" alt="Image" class="img-fluid mx-auto">
+      </div>
+      <div class="job-details h-100">
+        <div class="p-3 align-self-center">
+          <h3>@r.title</h3>
+          <div class="d-block d-lg-flex">
+            <div class="mr-3">
+              <span class="icon-suitcase mr-1"></span>
+              @(r.Service_Category.SCId == r.Category? r.Service_Category.name: "-" )
+            </div>
+            <div class="mr-3"><span class="icon-room mr-1"></span> @(r.address==null? "-" : r.address)</div>
+            <div><span class="icon-money mr-1"></span> RM @r.price </div>
+          </div>
+        </div>
+      </div>
+      <div class="job-category align-self-center">
+        <div class="p-3">
+          @if (r.seekerComplete == false && r.providerComplete == true)
+          {
+<span class="text-info p-2 rounded border border-info">Pending</span> ;
+}
+else
+{
+<span class="text-warning p-2 rounded border border-warning">Ongoing</span>;
+}
+        </div>
+      </div>
+    </a>}
+}
         </div>
 
         <br />
         @*bottom complete*@
         <h2 class="mb-5 h3"><a class="mb-5 h3" href="~/Service/RequestList?status=2">History</a></h2>
         <div class="rounded border jobs-wrap">
-          @foreach (var r in Model.requestDetail.Take(5))
+          @foreach (var r in Model.RequestDetail.Take(5))
           {
             if (r.status == 2)
             {
-              <a href="~/Service/RequestList?status=2&selected=@r.title" class="job-item d-block d-md-flex align-items-center  border-bottom fulltime">
-                <div class="company-logo blank-logo text-center text-md-left pl-3">
-                  <img src="~/Content/main/images/company_logo_blank.png" alt="Image" class="img-fluid mx-auto">
-                </div>
-                <div class="job-details h-100">
-                  <div class="p-3 align-self-center">
-                    <h3>@r.title</h3>
-                    <div class="d-block d-lg-flex">
-                      <div class="mr-3">
-                        <span class="icon-suitcase mr-1"></span>
-                        @(r.Service_Category.SCId == r.Category? r.Service_Category.name: "-" )
-                      </div>
-                      <div class="mr-3"><span class="icon-room mr-1"></span> @(r.address==null? "-" : r.address)</div>
-                      <div><span class="icon-money mr-1"></span> RM @r.price </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="job-category align-self-center">
-                  <div class="p-3">
-                    <span class="text-success p-2 rounded border border-success">Completed</span>
-                  </div>
-                </div>
-              </a>}
-          }
+    <a href="~/Service/RequestList?status=2&selected=@r.title" class="job-item d-block d-md-flex align-items-center  border-bottom fulltime">
+      <div class="company-logo blank-logo text-center text-md-left pl-3">
+        <img src="~/Content/main/images/company_logo_blank.png" alt="Image" class="img-fluid mx-auto">
+      </div>
+      <div class="job-details h-100">
+        <div class="p-3 align-self-center">
+          <h3>@r.title</h3>
+          <div class="d-block d-lg-flex">
+            <div class="mr-3">
+              <span class="icon-suitcase mr-1"></span>
+              @(r.Service_Category.SCId == r.Category? r.Service_Category.name: "-" )
+            </div>
+            <div class="mr-3"><span class="icon-room mr-1"></span> @(r.address==null? "-" : r.address)</div>
+            <div><span class="icon-money mr-1"></span> RM @r.price </div>
+          </div>
+        </div>
+      </div>
+      <div class="job-category align-self-center">
+        <div class="p-3">
+          <span class="text-success p-2 rounded border border-success">Completed</span>
+        </div>
+      </div>
+    </a>}
+}
         </div>
       </div>
 
@@ -262,19 +282,18 @@
           <div class="ml-auto mt-1"><a href="#" class="owl-custom-prev">Prev</a> / <a href="#" class="owl-custom-next">Next</a></div>
         </div>
         <div class="nonloop-block-16 owl-carousel">
-          @foreach (var r in Model.recommend.Take(4))
+          @foreach (var r in Model.Recommend.Take(4))
           {
-            <div class="border rounded p-4 bg-white">
-              <h2 class="h5">@r.title</h2>
-              <p style="cursor:pointer"><a href="~/Service/RequestList?status=0&selected=@r.title"><span class="text-info p-2 rounded border border-info">Recommend</span></a></p>
-              <p>
-                <span class="d-block"><span class="icon-suitcase"></span> @(r.Service_Category.SCId == r.Category? r.Service_Category.name: "-" )</span>
-                <span class="d-block"><span class="icon-room"></span> @(r.address==null? "-" : r.address)</span>
-                <span class="d-block"><span class="icon-money mr-1"></span> RM @r.price </span>
-              </p>
-              <p class="mb-0">@r.description</p>
-            </div>
-          }
+    <div class="border rounded p-4 bg-white">
+      <h2 class="h5">@r.title</h2>
+      <p style="cursor:pointer"><a href="~/Service/RequestList?status=0&selected=@r.title"><span class="text-info p-2 rounded border border-info">Recommend</span></a></p>
+      <p>
+        <span class="d-block"><span class="icon-suitcase"></span> @(r.Service_Category.SCId == r.Category? r.Service_Category.name: "-" )</span>
+        <span class="d-block"><span class="icon-room"></span> @(r.address==null? "-" : r.address)</span>
+        <span class="d-block"><span class="icon-money mr-1"></span> RM @r.price </span>
+      </p>
+      <p class="mb-0">@r.description</p>
+    </div>}
 
         </div>
       </div>
@@ -317,6 +336,8 @@
       $('#confirm').hide();
       $('#cancel').hide();
       $('#topupMethod').hide();
+      $("#dialog-confirm").hide();
+      console.log("f3wefqaf")
     });
 
 
@@ -407,6 +428,44 @@
         $('#error').effect('shake');
       }
     });
+
+    //post or unpost namecard
+    $('#postNamecard').click(() => {
+      $("#dialog-confirm").dialog({
+        resizable: false,
+        height: 220,
+        width: 475,
+        modal: true,
+        buttons: [{
+          text: "OK",
+          click: function () {
+            let p = $('#postNamecard').text() == 'Post' ? true : false;
+
+            $.ajax({
+              url: '/jobprovider/PostNamecard',
+              data: { posting : p },
+              type: 'POST',
+              contenttype: 'application/json; charset=utf-8',
+              success: data => {
+                alert(data);
+              },
+              error: () => {
+                alert("error!")
+              }
+            });
+
+            $("#dialog-confirm").dialog("close");
+          }
+        }, {
+          text: "Cancel",
+          click: function () {
+            $("#dialog-confirm").dialog("close");
+          }
+        }]
+      });
+    });
+
+
 
     //change profilepic
     function update() {

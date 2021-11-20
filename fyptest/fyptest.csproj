@@ -109,6 +109,7 @@
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -129,7 +130,6 @@
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
@@ -409,6 +409,7 @@
     <Content Include="Content\main\temp\bootstrap2.min.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Global.asax" />
+    <Content Include="Image\Background\Electrical.png" />
     <Content Include="Image\Background\Empty_Star.png" />
     <Content Include="Image\Background\Fill_Star.jpg" />
     <Content Include="Image\Background\hero_1.jpg" />
@@ -417,6 +418,8 @@
     <Content Include="Image\Background\img_2.jpg" />
     <Content Include="Image\Background\img_3.jpg" />
     <Content Include="Image\Background\img_4.jpg" />
+    <Content Include="Image\Background\loading.gif" />
+    <Content Include="Image\Background\Plumber.png" />
     <Content Include="Image\Background\plumbing.png" />
     <Content Include="Image\Background\plumbing1.png" />
     <Content Include="Image\NameCard\add.png" />
@@ -876,6 +879,13 @@
     <Content Include="Views\Chat\Contact.cshtml" />
     <Content Include="Views\Seeker\SeekerProfile.cshtml" />
     <Content Include="Views\Admin\AdminLogin.cshtml" />
+    <Content Include="Views\Admin\ServiceCRUD.cshtml" />
+    <Content Include="Views\Admin\_Category.cshtml" />
+    <Content Include="Views\Admin\_Type.cshtml" />
+    <Content Include="Views\JobProvider\EditNameCard.cshtml" />
+    <Content Include="Views\Service\Tracking.cshtml" />
+    <Content Include="Views\JobProvider\NamecardPage.cshtml" />
+    <Content Include="Views\Admin\_TypeList.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

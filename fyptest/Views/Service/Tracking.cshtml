@@ -6,27 +6,27 @@
 }
 
 @section head{
-  <style>
-    #app {
-      height: 500px;
-    }
+<style>
+  #app {
+    height: 500px;
+  }
 
-    #map {
-      height: 100%;
-    }
+  #map {
+    height: 100%;
+  }
 
-    [v-cloak] {
-      display: none;
-    }
+  [v-cloak] {
+    display: none;
+  }
 
-    .fade-enter-active, .fade-leave-active {
-      transition: opacity .5s;
-    }
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+  }
 
-    .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-      opacity: 0;
-    }
-  </style>
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+  }
+</style>
 }
 
 <div style="height: 113px;"></div>
@@ -95,138 +95,142 @@
 </div>
 
 @section foot {
-  @*<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>*@
-  <script src="~/Scripts/vue.js"></script>
-  <script src="~/Scripts/vuefire.js"></script>
-  @*<script src="https://www.gstatic.com/firebasejs/7.21.0/firebase.js"></script>*@
-  <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-firestore.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=&libraries=places"></script>
+  @*
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>*@
+<script src="~/Scripts/vue.js"></script>
+<script src="~/Scripts/vuefire.js"></script>
+  @*
+<script src="https://www.gstatic.com/firebasejs/7.21.0/firebase.js"></script>*@
+<script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-firestore.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=&libraries=places"></script>
 
-  <script>
-    //init firebase
-    //var config  = {
-    //  apiKey: "AIzaSyBjGc-5LcQz42Fc6eAGQxpDLxdpOJVNcSY",
-    //  authDomain: "rit3mwxccx-fyp.firebaseapp.com",
-    //  databaseURL: "https://rit3mwxccx-fyp-default-rtdb.asia-southeast1.firebasedatabase.app",
-    //  projectId: "rit3mwxccx-fyp",
-    //  storageBucket: "rit3mwxccx-fyp.appspot.com",
-    //  messagingSenderId: "150878204903",
-    //  appId: "1:150878204903:web:7a62d43231189aa8240342"
-    //};
+<script>
+  //init firebase
+  //var config  = {
+  //  apiKey: "AIzaSyBjGc-5LcQz42Fc6eAGQxpDLxdpOJVNcSY",
+  //  authDomain: "rit3mwxccx-fyp.firebaseapp.com",
+  //  databaseURL: "https://rit3mwxccx-fyp-default-rtdb.asia-southeast1.firebasedatabase.app",
+  //  projectId: "rit3mwxccx-fyp",
+  //  storageBucket: "rit3mwxccx-fyp.appspot.com",
+  //  messagingSenderId: "150878204903",
+  //  appId: "1:150878204903:web:7a62d43231189aa8240342"
+  //};
 
-    firebase.initializeApp({
-      projectId: "rit3mwxccx-fyp",
-      storageBucket: 'gs://rit3mwxccx-fyp.appspot.com'
-    });
+  firebase.initializeApp({
+    projectId: "rit3mwxccx-fyp",
+    storageBucket: 'gs://rit3mwxccx-fyp.appspot.com'
+  });
 
-    const db = firebase.firestore().collection('map');
-    const geopoint = firebase.firestore.GeoPoint;
-    const gm = google.maps;
+  const db = firebase.firestore().collection('map');
+  const geopoint = firebase.firestore.GeoPoint;
+  const gm = google.maps;
 
-    Vue.use(Vuefire.firestorePlugin);
+  Vue.use(Vuefire.firestorePlugin);
 
 
-    const app = new Vue({
-      el: '#app',
-      data: {
-        tm: 'testmessage',
-        //======
-        map: '',
-        trackMarker: null,
-        lat: 0,
-        lng: 0,
-        watchPositionId: null,
-        id: '',
-        center: 0,
+  const app = new Vue({
+    el: '#app',
+    data: {
+      tm: 'testmessage',
+      //======
+      map: '',
+      trackMarker: null,
+      lat: 0,
+      lng: 0,
+      watchPositionId: null,
+      id: '',
+      center: 0,
 
-        tracking: false
-      },
-      async mounted() {
-        
-        //init google map
-        this.map = new gm.Map(this.$refs.map, {
-          zoom: 16,
-          center: new gm.LatLng(3.214957, 101.728436),
-          mapTypeId: gm.MapTypeId.ROADMAP
+      tracking: false
+    },
+    async mounted() {
+
+      //init google map
+      this.map = new gm.Map(this.$refs.map, {
+        zoom: 16,
+        center: new gm.LatLng(3.214957, 101.728436),
+        mapTypeId: gm.MapTypeId.ROADMAP
+      });
+
+      //init marker
+      //const destMarker = new gm.Marker({
+      //  map: this.map,
+      //  position: { lat: 3.214957, lng: 101.728436 }
+      //});
+
+
+    },
+
+    methods: {
+      startLocationUpdates() {
+
+        this.tracking = true;
+
+        this.trackMarker = new gm.Marker({
+          map: this.map
         });
-       
-       //init marker
-        //const destMarker = new gm.Marker({
-        //  map: this.map,
-        //  position: { lat: 3.214957, lng: 101.728436 }
-        //});
 
+        //start real time track
+        this.watchPositionId = navigator.geolocation.watchPosition(
+          position => {
+            this.lat = position.coords.latitude;
+            this.lng = position.coords.longitude;
 
+            this.map.setCenter(new gm.LatLng(this.lat, this.lng));
+            this.trackMarker.setPosition(new gm.LatLng(this.lat, this.lng));
+            this.updateLocation(this.lat, this.lng);
+          },
+          error => {
+            console.log(error.message);
+          }
+        )
       },
-
-      methods: {
-        startLocationUpdates() {
-
-          this.tracking = true;
-
-          this.trackMarker = new gm.Marker({
-            map: this.map
-          });
-
-          //start real time track
-          this.watchPositionId = navigator.geolocation.watchPosition(
-            position => {
-              this.lat = position.coords.latitude;
-              this.lng = position.coords.longitude;
-
-              this.map.setCenter(new gm.LatLng(this.lat, this.lng));
-              this.trackMarker.setPosition(new gm.LatLng(this.lat, this.lng));
-              this.updateLocation(this.lat, this.lng);
-            },
-            error => {
-              console.log(error.message);
-            }
-          )
-        },
-        //stop tracking
-        stopLocationUpdates() {
-          this.tracking = false;
-          navigator.geolocation.clearWatch(this.watchPositionId);
-        },
-        updateLocation(lat, lng) {
-          //update location
-          db.doc('@Model.SId').set({
-            location: new geopoint(lat, lng)
-          });
-        }
+      //stop tracking
+      stopLocationUpdates() {
+        this.tracking = false;
+        navigator.geolocation.clearWatch(this.watchPositionId);
       },
-      created() {
-        
+      updateLocation(lat, lng) {
+        //update location
+        db.doc('@Model.SId').set({
+          location: new geopoint(lat, lng)
+        });
       }
-    });
+    },
+    created() {
 
-    // ====================================================================
-    // Google Maps
-    // ====================================================================
+    }
+  });
+
+  // ====================================================================
+  // Google Maps
+  // ====================================================================
 
 
-    @*const gm = google.maps;
+  @*const gm = google.maps;
 
-    const center = { lat: 3.214957, lng: 101.728436 };
+  const center = { lat: 3.214957, lng: 101.728436 };
 
-    const map = new gm.Map($('#map')[0], {
-      center,
-      zoom: 16,
-      disableDefaultUI: true,
-      clickableIcons: false,
-      scaleControl: true,
-      fullscreenControl: true,
-      zoomControl: true,
-      disableDoubleClickZoom: true,
-      mapTypeId: 'roadmap'
-    });
+  const map = new gm.Map($('#map')[0], {
+    center,
+    zoom: 16,
+    disableDefaultUI: true,
+    clickableIcons: false,
+    scaleControl: true,
+    fullscreenControl: true,
+    zoomControl: true,
+    disableDoubleClickZoom: true,
+    mapTypeId: 'roadmap'
+  });
 
-    const searchBox = new google.maps.places.SearchBox(@Model.address);*@
+  const searchBox = new google.maps.places.SearchBox(@Model.address);*@
 
-  </script>
+</script>
 
-  @*<script src="~/Scripts/app/tracking/main.js"></script>*@
-  @*<script src="~/Scripts/bundle/tracking.js"></script>*@
+  @*
+<script src="~/Scripts/app/tracking/main.js"></script>*@
+  @*
+<script src="~/Scripts/bundle/tracking.js"></script>*@
 }
 
