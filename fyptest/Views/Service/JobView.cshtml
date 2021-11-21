@@ -122,12 +122,12 @@
             {
               <p class="mt-5">
                 <div class="btn btn-primary  py-2 px-4" onclick="applyJob('@Model.JobID');">Apply Job</div>
-                <a href='@Url.Action("Contact", "Chat",new { id=Model.JobID})' style="text-decoration: none;" class="btn btn-info  py-2 px-4">Chat with seeker</a>
+                <a href='/Chat/ChatList?id=@Model.Seeker' style="text-decoration: none;" class="btn btn-info  py-2 px-4">Chat with seeker</a>
               </p> }
             else if(Session["Role"].ToString() == "Seeker" && Model.Provider !=null)
             {
               <p class="mt-5">
-                <a href='@Url.Action("Contact", "Chat",new { id=Model.JobID})' style="text-decoration: none;" class="btn btn-info  py-2 px-4">Chat with provider</a>
+                <a href='/Chat/ChatList?id=@Model.Provider' style="text-decoration: none;" class="btn btn-info  py-2 px-4">Chat with provider</a>
               </p>
             }
           }

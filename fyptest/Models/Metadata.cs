@@ -493,6 +493,11 @@ namespace fyptest.Models
     public string ProfilePic { get; set; }
   }
 
+  public class ChatRoom
+  {
+    public ConversationModel message { get; set; }
+    public IEnumerable<ChatList> chatList { get; set; }
+  }
 
 }
 

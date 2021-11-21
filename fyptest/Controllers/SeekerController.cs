@@ -45,7 +45,7 @@ namespace fyptest.Controllers
           seeker.walletAmount = 0;
           seeker.status = 1;
           //Upload file
-          var path = "~/UploadedDocument/" + model.Email;
+          var path = "/UploadedDocument/" + model.Email;
           var docPath = path;
           Directory.CreateDirectory(Server.MapPath(path));
           if (model.ImageFile != null)

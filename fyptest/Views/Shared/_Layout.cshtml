@@ -55,10 +55,6 @@
       cursor: pointer
     }
 
-      .chat-btn .close {
-        display: none
-      }
-
       .chat-btn i {
         transition: all 0.9s ease
       }
@@ -67,10 +63,6 @@
       display: block;
       pointer-events: auto;
       transform: rotate(180deg)
-    }
-
-    #check:checked ~ .chat-btn .comment {
-      display: none
     }
 
     .chat-btn i {
@@ -89,17 +81,6 @@
       color: #fff;
       font-size: 22px;
       border: none
-    }
-
-    .wrapper {
-      position: fixed;
-      right: 20px;
-      bottom: 100px;
-      width: 300px;
-      background-color: #fff;
-      border-radius: 5px;
-      opacity: 0;
-      transition: all 0.4s
     }
 
     #check:checked ~ .wrapper {
@@ -283,13 +264,11 @@
   </div>
   @if (Session["Email"] != null)
   {
-<input type="checkbox" id="check"> <label class="chat-btn" for="check"> <i class="fa fa-commenting-o comment"></i> <i class="fa fa-close close"></i> </label>
-<div class="wrapper">
-  <div class="header">
-    <h6>Let's Chat - Online</h6>
-  </div>
+<input type="checkbox" id="check" style="z-index:2000">
+    <label class="chat-btn" for="check" onclick="window.open('/Chat/ChatList?id=00');">
+      <i class="fa fa-commenting-o comment"></i>
+    </label>
 
-</div>
   }
 
   <div class="info">@TempData["Info"]</div>
