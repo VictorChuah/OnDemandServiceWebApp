@@ -189,7 +189,7 @@
       <div class="col-md-8 mb-5 mb-md-0" data-aos="fade-up" data-aos-delay="100">
         <h2 class="mb-5 h3"><a class="mb-5 h3" @*href="~/Service/RequestList?status=1"*@>Recent Jobs</a></h2>
         <div class="rounded border jobs-wrap">
-          @foreach (var r in Model.requestDetail.Take(5))
+          @foreach (var r in Model.RequestDetail.Take(5))
           {
             if (r.status == 1)
             {
@@ -214,15 +214,21 @@
                   <div class="p-3">
                     @if (r.seekerComplete == true && r.providerComplete == false)
                     {
-                      <span class="text-info p-2 rounded border border-info">Pending</span> ;
+                      <span class="text-info p-2 rounded border border-info">Pending</span>
+                      <br />
+                      <span class="text-sucess p-2 rounded border border-info btn" onclick="window.open('/Service/JobView/@r.SId');">View more</span>
                     }
                     else if (r.seekerComplete == false)
                     {
                       <span class="text-danger p-2 rounded border border-danger btn" onclick="completeJob('@r.SId')">Ongoing</span>;
+                      <br />
+                      <span class="text-sucess p-2 rounded border border-info btn" onclick="window.open('/Service/JobView/@r.SId');">View more</span>
                     }
                     else
                     {
-                      <span class="text-warning p-2 rounded border border-warning btn">Ongoing</span>;
+                      <span class="text-warning p-2 rounded border border-warning btn">Ongoing</span>
+                      <br />
+                      <span class="text-sucess p-2 rounded border border-info btn" onclick="window.open('/Service/JobView/@r.SId');">View more</span>
                     }
                   </div>
                 </div>
@@ -234,7 +240,7 @@
         @*bottom complete*@
         <h2 class="mb-5 h3"><a class="mb-5 h3" href="~/Service/RequestList?status=2">History</a></h2>
         <div class="rounded border jobs-wrap">
-          @foreach (var r in Model.requestDetail.Take(5))
+          @foreach (var r in Model.RequestDetail.Take(5))
           {
             if (r.status == 2)
             {
@@ -258,6 +264,8 @@
                 <div class="job-category align-self-center">
                   <div class="p-3">
                     <span class="text-success p-2 rounded border border-success">Completed</span>
+                    <br />
+                    <span class="text-sucess p-2 rounded border border-info btn" onclick="window.open('/Service/JobView/@r.SId');">View more</span>
                   </div>
                 </div>
               </a>}

@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace fyptest.Models
+namespace fyptest
 {
     using System;
     using System.Data.Entity;
@@ -37,5 +37,6 @@ namespace fyptest.Models
         public virtual DbSet<Seeker> Seekers { get; set; }
         public virtual DbSet<Service_Category> Service_Categories { get; set; }
         public virtual DbSet<Service_Type> Service_Types { get; set; }
+        public virtual DbSet<Table> Tables { get; set; }
     }
 }

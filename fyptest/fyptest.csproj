@@ -500,16 +500,6 @@
     <Content Include="Image\Background\plumbing1.png" />
     <Content Include="Image\NameCard\add.png" />
     <Content Include="Image\Profile\photo.jpg" />
-    <Content Include="Models\ServerDB.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ServerDB.edmx</DependentUpon>
-      <LastGenOutput>ServerDB.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\ServerDB.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ServerDB.edmx</DependentUpon>
-      <LastGenOutput>ServerDB.cs</LastGenOutput>
-    </Content>
     <Content Include="Request\img_1.jpg" />
     <Content Include="Request\user100Read Me.txt" />
     <Content Include="Scripts\app\home\main.js" />
@@ -815,13 +805,6 @@
     <Content Include="Content\bootstrap-grid.rtl.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
-    <EntityDeploy Include="Models\ServerDB.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>ServerDB.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\ServerDB.edmx.diagram">
-      <DependentUpon>ServerDB.edmx</DependentUpon>
-    </Content>
     <Content Include="Scripts\bundle\home.js.map" />
     <Content Include="Scripts\bundle\tracking.js.map" />
     <Content Include="rit3mwxccx-fyp-firebase-adminsdk-jwzq3-9b26bf0ad7.json">
@@ -858,6 +841,16 @@
     <Content Include="Scripts\signalr.js" />
     <Content Include="Scripts\vue.js" />
     <Content Include="Scripts\vuefire.js" />
+    <Content Include="ServerDB.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ServerDB.edmx</DependentUpon>
+      <LastGenOutput>ServerDB.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="ServerDB.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ServerDB.edmx</DependentUpon>
+      <LastGenOutput>ServerDB.cs</LastGenOutput>
+    </Content>
     <Content Include="UploadedDocument\noimage.jpg" />
     <Content Include="UploadedDocument\seeker1%40email.com\Jobs001\img_1.jpg" />
     <Content Include="UploadedDocument\seeker1%40email.com\Jobs001\user100Read Me.txt" />
@@ -877,15 +870,33 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Admin.cs">
+      <DependentUpon>ServerDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Bank.cs">
+      <DependentUpon>ServerDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Card.cs">
+      <DependentUpon>ServerDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Chat.cs">
+      <DependentUpon>ServerDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ChatConnection.cs">
+      <DependentUpon>ServerDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ChatController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\JobProviderController.cs" />
     <Compile Include="Controllers\SeekerController.cs" />
     <Compile Include="Controllers\ServiceController.cs" />
+    <Compile Include="Document.cs">
+      <DependentUpon>ServerDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -893,62 +904,47 @@
     <Compile Include="Infrastructure\HtmlHelpers\GoogleCaptchaHelper.cs" />
     <Compile Include="Infrastructure\HtmlHelpers\InvalidGoogleCaptchaHelper.cs" />
     <Compile Include="Infrastructure\SiteSettings.cs" />
-    <Compile Include="Models\Admin.cs">
-      <DependentUpon>ServerDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Bank.cs">
-      <DependentUpon>ServerDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Card.cs">
-      <DependentUpon>ServerDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Chat.cs">
-      <DependentUpon>ServerDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ChatConnection.cs">
-      <DependentUpon>ServerDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Document.cs">
-      <DependentUpon>ServerDB.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Metadata.cs" />
-    <Compile Include="Models\Provider.cs">
+    <Compile Include="PaypalConfiguration.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Provider.cs">
       <DependentUpon>ServerDB.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Rating.cs">
+    <Compile Include="Rating.cs">
       <DependentUpon>ServerDB.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Request.cs">
+    <Compile Include="Request.cs">
       <DependentUpon>ServerDB.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Seeker.cs">
+    <Compile Include="Seeker.cs">
       <DependentUpon>ServerDB.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ServerDB.Context.cs">
+    <Compile Include="ServerDB.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ServerDB.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ServerDB.cs">
+    <Compile Include="ServerDB.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ServerDB.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ServerDB.Designer.cs">
+    <Compile Include="ServerDB.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ServerDB.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Models\Service_Category.cs">
+    <Compile Include="Service_Category.cs">
       <DependentUpon>ServerDB.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Service_Type.cs">
+    <Compile Include="Service_Type.cs">
       <DependentUpon>ServerDB.tt</DependentUpon>
     </Compile>
-    <Compile Include="PaypalConfiguration.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SignalR\Hubs.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Table.cs">
+      <DependentUpon>ServerDB.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Web.config" />
@@ -993,6 +989,14 @@
     <Content Include="Views\Admin\AdminServiceView.cshtml" />
     <Content Include="Views\Admin\AdminInProgressServiceView.cshtml" />
     <Content Include="Views\Admin\RequestDetail.cshtml" />
+    <EntityDeploy Include="ServerDB.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ServerDB.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="ServerDB.edmx.diagram">
+      <DependentUpon>ServerDB.edmx</DependentUpon>
+    </Content>
+    <Content Include="Views\Chat\ChatList.cshtml" />
     <Content Include="Views\Service\ViewTracking.cshtml" />
     <Content Include="UploadedDocument\seeker2%40gmail.com\Jobs8\Checkpoint %28Exercise%29.pdf" />
     <Content Include="UploadedFiles\company 4202105 Elective Course.pdf" />

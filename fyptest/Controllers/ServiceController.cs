@@ -379,7 +379,10 @@ namespace fyptest.Controllers
       model.Category = job.Service_Category.name;
       model.Description = job.description;
       model.Price = (double)job.price;
-      model.Image = job.image;
+      if (model.Image == null)
+        model.Image = "/UploadedDocument/noimage.jpg";
+      else
+        model.Image = job.image;
       model.Seeker = job.Seeker;
       model.Status = job.status.ToString();
       if (job.file != null)
@@ -463,7 +466,6 @@ namespace fyptest.Controllers
         db.SaveChanges();
         return Json("You saved this job successfully.");
       }
-
       return Json(String.Format("'Error' : '{0}'", "Failed"));
     }
 
@@ -507,10 +509,8 @@ namespace fyptest.Controllers
         providerRate.efficiency = (efficiency + Convert.ToInt32(jobRate.Efficiency)) / (ratedJobCount + 1);
         providerRate.attitude = (attitude + Convert.ToInt32(jobRate.Attitude)) / (ratedJobCount + 1);
         db.SaveChanges();
-
         string message = "Comment successfully.";
         return Json(new { Message = message, JsonRequestBehavior.AllowGet });
-
       }
       return Json(new { Message = "Failed to update", JsonRequestBehavior.AllowGet });
     }

@@ -75,8 +75,6 @@ namespace fyptest.Controllers
           ModelState.AddModelError("CompanyName", "Duplicated Company Name.");
       }
 
-
-
       //check image
       string image = "~/Image/Profile/photo.jpg";
       string err = ValidatePhoto(m.ProfileImage); // validate the photo
@@ -85,8 +83,6 @@ namespace fyptest.Controllers
       else
         image = SavePhoto(m.ProfileImage);
 
-
-
       //string validationErrors = string.Join(",",
       //              ModelState.Values.Where(E => E.Errors.Count > 0)
       //              .SelectMany(E => E.Errors)
@@ -94,10 +90,6 @@ namespace fyptest.Controllers
       //              .ToArray());
 
       //System.Diagnostics.Debug.WriteLine(validationErrors);
-
-
-
-
       //Ensure model state is valid  
       if (ModelState.IsValid)
       {
@@ -985,14 +977,14 @@ namespace fyptest.Controllers
 
       using (ServerDBEntities db = new ServerDBEntities())
       {
-        var seeker = db.Seekers.Where(s => s.email == Email).FirstOrDefault();
+        //var seeker = db.Seekers.Where(s => s.email == Email).FirstOrDefault();
         var provider = db.Providers.Where(s => s.email == Email).FirstOrDefault();
         message = "Reset password link has sent to your email";
-        if (seeker != null)
+        if (provider != null)
         {
           var resetCode = Guid.NewGuid().ToString();
-          SendVerificationLinkEmail(seeker.email, resetCode);
-          seeker.reset_pwd = resetCode;
+          SendVerificationLinkEmail(provider.email, resetCode);
+          provider.reset_pwd = resetCode;
           db.Configuration.ValidateOnSaveEnabled = false;
           db.SaveChanges();
           message = "Reset password link has sent to your email";

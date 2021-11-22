@@ -358,10 +358,9 @@
     }
   </style>
 </head>
-<div style="height: 113px;"></div>
 
 <div class="page-content page-container" id="page-content">
-  <div class="padding">
+  <div class="">
     <div class="row container d-flex justify-content-center" style="margin: 0 auto 0 auto;" id="@Model.ConnectionModelObj.GroupName.Replace('#','_')">
       <div class="col-md-12">
         <div class="card card-bordered">
@@ -370,10 +369,10 @@
                   Chat
               </a>*@
           </div>
-          <div class="ps-container ps-theme-default ps-active-y bg-gradient" id="chat-content" style="overflow-y: scroll !important; background-color:burlywood;">
+          <div class="ps-container ps-theme-default ps-active-y bg-gradient" id="chat-content" style="overflow-y: scroll !important; background-color:burlywood;height:770px;">
             @if (Model.MessageList.Count() == 0)
             {
-              <div class="strike" style="height:300px;">
+              <div class="strike" id="nochat" style="height:300px;">
                 <span>No chat yet</span>
               </div>
             }
@@ -566,7 +565,8 @@
                 updateNotificationCount(link);
                 $('#notiCon').append(link);
             }*@
-            $("#chat_input").val('');
+      $("#chat_input").val('');
+      $("#nochat").hide();
             var content = '';
             if ('@Session["Email"]'!= '') {
                 if ('@Session["Email"]' != userName) {
@@ -598,9 +598,6 @@
                 $('#chat-content').scrollTop(height);
 
             }
-
-
-
         }
 </script>
 

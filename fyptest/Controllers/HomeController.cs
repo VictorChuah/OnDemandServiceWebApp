@@ -29,7 +29,7 @@ namespace fyptest.Controllers
     {
 
       //List<Request> jobs = db.Requests.Where(a => a.SId.Equals("Active")).ToList();
-      List<Request> jobs = db.Requests.OrderByDescending(a => a.dateCreated).ToList();
+      List<Request> jobs = db.Requests.Where(a=>a.status==0).OrderByDescending(a => a.dateCreated).ToList();
       List<JobViewModel> jobList = new List<JobViewModel>();
       foreach (var j in jobs)
       {
