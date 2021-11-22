@@ -1,4 +1,5 @@
 using fyptest.Models;
+using Google.Cloud.Firestore;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
@@ -21,7 +22,18 @@ namespace fyptest.Controllers
 
     public ActionResult RequestList(int status, string query = "", string selected = "")
     {
-      string user = "victorritdemo+p1@gmail.com"; //User.Identity.Name
+      if (Session["Email"] == null)
+      {
+        TempData["Info"] = "Please Login";
+        return RedirectToAction("Index", "Home");
+      }
+      else if (Session["Role"].ToString() != "Provider")
+      {
+        TempData["Info"] = "Invalid Action";
+        return RedirectToAction("Index", "Home");
+      }
+
+      string user = Session["Email"].ToString(); //User.Identity.Name
       query = query.Trim();
 
       //viewbag for display 
@@ -88,16 +100,46 @@ namespace fyptest.Controllers
     public ActionResult HandleRequest(string id, string rAction)
     {
       int param = 1;
-      string user = "victorritdemo+p1@gmail.com"; //User.Identity.Name
+      string user = Session["Email"].ToString(); //User.Identity.Name
       var r = db.Requests.Find(id);
+      string qwer = r.Seeker;
       var p = db.Providers.Find(user);
       var s = db.Seekers.Find(r.Seeker);
 
       //0 pending, 1 accept, 2 complete, 3 request specific vendor
       if (rAction == "accept")
       {
-        r.status = 1;
-        r.Provider = user;
+        double charge = r.price * 0.05;
+        if (p.walletAmount > charge)
+        {
+          p.walletAmount -= charge;
+          r.status = 1;
+          r.Provider = user;
+
+          if (r.immediate)
+          {
+            string firestorePath = AppDomain.CurrentDomain.BaseDirectory + @"rit3mwxccx-fyp-firebase-adminsdk-jwzq3-9b26bf0ad7.json";
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", firestorePath);
+
+            FirestoreDb firestoredb = FirestoreDb.Create("rit3mwxccx-fyp");
+            //CollectionReference coll = db.Collection("notify");
+            DocumentReference doc = firestoredb.Collection("notify").Document(r.Service_Type.name);
+
+            Dictionary<string, object> data = new Dictionary<string, object>()
+            {
+              {"requestId", "" },
+              {"title", "" }
+            };
+
+            doc.SetAsync(data);
+          }
+        }
+        else
+        {
+          TempData["Info"] = "Insufficient wallet amount!";
+          return RedirectToAction("ProviderProfile", "JobProvider");
+        }
+
       }
       else if (rAction == "decline")
       {
@@ -107,15 +149,15 @@ namespace fyptest.Controllers
       }
       else if (rAction == "complete")
       {
-        r.providerComplete = true;
-        if (r.seekerComplete == true)
-        {
-          r.status = 2;
-          r.dateCompleted = DateTime.Now;
-          p.walletAmount += r.price;
-          s.walletAmount -= r.price;
-          param = 2;
-        }
+        //r.providerComplete = true;
+        //if (r.seekerComplete == true)
+        //{
+        r.status = 2;
+        r.dateCompleted = DateTime.Now;
+        p.walletAmount += r.price;
+        s.walletAmount -= r.price;
+        param = 2;
+        //}
       }
 
       db.SaveChanges();
@@ -123,13 +165,22 @@ namespace fyptest.Controllers
     }
 
     //[HttpPost]
-    public FileResult DownloadFile(string file)
+    public FileResult DownloadFile(string file, string rid)
     {
-      string path = Server.MapPath("~/Request/") + file;
+      var request = db.Requests.Find(rid);
+
+      //string path = Server.MapPath("~\\UploadedDocument\\" + request.Seeker + "\\Job" + rid + "\\" + file) ;
+      string path = Server.MapPath(Path.Combine(@"~\UploadedDocument\seeker1@email.com\Jobs001\", file));
 
       byte[] bytes = System.IO.File.ReadAllBytes(path);
 
       return File(bytes, "application/octet-stream", file);
+
+      //string path = AppDomain.CurrentDomain.BaseDirectory + "UploadedDocument/" + request.Seeker + "/Job" + rid + "/";
+      //byte[] fileBytes = System.IO.File.ReadAllBytes(path + file);
+      //string fileName = file;
+      //return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+
     }
 
     public List<SelectListItem> GetCategory()
@@ -199,10 +250,7 @@ namespace fyptest.Controllers
         job.price = model.Price;
         job.Seeker = seeker;
         job.Type = model.SelectedType;
-        if (model.SelectedType == "Immediate")
-          job.immediate = true;
-        else
-          job.immediate = false;
+        job.immediate = model.Immediate;
         job.dateCompleted = null;
         job.dateCreated = DateTime.Now;
         job.status = 0;
@@ -280,6 +328,28 @@ namespace fyptest.Controllers
       typeList = GetJobType();
       model.CategoryList = categoryList;
       model.Type = typeList;
+
+
+      //notification
+      if (model.Immediate)
+      {
+        string firestorePath = AppDomain.CurrentDomain.BaseDirectory + @"rit3mwxccx-fyp-firebase-adminsdk-jwzq3-9b26bf0ad7.json";
+        Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", firestorePath);
+
+        FirestoreDb firestoredb = FirestoreDb.Create("rit3mwxccx-fyp");
+        //CollectionReference coll = db.Collection("notify");
+        DocumentReference doc = firestoredb.Collection("notify").Document(model.SelectedType);
+
+        Dictionary<string, object> data = new Dictionary<string, object>()
+        {
+        {"requestId", SId }
+        };
+
+        doc.SetAsync(data);
+      }
+
+
+
       return View(model);
     }
 
@@ -290,14 +360,23 @@ namespace fyptest.Controllers
       return "s" + newSId;
     }
 
+    public JsonResult getPrice (string id, bool immediate)
+    {
+      var r = db.Service_Categories.Find(id);
+      double price = immediate == true? r.averagePrice + 10 : r.averagePrice;
+
+      return Json(String.Format(price.ToString()), JsonRequestBehavior.AllowGet);
+    }
+
     public ActionResult JobView(string id)
     {
       var user = Session["Email"];
       JobViewModel model = new JobViewModel();
       var job = db.Requests.Where(m => m.SId == id).FirstOrDefault();
+
       model.JobID = job.SId;
       model.Title = job.title;
-      model.Category = job.Category;
+      model.Category = job.Service_Category.name;
       model.Description = job.description;
       model.Price = (double)job.price;
       model.Image = job.image;
@@ -312,37 +391,58 @@ namespace fyptest.Controllers
         model.Files = new List<string>();
       }
       if (model.Image == null)
-        model.Image = "/Service/noimage.jpg";
+        model.Image = "/UploadedDocument/noimage.jpg";
       //model.Contact = job.Contact;
-      model.SelectedType = job.Type;
+      model.SelectedType = job.Service_Type.name;
+      model.Provider = job.Provider != null ? job.Provider1.name ?? job.Provider1.companyName : null;
+      //model.ProviderComplete = job.providerComplete;
+      //model.SeekerComplete = job.seekerComplete;
+
 
       return View(model);
     }
 
-    public ActionResult ApplyJob(Request job)
-    {
-      var jobProfile = db.Requests.FirstOrDefault(a => a.SId.Equals(job.SId));
-      if (jobProfile != null && ModelState.IsValid)
-      {
-        jobProfile.Provider = Session["Email"].ToString();
-        jobProfile.status = 1;
-        db.SaveChanges();
+    //public ActionResult ApplyJob(Request job)
+    //{
+    //  var jobProfile = db.Requests.FirstOrDefault(a => a.SId.Equals(job.SId));
+    //  if (jobProfile != null && ModelState.IsValid)
+    //  {
+    //    jobProfile.Provider = Session["Email"].ToString();
+    //    jobProfile.status = 1;
+    //    db.SaveChanges();
 
-        string message = "You have accepted this job. You may view this job at your job list.";
-        return Json(new { Message = message, JsonRequestBehavior.AllowGet });
+    //    string message = "You have accepted this job. You may view this job at your job list.";
+    //    return Json(new { Message = message, JsonRequestBehavior.AllowGet });
 
-      }
-      return Json(new { Message = "Failed to apply. Please try again.", JsonRequestBehavior.AllowGet });
-    }
+    //  }
+    //  return Json(new { Message = "Failed to apply. Please try again.", JsonRequestBehavior.AllowGet });
+    //}
 
     public ActionResult Tracking(string requestId)
     {
+      if (Session["Role"].ToString() != "Provider")
+      {
+        return RedirectToAction("Index", "Home");
+      }
+
       var r = db.Requests.Find(requestId);
 
       if (r?.status != 1)
       {
         TempData["Info"] = "Tracking is unavailable or expired";
         return RedirectToAction("RequestList", "Service", new { status = 1 });
+      }
+      return View(r);
+    }
+
+    public ActionResult ViewTracking(string requestId)
+    {
+      var r = db.Requests.Find(requestId);
+
+      if (r?.status != 1)
+      {
+        TempData["Info"] = "Tracking is unavailable or expired";
+        return RedirectToAction("Index", "Home");
       }
       return View(r);
     }
@@ -375,7 +475,7 @@ namespace fyptest.Controllers
       if (ModelState.IsValid)
       {
         job.seekerComplete = true;
-        if (job.providerComplete== true)
+        if (job.providerComplete == true)
         {
           job.dateCompleted = DateTime.Now;
           job.status = 2;
@@ -393,9 +493,9 @@ namespace fyptest.Controllers
     {
 
       var jobProfile = db.Requests.FirstOrDefault(a => a.SId.Equals(jobRate.JobID));
-      var ratedJobCount = db.Requests.Where(a => a.Provider == jobProfile.Provider && jobProfile.seekerComplete == true).Count() -1;
-      
-      var providerRate = db.Ratings.FirstOrDefault(a =>a.RId==jobProfile.Provider);
+      var ratedJobCount = db.Requests.Where(a => a.Provider == jobProfile.Provider && jobProfile.seekerComplete == true).Count() - 1;
+
+      var providerRate = db.Ratings.FirstOrDefault(a => a.RId == jobProfile.Provider);
       if (providerRate != null && ModelState.IsValid)
       {
         var profesionalism = providerRate.professionalism * ratedJobCount;

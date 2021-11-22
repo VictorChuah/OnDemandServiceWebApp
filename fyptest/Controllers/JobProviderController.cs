@@ -194,8 +194,8 @@ namespace fyptest.Controllers
 
       var bank = new SelectList(db.Banks.ToList(), "Id", "name");
       ViewData["Bank"] = bank;
-      return View(m);
-      //return RedirectToAction("Index", "Home");
+      //return View(m);
+      return RedirectToAction("Index", "Home");
     }
 
     public ActionResult ActivateAccount(string token, string email)
@@ -251,11 +251,44 @@ namespace fyptest.Controllers
 
 
       var data = db.Providers.Find(user);
+      if (data == null)
+      {
+        TempData["Info"] = user;
+        return RedirectToAction("Index", "Home");
+
+      }
+
       var type = db.Service_Types.Find(data.STId);
       var rating = db.Ratings.Find(user);
       var request = db.Requests.Where(r => r.Provider == user);
       var recommend = db.Requests.Where(r => r.Type == data.STId && r.Provider == null && r.status == 0);
       var category = db.Service_Categories;
+
+      if (data.postNamecard == true && data.namecard != null)
+      {
+
+        DateTime today = DateTime.Now.ToLocalTime();
+
+        DateTime postDate = (DateTime)data.dataPostNamecard;
+        int date = DateTime.Compare(today.AddMonths(-1), postDate);
+
+        if (date > 0 || data.postNamecard == true)
+        {
+          if (data.walletAmount < 5.00)
+          {
+            data.postNamecard = false;
+            ViewBag.unpost = "Insufficent amount, your namecard has been unpost";
+          }
+          else
+          {
+            data.walletAmount -= 5.00;
+            data.dataPostNamecard = DateTime.Now.ToLocalTime();
+          }
+        }
+      }
+
+
+      db.SaveChanges();
 
 
       var accModel = new AccountDetailVM
@@ -321,7 +354,7 @@ namespace fyptest.Controllers
     {
       var p = db.Providers.Find(Session["Email"].ToString());//User.Identity.Name
 
-      if (Request.Files.Count<=0)
+      if (Request.Files.Count <= 0)
         return Json(String.Format("'Error' : '{0}'", "Failed"));
 
       DeletePhoto(p.profileImage, 'p');
@@ -372,10 +405,18 @@ namespace fyptest.Controllers
         cardNo = Regex.Replace(cardNo, "[-]", String.Empty);
 
         var card = db.Cards.Find(cardNo);
+        if (card == null)
+        {
+          ViewBag.message = "Invalid Card ";
+          return View();
+        }
 
         if (card.ccv == m.CCV && card.expireDate == m.ExpireDate)
         {
           var p = db.Providers.Find(Session["Email"].ToString());//User.Identity.Name
+          if (p == null)
+            return RedirectToAction("ProviderLogin", "JobProvider");
+
           p.walletAmount += m.Amount;
 
           //send sms?
@@ -384,7 +425,7 @@ namespace fyptest.Controllers
         }
         else
         {
-          ViewBag.message = "Invalid Card";
+          ViewBag.message = "Invalid Card Details";
           return View();
         }
 
@@ -646,7 +687,7 @@ namespace fyptest.Controllers
     public ActionResult CheckEmail(string email)
     {
       bool isValid = false;
-      if (db.Providers.Find(email) == null || db.Seekers.Find(email) == null)
+      if (db.Providers.Find(email) == null && db.Seekers.Find(email) == null)
         isValid = true;
       else if (db.Providers.Find(email) != null && db.Providers.Find(email).status == 0)
         isValid = true;
@@ -764,8 +805,7 @@ namespace fyptest.Controllers
                 <p>Please click the following link to activate your account</p>
                 <h1 style='color: red'><a href='{url2}'>Activate Account</a></h1>
                 <p>If link above failed, please try the following link</p>
-                <p><a href='{url}'>Second Link</a></p>
-                <p>From, Funny Hotel</p>'>";
+                <p><a href='{url}'>Second Link</a></p>";
 
 
       new SmtpClient().Send(m);
@@ -808,7 +848,7 @@ namespace fyptest.Controllers
           // Login In.    
           //SignInUser(logindetails.email, "Provider", false);
           // setting.
-          if(logindetails.status==0)
+          if (logindetails.status == 0)
             Session["Role"] = "Pending Provider";
           else
             Session["Role"] = "Provider";

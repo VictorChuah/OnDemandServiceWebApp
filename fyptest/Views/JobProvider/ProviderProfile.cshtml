@@ -52,26 +52,26 @@
             <div class="col-md-12 mb-3 mb-md-0">
               <label class="font-weight-bold" for="Address">Address</label>
               <p class="mb-4" id="address">@Model.Account.address</p>
-              <input type="text" id="editAddress" class="form-control" placeholder="Address" value=@Model.Account.address required>
+              <input type="text" id="editAddress" class="form-control" placeholder="Address" value="@Model.Account.address" required>
             </div>
           </div>
 
           @if (@Model.Account.companyIndividual)
           {
-    <div class="row form-group">
-      <div class="col-md-12">
-        <label class="font-weight-bold" for="name">Name</label>
-        <p class="mb-4">@Model.Account.name</p>
-      </div>
-    </div> }
-  else if (!@Model.Account.companyIndividual)
-  {
-<div class="row form-group">
-  <div class="col-md-12">
-    <label class="font-weight-bold" for="companyName">Company Name</label>
-    <p class="mb-4">@Model.Account.companyName</p>
-  </div>
-</div>}
+            <div class="row form-group">
+              <div class="col-md-12">
+                <label class="font-weight-bold" for="name">Name</label>
+                <p class="mb-4">@Model.Account.name</p>
+              </div>
+            </div> }
+          else if (!@Model.Account.companyIndividual)
+          {
+            <div class="row form-group">
+              <div class="col-md-12">
+                <label class="font-weight-bold" for="companyName">Company Name</label>
+                <p class="mb-4">@Model.Account.companyName</p>
+              </div>
+            </div>}
 
           <div class="row form-group">
             <div class="col-md-12">
@@ -131,13 +131,19 @@
             </div>
           </div>
 
-          <div class="row form-group">
-            <div class="col-md-12">
-              <input type="button" value="Edit" class="btn btn-primary pill px-4 py-2" id="edit">
-              <input type="button" value="Confirm" class="btn btn-primary pill px-4 py-2" id="confirm">
-              <input type="button" value="Cancel" class="btn btn-primary pill px-4 py-2" id="cancel">
+          @if (Model.Role == "Provider")
+          {
+            <div class="row form-group">
+              <div class="col-md-12">
+                <input type="button" value="Edit" class="btn btn-primary pill px-4 py-2" id="edit">
+                <input type="button" value="Confirm" class="btn btn-primary pill px-4 py-2" id="confirm">
+                <input type="button" value="Cancel" class="btn btn-primary pill px-4 py-2" id="cancel">
+              </div>
             </div>
-          </div>
+          }
+
+
+
         </div>
       </div>
 
@@ -145,170 +151,213 @@
       <div class="col-lg-4">
         <div class="p-4 mb-3 bg-white">
           <h3 class="h5 text-black mb-3">Profile Image</h3>
-          <form enctype="multipart/form-data" name="file" id="profile_pic_form">
-            <label class="text-info p-2 rounded border border-info" id="upload">
-              <input type="file" id="file" name="file" accept="image/jpeg,image/png,image/jpg" hidden="" />
-              @*@Html.TextBoxFor(m => m.ProfileImage, new { type = "file", accept = "image/jpeg,image/png,image/jpg", hidden = "" })*@
-              <img src="~/Image/Profile/@Model.Account.profileImage" />
-              <br />
-              <small id="image">Select photo...</small>
-            </label>
-          </form>
+          @if (Model.Role == "Provider")
+          {
+            <form enctype="multipart/form-data" name="file" id="profile_pic_form">
+              <label class="text-info p-2 rounded border border-info" id="upload">
+                <input type="file" id="file" name="file" accept="image/jpeg,image/png,image/jpg" hidden="" />
+                @*@Html.TextBoxFor(m => m.ProfileImage, new { type = "file", accept = "image/jpeg,image/png,image/jpg", hidden = "" })*@
+                <img src="~/Image/Profile/@Model.Account.profileImage" />
+                <br />
+                <small id="image">Select photo...</small>
+              </label>
+            </form> }
+          else
+          {
+            <img src="~/Image/Profile/@Model.Account.profileImage" />
+          }
         </div>
 
-        <div class="p-4 mb-3 bg-white">
-          <h3 class="h5 text-black mb-3">Wallet</h3>
-          <p>RM <b>@Model.Account.walletAmount</b></p>
-          <p>
-            <button class="btn btn-primary px-4 py-2 text-white pill" id="topup">Top Up</button>
-            <a href="~/JobProvider/Withdraw" class="btn btn-primary px-4 py-2 text-white pill">Withdrawn</a>
-          </p>
-          <p id="topupMethod">
-            <a href="~/JobProvider/Topup" class="btn btn-primary px-2 py-1 text-white pill"><small>Debit Card</small></a>
-            <a href="~/JobProvider/TopupPaypal" class="btn btn-primary px-2 py-1 text-white pill"><small>PayPal Quick Topup (RM20)</small></a>
-          </p>
-        </div>
+        @if (Model.Role == "Provider")
+        {
+          <div class="p-4 mb-3 bg-white">
+            <h3 class="h5 text-black mb-3">Wallet</h3>
+            <div class="popup" onclick="popupInfo()">
+              <small>All transaction will be made on wallet, including <b>charges</b> by platform.</small>
+              <span class="popuptext" id="myPopup">5% of the request price will be charged as fee.</span>
+            </div>
+            <br />
+            <br />
+            <p>RM <b>@Model.Account.walletAmount</b></p>
+            <p>
+              <button class="btn btn-primary px-4 py-2 text-white pill" id="topup">Top Up</button>
+              <a href="~/JobProvider/Withdraw"><button class="btn btn-primary px-4 py-2 text-white pill">Withdrawn</button></a>
+            </p>
+            <p id="topupMethod">
+              <a href="~/JobProvider/Topup" class="btn btn-primary px-2 py-1 text-white pill"><small>Debit Card</small></a>
+              <a href="~/JobProvider/TopupPaypal" class="btn btn-primary px-2 py-1 text-white pill"><small>PayPal Quick Topup (RM20)</small></a>
+            </p>
+
+          </div>}
+
         <div class="p-4 mb-3 bg-white">
           <h3 class="h5 text-black mb-3">Namecard</h3>
           <label class="text-info p-2 rounded border border-info">
             <img src="~/Image/NameCard/@(Model.Account.namecard == null? "add.png" : Model.Account.namecard )" style="width:300px; height:200px" />
           </label>
-          <p><a href="~/JobProvider/EditNameCard" class="btn btn-primary px-4 py-2 text-white pill">Edit</a></p>
-          @if (Model.Account.namecard != null)
-          {
-            if (!Model.Account.postNamecard)
-            {
-              <p id="postNamecard" class="btn btn-primary px-4 py-2 text-white pill">Post</p>
-              <div id="dialog-confirm" title="Post Namecard?">
-                <b>M5.00</b> will deduct upon confirmation and subsequent month. If you wallet does not have suffient fund, it will auto unpost your namecard. <b>Confirm Post?</b>
-              </div>
-            }
-            else
-            {
-              <p id="postNamecard" class="btn btn-primary px-4 py-2 text-white pill">Unpost</p>
-              <p id="notice"></p>
-              <div id="dialog-confirm" title="Unpost Namecard?">
-                Money that has been deduct will <b>not</b> be refund. <b>Confirm unpost?</b>
-              </div>
-            }
 
+          @if (Model.Role == "Provider")
+          {
+            <a href="~/JobProvider/EditNameCard"><label class="btn btn-primary px-4 py-2 text-white pill">Edit</label></a>
+            if (Model.Account.namecard != null)
+            {
+              if (!Model.Account.postNamecard)
+              {
+                <label id="postNamecard" class="btn btn-primary px-4 py-2 text-white pill">Post</label>
+                <div id="dialog-confirm" title="Post Namecard?">
+                  <b>M5.00</b> will deduct upon confirmation and subsequent month. If you wallet does not have suffient fund, it will auto unpost your namecard. <b>Confirm Post?</b>
+                </div>
+              }
+              else
+              {
+                <label id="postNamecard" class="btn btn-primary px-4 py-2 text-white pill">Unpost</label>
+                <p id="notice"></p>
+                <div id="dialog-confirm" title="Unpost Namecard?">
+                  Money that has been deduct will <b>not</b> be refund. <b>Confirm unpost?</b>
+                </div>
+              }
+              <p class="text-danger">@ViewBag.unpost</p>
+            }
           }
 
         </div>
       </div>
     </div>
 
-    @*middle ongoing*@
-    <div class="row">
-      <div class="col-md-8 mb-5 mb-md-0" data-aos="fade-up" data-aos-delay="100">
-        <h2 class="mb-5 h3"><a class="mb-5 h3" href="~/Service/RequestList?status=1">Recent Jobs</a></h2>
-        <div class="rounded border jobs-wrap">
-          @foreach (var r in Model.requestDetail)
-          {
-            if (r.status == 1)
+    @if (Model.Role == "Provider")
+    {
+      @*middle ongoing*@
+      <div class="row">
+        <div class="col-md-8 mb-5 mb-md-0" data-aos="fade-up" data-aos-delay="100">
+          <h2 class="mb-5 h3"><a class="mb-5 h3" href="~/Service/RequestList?status=1">Recent Jobs</a></h2>
+          <div class="rounded border jobs-wrap">
+            @foreach (var r in Model.RequestDetail.Take(5))
             {
-              <a href="~/Service/RequestList?status=1&selected=@r.title" class="job-item d-block d-md-flex align-items-center  border-bottom fulltime">
-                <div class="company-logo blank-logo text-center text-md-left pl-3">
-                  <img src="~/Content/main/images/company_logo_blank.png" alt="Image" class="img-fluid mx-auto">
-                </div>
-                <div class="job-details h-100">
-                  <div class="p-3 align-self-center">
-                    <h3>@r.title</h3>
-                    <div class="d-block d-lg-flex">
-                      <div class="mr-3">
-                        <span class="icon-suitcase mr-1"></span>
-                        @(r.Service_Category.SCId == r.Category? r.Service_Category.name: "-" )
+              if (r.status == 1)
+              {
+                <a href="~/Service/RequestList?status=1&selected=@r.title" class="job-item d-block d-md-flex align-items-center  border-bottom fulltime">
+                  <div class="company-logo blank-logo text-center text-md-left pl-3">
+                    <img src="~/Content/main/images/company_logo_blank.png" alt="Image" class="img-fluid mx-auto">
+                  </div>
+                  <div class="job-details h-100">
+                    <div class="p-3 align-self-center">
+                      <h3>@r.title</h3>
+                      <div class="d-block d-lg-flex">
+                        <div class="mr-3">
+                          <span class="icon-suitcase mr-1"></span>
+                          @(r.Service_Category.SCId == r.Category ? r.Service_Category.name : "-" )
+                        </div>
+                        <div class="mr-3"><span class="icon-room mr-1"></span> @(r.address == null ? "-" : r.address)</div>
+                        <div><span class="icon-money mr-1"></span> RM @r.price </div>
                       </div>
-                      <div class="mr-3"><span class="icon-room mr-1"></span> @(r.address==null? "-" : r.address)</div>
-                      <div><span class="icon-money mr-1"></span> RM @r.price </div>
                     </div>
                   </div>
-                </div>
-                <div class="job-category align-self-center">
-                  <div class="p-3">
-                    @if (r.seekerComplete == false && r.providerComplete == true)
-                    {
-                      <span class="text-info p-2 rounded border border-info btn">Pending</span> ;
-                    }
-                    else if (r.providerComplete == false)
-                    {
-                      <span class="text-danger p-2 rounded border border-danger btn" onclick="completeJob('@r.SId')">Ongoing</span>;
-                    }
-                    else
-                    {
-                      <span class="text-warning p-2 rounded border border-warning btn">Ongoing</span>;
-                    }
+                  <div class="job-category align-self-center">
+                    <div class="p-3">
+                      @if (r.seekerComplete == false && r.providerComplete == true)
+                      {
+                        <span class="text-info p-2 rounded border border-info btn">Pending</span> ;
+                      }
+                      else if (r.providerComplete == false)
+                      {
+                        <span class="text-danger p-2 rounded border border-danger btn" onclick="completeJob('@r.SId')">Ongoing</span>;
+                      }
+                      else
+                      {
+                        <span class="text-warning p-2 rounded border border-warning btn">Ongoing</span>;
+                      }
+                    </div>
                   </div>
-                </div>
-              </a>}
-          }
+                </a>}
+            }
+          </div>
+
+          <br />
+          @*bottom complete*@
+          <h2 class="mb-5 h3"><a class="mb-5 h3" href="~/Service/RequestList?status=2">History</a></h2>
+          <div class="rounded border jobs-wrap">
+            @foreach (var r in Model.RequestDetail.Take(5))
+            {
+              if (r.status == 2)
+              {
+                <a href="~/Service/RequestList?status=2&selected=@r.title" class="job-item d-block d-md-flex align-items-center  border-bottom fulltime">
+                  <div class="company-logo blank-logo text-center text-md-left pl-3">
+                    <img src="~/Content/main/images/company_logo_blank.png" alt="Image" class="img-fluid mx-auto">
+                  </div>
+                  <div class="job-details h-100">
+                    <div class="p-3 align-self-center">
+                      <h3>@r.title</h3>
+                      <div class="d-block d-lg-flex">
+                        <div class="mr-3">
+                          <span class="icon-suitcase mr-1"></span>
+                          @(r.Service_Category.SCId == r.Category ? r.Service_Category.name : "-" )
+                        </div>
+                        <div class="mr-3"><span class="icon-room mr-1"></span> @(r.address == null ? "-" : r.address)</div>
+                        <div><span class="icon-money mr-1"></span> RM @r.price </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="job-category align-self-center">
+                    <div class="p-3">
+                      <span class="text-success p-2 rounded border border-success">Completed</span>
+                    </div>
+                  </div>
+                </a>}
+            }
+          </div>
         </div>
 
-        <br />
-        @*bottom complete*@
-        <h2 class="mb-5 h3"><a class="mb-5 h3" href="~/Service/RequestList?status=2">History</a></h2>
-        <div class="rounded border jobs-wrap">
-          @foreach (var r in Model.RequestDetail.Take(5))
-          {
-            if (r.status == 2)
+        @*btm right recommend*@
+        <div class="col-md-4 block-16" data-aos="fade-up" data-aos-delay="200">
+          <div class="d-flex mb-0">
+            <h2 class="mb-5 h3 mb-0"><a class="mb-5 h3" href="~/Service/RequestList?status=0">Featured Jobs</a></h2>
+            <div class="ml-auto mt-1"><a href="#" class="owl-custom-prev">Prev</a> / <a href="#" class="owl-custom-next">Next</a></div>
+          </div>
+          <div class="nonloop-block-16 owl-carousel">
+            @foreach (var r in Model.Recommend.Take(4))
             {
-    <a href="~/Service/RequestList?status=2&selected=@r.title" class="job-item d-block d-md-flex align-items-center  border-bottom fulltime">
-      <div class="company-logo blank-logo text-center text-md-left pl-3">
-        <img src="~/Content/main/images/company_logo_blank.png" alt="Image" class="img-fluid mx-auto">
-      </div>
-      <div class="job-details h-100">
-        <div class="p-3 align-self-center">
-          <h3>@r.title</h3>
-          <div class="d-block d-lg-flex">
-            <div class="mr-3">
-              <span class="icon-suitcase mr-1"></span>
-              @(r.Service_Category.SCId == r.Category? r.Service_Category.name: "-" )
+              <div class="border rounded p-4 bg-white">
+                <h2 class="h5">@r.title</h2>
+                <p style="cursor:pointer"><a href="~/Service/RequestList?status=0&selected=@r.title"><span class="text-info p-2 rounded border border-info">Recommend</span></a></p>
+                <p>
+                  <span class="d-block"><span class="icon-suitcase"></span> @(r.Service_Category.SCId == r.Category ? r.Service_Category.name : "-" )</span>
+                  <span class="d-block"><span class="icon-room"></span> @(r.address == null ? "-" : r.address)</span>
+                  <span class="d-block"><span class="icon-money mr-1"></span> RM @r.price </span>
+                </p>
+                <p class="mb-0">@r.description</p>
+              </div>}
+          </div>
+
+          <div id="app" v-show="found">
+            @*<div class="d-flex mb-0">
+                <h2 class="mb-5 h3 mb-0"><a class="mb-5 h3" href="~/Service/RequestList?status=0">Urgent</a></h2>
+                <div class="ml-auto mt-1"><a href="#" class="owl-custom-prev">Prev</a> / <a href="#" class="owl-custom-next">Next</a></div>
+              </div>*@
+            <div class="nonloop-block-16 owl-carousel" id="immediate">
             </div>
-            <div class="mr-3"><span class="icon-room mr-1"></span> @(r.address==null? "-" : r.address)</div>
-            <div><span class="icon-money mr-1"></span> RM @r.price </div>
+            <input id="type" value="@Model.Account.Service_Type.name" hidden />
           </div>
         </div>
       </div>
-      <div class="job-category align-self-center">
-        <div class="p-3">
-          <span class="text-success p-2 rounded border border-success">Completed</span>
-        </div>
-      </div>
-    </a>}
-}
-        </div>
-      </div>
-
-      @*btm right recommend*@
-      <div class="col-md-4 block-16" data-aos="fade-up" data-aos-delay="200">
-        <div class="d-flex mb-0">
-          <h2 class="mb-5 h3 mb-0">Featured Jobs</h2>
-          <div class="ml-auto mt-1"><a href="#" class="owl-custom-prev">Prev</a> / <a href="#" class="owl-custom-next">Next</a></div>
-        </div>
-        <div class="nonloop-block-16 owl-carousel">
-          @foreach (var r in Model.Recommend.Take(4))
-          {
-    <div class="border rounded p-4 bg-white">
-      <h2 class="h5">@r.title</h2>
-      <p style="cursor:pointer"><a href="~/Service/RequestList?status=0&selected=@r.title"><span class="text-info p-2 rounded border border-info">Recommend</span></a></p>
-      <p>
-        <span class="d-block"><span class="icon-suitcase"></span> @(r.Service_Category.SCId == r.Category? r.Service_Category.name: "-" )</span>
-        <span class="d-block"><span class="icon-room"></span> @(r.address==null? "-" : r.address)</span>
-        <span class="d-block"><span class="icon-money mr-1"></span> RM @r.price </span>
-      </p>
-      <p class="mb-0">@r.description</p>
-    </div>}
-
-        </div>
-      </div>
-    </div>
+    }
   </div>
 </div>
+
+
 
 @section foot {
   @Scripts.Render("~/bundles/jqueryval")
   <script src="//code.jquery.com/jquery-1.12.4.js"></script>
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-firestore.js"></script>
+  <script src="~/Scripts/vue.js"></script>
+  <script src="~/Scripts/vuefire.js"></script>
+  @*<script src="~/Scripts/service-worker.js"></script>
+  <script src="~/Scripts/service-worker-notification.js"></script>
+  <script src="~/Scripts/service-worker-push.js"></script>
+
+  <link href="~/manifestPushNotification.json" />*@
 
   <script>
 
@@ -447,7 +496,7 @@
 
             $.ajax({
               url: '/jobprovider/PostNamecard',
-              data: { posting : p },
+              data: { posting: p },
               type: 'POST',
               contenttype: 'application/json; charset=utf-8',
               success: data => {
@@ -508,12 +557,70 @@
         success: data => {
           alert("You have completed this service.");
         },
-        error: function(response) {
+        error: function (response) {
           alert("Something went wrong. Please try again.");
         }
       });
     }
 
+    function popupInfo() {
+      var popup = document.getElementById("myPopup");
+      popup.classList.toggle('show');
+    }
+
+
+    //firestore
+    firebase.initializeApp({
+      projectId: "rit3mwxccx-fyp",
+      storageBucket: 'gs://rit3mwxccx-fyp.appspot.com'
+    });
+
+    const db = firebase.firestore().collection('notify');
+    Vue.use(Vuefire.firestorePlugin);
+
+    const app = new Vue({
+      el: '#app',
+      data: {
+        id: '',
+        title: '',
+        type: '?',
+        found: false
+      },
+      created() {
+
+      },
+      async mounted() {
+        //get type from html
+        this.type = $('#type').val();
+
+        db.doc(this.type).onSnapshot(snap => {
+          //snap.docChanges().forEach(change => {
+          //  const { type, doc } = change;
+          let data = snap.data();
+
+          if (data.requestId != "") {
+            this.id = data.requestId;
+            this.title = data.title;
+            this.found = true;
+            this.onChange();
+          }
+          
+        })
+      },
+      methods: {
+        //detect db changee
+        onChange() {
+
+          $('#immediate').append(`
+          <div class="border rounded p-4 bg-white">
+            <h2 class="h5">${this.title}</h2>
+            <p style="cursor:pointer"><a href="/Service/JobView/${this.id}"><span class="text-danger p-2 rounded border border-danger btn">Immediate</span></a></p>
+          </div>`);
+
+          alert("New immediate request!")
+        }
+      }
+    });
 
   </script>
 }

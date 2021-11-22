@@ -95,7 +95,7 @@ namespace fyptest.Models
     [StringLength(50)]
     [EmailAddress]
     [Remote("CheckEmail", "JobProvider", ErrorMessage = "Duplicated {0}.")]
-    [RegularExpression(@"^.+@.+mail.com$", ErrorMessage = "Invalid Email format")]
+    [RegularExpression(@"^.+@.+mail.com$", ErrorMessage = "Invalid Email Format")]
     public string Email { get; set; }
 
     [Required]
@@ -416,6 +416,7 @@ namespace fyptest.Models
     public string SelectedType { get; set; }
     public string Seeker { get; set; }
     public string Contact { get; set; }
+    public bool Immediate { get; set; }
 
     [Display(Name = "Price")]
     public double Price { get; set; }
@@ -463,6 +464,8 @@ namespace fyptest.Models
     public string Provider { get; set; }
     public string Seeker { get; set; }
     public string Status { get; set; }
+    public bool? ProviderComplete { get; set; }
+    public bool? SeekerComplete { get; set; }
     public IEnumerable<string> Files { get; set; }
   }
 

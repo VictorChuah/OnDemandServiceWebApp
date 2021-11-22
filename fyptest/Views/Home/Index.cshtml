@@ -8,16 +8,7 @@
 <br />
 <br />
 <br />
-<!--<div id="app">-->
-  @*<h3>@ViewBag.Message</h3>*@
-  @*{{ vueMessage }}
-  <br />
-  <transition>
-    <router-view></router-view>
-  </transition>
-  {{ secMessage }}*@
-  <!--<app v-bind:time="new Date()"></app>
-</div>-->
+
 <div style="height: 113px;"></div>
 
 <div class="unit-5 overlay" style="background-image: url(@Url.Content("~/Content/main/")images/hero_1.jpg);">
@@ -33,6 +24,8 @@
       {
         foreach (var item in Model)
         {
+          if(item.Status == "0")
+          {      
           <div class="col-md-6 mb-5 mb-lg-4 col-lg-3" data-aos="fade">
             <div class="position-relative unit-8">
               <a href="#" class="mb-3 d-block img-a" style="height: 255px; line-height: 255px; background: white;"><img src="@item.Image" alt="" class="img-fluid rounded"></a>
@@ -45,13 +38,14 @@
                 {
                   if (Session["Role"].ToString() == "Provider")
                   {
-                    <button class="btn btn-success new" onclick='applyJob(@Html.Raw(Json.Encode(item)),this)'><i class="fa fa-plus"></i> Apply now</button>
+                    <a href="/Service/HandleRequest?id=@item.JobID&rAction=accept"><button class="btn btn-success new"><i class="fa fa-plus"></i> Apply now</button></a>
+                    //onclick = 'applyJob(@Html.Raw(Json.Encode(item)),this)'
                   }
                 }
               </span>
             </div>
-
           </div>
+          }
         }
       }
     </div>
@@ -63,22 +57,22 @@
   <script src="~/Scripts/bundle/home.js"></script>
   <script type="text/javascript">
 
-      function applyJob(model, el) {
-        var data = {};
-        data.SId = model.JobID;
-        $.ajax({
-            type: "POST",
-            contentType: "application/json; charset=utf-8",
-            data:  JSON.stringify(data),
-            url: "/Service/ApplyJob",
-            success: function (success) {
-                alert(success.Message);
-            },
-            error: function (result) {
-                alert(result.Error);
-            }
-        })
+      //function applyJob(model, el) {
+      //  var data = {};
+      //  data.SId = model.JobID;
+      //  $.ajax({
+      //      type: "POST",
+      //      contentType: "application/json; charset=utf-8",
+      //      data:  JSON.stringify(data),
+      //      url: "/Service/ApplyJob",
+      //      success: function (success) {
+      //          alert(success.Message);
+      //      },
+      //      error: function (result) {
+      //          alert(result.Error);
+      //      }
+      //  })
 
-      }
+      //}
   </script>
 }

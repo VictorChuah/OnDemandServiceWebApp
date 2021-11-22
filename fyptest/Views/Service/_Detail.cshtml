@@ -19,17 +19,19 @@
   @if (Model.Image != null)
   {
     <label class="text-info p-2 rounded border border-info">
-      <img src="~/Request/@Model.Image" style="width: 200px; height: 200px;" />
+      <img src="@Model.Image" style="width: 200px; height: 200px;" />
     </label>
     <br />
   }
 
-  @if (Model.File != null)
-  {
-    @*<span id="file" onclick="download('@Model.File')" style="cursor:pointer" class="d-block" ><b>Document,click to download</b></span>*@
-    @Html.ActionLink("Document", "DownloadFile", new { filename = Model.File })
-    <br />
-  }
+  @*@if (Model.File != null)
+    {
+      <span id="file" onclick="download('@Model.File')" style="cursor:pointer" class="d-block" ><b>Document,click to download</b></span>
+      @Html.ActionLink("Document", "DownloadFile", new { filename = Model.File, rid = Model.Id })
+      <br />
+    }*@
+
+  <p><a href="/Service/JobView/@Model.Id" class="d-block">View more...</a></p>
 
   @if (Model.Status == 1 && Model.SeekerComplete == false && Model.ProviderComplete == false)
   {

@@ -9,7 +9,7 @@
 <div class="unit-5 overlay" style="background-image: url(@Url.Content("~/Content/main/")images/hero_2.jpg);">
   <div class="container text-center">
     <h2 class="mb-0">@Model.Title</h2>
-    <p class="mb-0 unit-6"><a href="index.html">Home</a> <span class="sep">></span> <span>Job Item</span></p>
+    <p class="mb-0 unit-6"><a href="/Home/Index">Home</a> <span class="sep">></span> <span>Job Item</span></p>
   </div>
 </div>
 
@@ -34,15 +34,8 @@
             </div>
           </div>
 
-
-
           <div class="img-border mb-5">
-            @*<a href="https://vimeo.com/28959265" class="popup-vimeo image-play">
-      <span class="icon-wrap">
-        <span class="icon icon-play"></span>
-      </span>*@
             <img src="@Model.Image" alt="Image" class="img-fluid rounded">
-            @*</a>*@
           </div>
 
           <div class="row form-group">
@@ -60,7 +53,7 @@
           <div class="row form-group">
             <div class="col-md-12 mb-3 mb-md-0">
               <label class="font-weight-bold" for="phone">Job Type</label>
-              <p class="mb-4">RM @Model.SelectedType</p>
+              <p class="mb-4"> @Model.SelectedType</p>
             </div>
           </div>
           <div class="row form-group">
@@ -90,49 +83,93 @@
 
             </div>
           </div>
-          <div class="row form-group">
-            <div class="col-md-12 mb-3 mb-md-0">
-              <label class="font-weight-bold">Status</label>
-              @if (Model.Status == "0")
-              {
+
+          @if (Model.Status == "0")
+          {
+            <div class="row form-group">
+              <div class="col-md-12 mb-3 mb-md-0">
+                <label class="font-weight-bold">Status</label>
                 <div class="badge-wrap">
                   <span class="border border-warning text-warning py-2 px-4 rounded">Pending Provider</span>
                 </div>
-              }
-              else if (Model.Status == "1")
-              {
+              </div>
+            </div>
+          }
+          else if (Model.Status == "1")
+          {
+            <div class="row form-group">
+              <div class="col-md-12 mb-3 mb-md-0">
+                <label class="font-weight-bold">Status</label>
                 <div class="badge-wrap">
-                  <span class="border border-info text-info py-2 px-4 rounded">In Progress</span>
+                  @if (Model.ProviderComplete == true)
+                  {
+                    <span class="border border-info text-info py-2 px-4 rounded">Pending</span>
+                  }
+                  else
+                  {
+                    <span class="border border-info text-info py-2 px-4 rounded">In Progress</span>
+                  }
                 </div>
-              }
-              else if (Model.Status == "2")
-              {
+              </div>
+            </div>
+
+            <div class="row form-group">
+              <div class="col-md-12 mb-3 mb-md-0">
+                <label class="font-weight-bold">Provider</label>
+                <p class="mb-4">@Model.Provider</p>
+              </div>
+            </div>
+          }
+          else if (Model.Status == "2")
+          {
+            <div class="row form-group">
+              <div class="col-md-12 mb-3 mb-md-0">
+                <label class="font-weight-bold">Status</label>
                 <div class="badge-wrap">
                   <span class="border border-success text-success py-2 px-4 rounded">Completed</span>
                 </div>
-              }
-
-
+              </div>
             </div>
-          </div>
 
-          @if (Session["Email"] != null)
-          {
-            if (Session["Role"].ToString() == "Provider")
-            {
-              <p class="mt-5">
-                <div class="btn btn-primary  py-2 px-4" onclick="applyJob('@Model.JobID');">Apply Job</div>
-                <a href='@Url.Action("Contact", "Chat",new { id=Model.JobID})' style="text-decoration: none;" class="btn btn-info  py-2 px-4">Chat with seeker</a>
-              </p> }
-            else if(Session["Role"].ToString() == "Seeker" && Model.Provider !=null)
-            {
-              <p class="mt-5">
-                <a href='@Url.Action("Contact", "Chat",new { id=Model.JobID})' style="text-decoration: none;" class="btn btn-info  py-2 px-4">Chat with provider</a>
-              </p>
-            }
+            <div class="row form-group">
+              <div class="col-md-12 mb-3 mb-md-0">
+                <label class="font-weight-bold">Provider</label>
+                <p class="mb-4">@Model.Provider</p>
+              </div>
+            </div>
           }
 
-        </div>
+
+
+          <p class="mt-5">
+
+            @if (Session["Email"] != null)
+            {
+              if (Session["Role"].ToString() == "Provider")
+              {
+                @*<div class="btn btn-primary  py-2 px-4" onclick="applyJob('@Model.JobID');">Apply Job</div>*@
+                if (Model.Status == "0")
+                {
+                  @*<p><a href="#" class="btn btn-primary  py-2 px-4">Apply Job</a></p>*@
+                @Html.ActionLink("Accept", "HandleRequest", "Service", new { id = @Model.JobID, rAction = "accept" }, htmlAttributes: new { @class = "btn btn-primary  py-2 px-4", style = "cursor:pointer" })
+              }
+              else if (Model.Status == "1")
+              {
+                @Html.ActionLink("Tracking", "Tracking", "Service", new { requestId = @Model.JobID }, htmlAttributes: new { @class = "text-warning p-2 rounded border border-warning", style = "cursor:pointer" })
+                @Html.ActionLink("Complete", "HandleRequest", "Service", new { id = @Model.JobID, rAction = "complete" }, htmlAttributes: new { @class = "text-info p-2 rounded border border-info", style = "cursor:pointer" })
+
+              }
+                <a href='@Url.Action("Contact", "Chat",new { id=Model.JobID})' style="text-decoration: none;" class="btn btn-info  py-2 px-4">Chat with seeker</a>
+            }
+            else if (Session["Role"].ToString() == "Seeker" && Model.Provider != null)
+            {
+                <a href='@Url.Action("Contact", "Chat",new { id=Model.JobID})' style="text-decoration: none;" class="btn btn-info  py-2 px-4">Chat with provider</a>
+            }
+          }
+            </p>
+
+
+          </div>
       </div>
 
       <div class="col-lg-4">
@@ -141,7 +178,23 @@
         <div class="p-4 mb-3 bg-white">
           <h3 class="h5 text-black mb-3">More Info</h3>
           <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa ad iure porro mollitia architecto hic consequuntur. Distinctio nisi perferendis dolore, ipsa consectetur</p>
-          <p><a href="#" class="btn btn-primary  py-2 px-4">Apply Job</a></p>
+          @*@if (Session["Email"] != null)
+          {
+            if (Session["Role"].ToString() == "Provider")
+            {
+              if (Model.Status == "0")
+              {*@
+                @*<p><a href="#" class="btn btn-primary  py-2 px-4">Apply Job</a></p>*@
+                <!--<p>@Html.ActionLink("Accept", "HandleRequest", "Service", new { id = @Model.JobID, rAction = "accept" }, htmlAttributes: new { @class = "btn btn-primary  py-2 px-4", style = "cursor:pointer" })</p>-->
+              @*}
+              else if (Model.Status == "1" && Model.SeekerComplete == false && Model.ProviderComplete == false)
+              {*@
+                <!--<span>@Html.ActionLink("Tracking", "Tracking", "Service", new { requestId = @Model.JobID }, htmlAttributes: new { @class = "text-warning p-2 rounded border border-warning", style = "cursor:pointer" })</span>
+                <span>@Html.ActionLink("Complete", "HandleRequest", "Service", new { id = @Model.JobID, rAction = "complete" }, htmlAttributes: new { @class = "text-info p-2 rounded border border-info", style = "cursor:pointer" })</span>
+                <br />-->
+              @*}
+            }
+          }*@
         </div>
       </div>
     </div>
@@ -151,7 +204,7 @@
 
 
 <script type="text/javascript">
-        function applyJob(id) {
+        @*function applyJob(id) {
           var data = {};
           data.SId = id;
           $.ajax({
@@ -167,5 +220,5 @@
               }
           })
 
-        }
+        }*@
 </script>

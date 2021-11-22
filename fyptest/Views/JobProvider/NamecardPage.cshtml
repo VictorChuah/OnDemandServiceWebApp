@@ -27,16 +27,14 @@
     <div class="row">
       @foreach (var p in Model)
       {
-        //if (p.postNamecard && p.namecard != null)
-       // {
           <div class="col-sm-6 col-md-4 col-lg-4 mb-3" data-aos="fade-up" data-aos-delay="100">
-            <a href="#" class="h-100 feature-item">
+            <a href="/JobProvider/ProviderProfile?viewProfile=@System.Web.HttpUtility.UrlEncode(p.email)" class="h-100 feature-item">
               <img src="~/Image/NameCard/@p.namecard" style="width: 300px; height: 200px" />
               <h2>@(p.name != null ? p.name : p.companyName ) </h2>
               <span class="counting">@p.Service_Type.name</span>
             </a>
           </div>
-        //}
+
       }
       <!--<div class="col-sm-6 col-md-4 col-lg-3 mb-3" data-aos="fade-up" data-aos-delay="200">
     <a href="#" class="h-100 feature-item">-->

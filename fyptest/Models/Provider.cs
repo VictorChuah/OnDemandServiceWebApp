@@ -43,7 +43,6 @@ namespace fyptest.Models
         public string STId { get; set; }
         public string RId { get; set; }
         public string reset_pwd { get; set; }
-        public bool postNamecard { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ChatConnection> ChatConnections { get; set; }
